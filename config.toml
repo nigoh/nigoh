@@ -1,0 +1,4 @@
+baseURL = 'http://example.org/'
+languageCode = 'ja'
+title = 'hironobu nigo site'
+theme = 'PaperMod'
