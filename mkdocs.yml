@@ -1,5 +1,9 @@
 site_name: Notes by Hironobu Nigou
 
+plugins:
+  - mkdocs-jupyter
+  - search
+
 theme:
   name: material
   language: ja
@@ -19,11 +23,14 @@ theme:
   features:
     - navigation.tabs
 
-
 extra:
   search:
     language: jp
+  social:  ## ソーシャルリンク設定
+    - icon: fontawesome/brands/github
+      link: https://github.com/nigoh
 
+copyright: Copyright © 2022 hironobu nigo.  ## 著作権情報
 
 markdown_extensions:
   - admonition
