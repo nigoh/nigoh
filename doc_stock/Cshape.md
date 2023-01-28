@@ -1,4 +1,0 @@
-- .net
-- Blazor 
-- APS.NET Core
-- 
