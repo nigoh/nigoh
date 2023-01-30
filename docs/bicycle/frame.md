@@ -6,6 +6,10 @@ sidebar_position: 1
 
 2023年1月、人生初のフレーム、SOMA FabricationsのWolverine (V.3.0)を購入しました。  
 ![alt](img/soma_wolverine3_frm_red_rev1200.jpg)  
+すごく赤くてかっこいい。  
+
+## SOMA Fabrications
+
 SOMA Fabricationsは、The Merry Sales Co.という自転車の卸売り会社の一部門にあたるそうです。  
 SOMA Fabricationsが設立した経緯がWikiに記載されていました。
 
@@ -13,13 +17,20 @@ SOMA Fabricationsが設立した経緯がWikiに記載されていました。
 > https://en.wikipedia.org/wiki/SOMA_Fabrications
 
 台湾でクロモリって取れるんですね。知らなかった。。。
-すごく赤くてかっこいい。  
+
+## 赤いフレームのWolverine
+
 SOMA FabricationsのサイトにWolverine (V.3.0)のページがあるのですが、Retired（退任？）と記載されていました。すでに生産は終わっているみたいですね。
 <https://www.somafab.com/archives/product/wolverine30>
 
 > ウルヴァリンの原点は「モンスタークロス」ですが、マジでそれ以上なんです。  
 > オフロードツーリングに適した安定したジオメトリーと、オールラウンドなアドベンチャーに適したスポーティーなジオメトリー。ドロップアウトをスライドさせれば、シングルスピードのCXバイクにも変身する。  
 > スプリットシートステーを採用し、ゲイツカーボンベルトドライブとの互換性があります。
+
+CXバイク = シクロクロスバイク
+ゲイツのカーボンベルトドライブ
+<https://www.gates.com/jp/ja/industries/micromobility/bicycles.html>
+<https://www.gatescarbondrive.com/bike>
 
 
 > v.3.0では、新たに堅牢なIRD Broski Sliding Dropoutsが採用されました。また、溶接方法を変更し、チューブ全体の強度をより保つようにしました。
@@ -43,7 +54,13 @@ IRD Broski Sliding Dropoutsは下のエンドを変えるパーツの事みた�
 - Somaの姉妹ブランド [NEW ALBION CYCLES - http://newalbioncycles.com/](http://newalbioncycles.com/)
 - ソーマの姉妹ブランド NEW ALBION　様々な遊び方ができるグラベルロードDrake [https://www.cyclowired.jp/news/node/291676](https://www.cyclowired.jp/news/node/291676) 
 
-- Bradley Woehl[Bradley WoehlのLinkedin](https://www.linkedin.com/in/bradley-woehl-22914813)
-- 2021年まで製品デザイナーをしていたようです。
+- Somaの製品デザイナーのBradley Woehlさん - <https://www.linkedin.com/in/bradley-woehl-22914813>
+  - 2021年まで製品デザイナーをしていたようです。
 
 - [https://www.americancyclery.com/](https://www.americancyclery.com/)
+
+
+- 自転車のフレームジオメトリって大事！後悔のないロードバイク選び。- <https://www.cb-asahi.co.jp/blog/howto/124/>
+
+
+- All Parts Of A Bicycle Explained: Comprehensive Guide To Your Bike - <https://biketips.com/parts-of-a-bicycle-explained/>
