@@ -4,46 +4,76 @@ sidebar_position: 1
 
 # FRAME（フレーム）
 
-2023年1月、人生初のフレーム、SOMA FabricationsのWolverine (V.3.0)を購入しました。  
+SOMA FabricationsのWolverine (V.3.0)を購入  
 ![alt](img/soma_wolverine3_frm_red_rev1200.jpg)  
-すごく赤くてかっこいい。  
 
 ## SOMA Fabrications
 
-SOMA Fabricationsは、The Merry Sales Co.という自転車の卸売り会社の一部門にあたるそうです。  
-SOMA Fabricationsが設立した経緯がWikiに記載されていました。
+:::info
+SOMA Fabricationsは、American CycleryのオーナーであるBradley Woehl氏が、The Merry Sales Co.の社長であるJim Porter氏に、台湾でクロモリ鋼の自転車用フレームを生産してもらえないかと相談したことから生まれたブランドである。それ以来、WoehlとPorterは、このブランドのための製品アイデアを共同開発するようになりました。  
+[引用 Wiki]https://en.wikipedia.org/wiki/SOMA_Fabrications
+:::
 
-> SOMA Fabricationsは、American CycleryのオーナーであるBradley Woehl氏が、The Merry Sales Co.の社長であるJim Porter氏に、台湾でクロモリ鋼の自転車用フレームを生産してもらえないかと相談したことから生まれたブランドである。それ以来、WoehlとPorterは、このブランドのための製品アイデアを共同開発するようになりました。
-> https://en.wikipedia.org/wiki/SOMA_Fabrications
+## Wolverine
 
-台湾でクロモリって取れるんですね。知らなかった。。。
-
-## 赤いフレームのWolverine
-
-SOMA FabricationsのサイトにWolverine (V.3.0)のページがあるのですが、Retired（退任？）と記載されていました。すでに生産は終わっているみたいですね。
+SOMA FabricationsのサイトにWolverine (V.3.0)のページがあるが、Retired（退任？）と記載されていた。すでに生産は終わっているみたい。
 <https://www.somafab.com/archives/product/wolverine30>
 
+### フレームについての紹介文
+
+:::info
+> #### 【冒頭】
 > ウルヴァリンの原点は「モンスタークロス」ですが、マジでそれ以上なんです。  
 > オフロードツーリングに適した安定したジオメトリーと、オールラウンドなアドベンチャーに適したスポーティーなジオメトリー。ドロップアウトをスライドさせれば、シングルスピードのCXバイクにも変身する。  
 > スプリットシートステーを採用し、ゲイツカーボンベルトドライブとの互換性があります。
+:::
 
-CXバイク = シクロクロスバイク
-ゲイツのカーボンベルトドライブ
-<https://www.gates.com/jp/ja/industries/micromobility/bicycles.html>
-<https://www.gatescarbondrive.com/bike>
+**【用語】**
+- `モンスタークロス` = (29er + シクロクロス / 2 ) のバイク
+  - ※29er = 29インチMTB
+- `ドロップアウト` = リアタイヤが付く爪
+- `CXバイク`（シクロクロスバイク） = シクロクロスは、オフロードで行われる自転車競技なので、オフロード競技用の自転車
+- `スプリットシートステー` = シートステーの一部がスプリット(分裂)する事で、カーボンドライブベルトを装着できる箇所
+  > ![alt](./img/choosing-the-right-bike-frame-size-1.png)
+  > [画像引用](https://www.bikechaser.com.au/news/choose-right-bike-size/)
+- `ゲイツのカーボンベルトドライブ` = 読んで字のごとく
+  <https://www.gates.com/jp/ja/industries/micromobility/bicycles.html>  
+  <https://www.gatescarbondrive.com/bike>
 
-
+:::info
+> #### 【キャプチャ1】
 > v.3.0では、新たに堅牢なIRD Broski Sliding Dropoutsが採用されました。また、溶接方法を変更し、チューブ全体の強度をより保つようにしました。
 >
-IRD Broski Sliding Dropoutsは下のエンドを変えるパーツの事みたいですね。
-![alt](img/soma_wolverine3_red_broski_800.jpg)
-<https://www.interlocracing.com/shop/94850-tange-ird-sliding-dropouts-full-set-3899#attr=>
+:::
 
-チューブとは、
+**【用語】**
+- `IRD Broski Sliding Dropouts` = 下の画像のパーツ、リアのエンドを変えるパーツ
+  > ![alt](img/soma_wolverine3_red_broski_800.jpg)
+  > 参考:<https://www.interlocracing.com/shop/94850-tange-ird-sliding-dropouts-full-set-3899#attr=>
+
+- `チューブ` = フレームの各部位の事。なぜチューブと呼ぶのだろうか？空洞だから？
 ![alt](img/geometry.jpg)
 
+
+:::info
+- タンゲプレステージ熱処理ダブルバテッドCrMoフロントトライアングル、バテッドCrMoリアエンド
+
+- 700x45cのタイヤが装着可能（フェンダー付き
+
+- リアハブ互換性：135mm QR（アフターマーケットインサートにより142 x 12スルーアクスルに変換可能
+
+- ゲイツカーボンベルトドライブ対応
+
+- オプションのマッチングフォーク。
+A) 標準QRアクスルのラグドフラットクラウン、タンゲインフィニティCrMoスチールフォーク、ダブルアイレットパニアラックおよびミニラックマウント。
+B)超高剛性ユニクラウンストレートブレード15mmスルーアクスルフォーク（2019年にはデュアルミッドブレードボスを装備）。
+:::
+
+- `タンゲプレステージ` = ダウンチューブ（BBからヘッドチューブのまでのチューブ）にシールが貼っているのがタンゲプレステージ
+  タンゲプレステージはもともと日本の工場で製造されているいたが、現在は台湾で製造している。
+![alt](./img/210216_tange_prestige_v2_frame_fork_sticker_set.jpg)
 ----
-[補足引用]
+[参考資料]
 
 - Soma公式サイト:[https://www.somafab.com/](https://www.somafab.com/)
 
