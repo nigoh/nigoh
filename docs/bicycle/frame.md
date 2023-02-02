@@ -22,10 +22,10 @@ SOMA FabricationsのサイトにWolverine (V.3.0)のページがあるが、Reti
 ### フレームについての紹介文
 
 :::info
-> #### 【冒頭】
-> ウルヴァリンの原点は「モンスタークロス」ですが、マジでそれ以上なんです。  
-> オフロードツーリングに適した安定したジオメトリーと、オールラウンドなアドベンチャーに適したスポーティーなジオメトリー。ドロップアウトをスライドさせれば、シングルスピードのCXバイクにも変身する。  
-> スプリットシートステーを採用し、ゲイツカーボンベルトドライブとの互換性があります。
+Wolverineの原点は「モンスタークロス」ですが、マジでそれ以上なんです。  
+オフロードツーリングに適した安定したジオメトリーと、オールラウンドなアドベンチャーに適したスポーティーなジオメトリー。ドロップアウトをスライドさせれば、シングルスピードのCXバイクにも変身する。  
+スプリットシートステーを採用し、ゲイツカーボンベルトドライブとの互換性があります。  
+> 原文:The original inspiration for the Wolverine was "monster cross", but it is seriously so much more. Its geometry is stable enough for off road touring, but sporty enough for all-around adventure. With its sliding dropouts, you can turn it into a single-speed CX bike. With a split seatstay, it is compatible with the Gates Carbon Belt Drive.
 :::
 
 **【用語】**
@@ -41,8 +41,8 @@ SOMA FabricationsのサイトにWolverine (V.3.0)のページがあるが、Reti
   <https://www.gatescarbondrive.com/bike>
 
 :::info
-> #### 【キャプチャ1】
-> v.3.0では、新たに堅牢なIRD Broski Sliding Dropoutsが採用されました。また、溶接方法を変更し、チューブ全体の強度をより保つようにしました。
+v.3.0では、新たに堅牢なIRD Broski Sliding Dropoutsが採用されました。また、溶接方法を変更し、チューブ全体の強度をより保つようにしました。  
+> 原文:The v.3.0 has the new robust IRD Broski Sliding Dropouts. We also switched up the welding method to keep more of the tube's overall strength.
 >
 :::
 
@@ -56,22 +56,52 @@ SOMA FabricationsのサイトにWolverine (V.3.0)のページがあるが、Reti
 
 
 :::info
-- タンゲプレステージ熱処理ダブルバテッドCrMoフロントトライアングル、バテッドCrMoリアエンド
+- タンゲプレステージ熱処理ダブルバテッドCrMoフロントトライアングル、バテッドCrMoリアエンド  
+> 原文: - Tange Prestige heat-treated double butted CrMo front triangle; butted CrMo rear end
+:::
 
+- `タンゲプレステージ` = フレーム製造を行っている日本ブランドのTANGEの代表モデル。プレステージモデルは、1984年に誕生。※もともと日本の工場で製造されているいたが、現在は台湾で製造している。  
+Wolverineのダウンチューブ（BBからヘッドチューブのまでのチューブ）にシールが貼っている  
+> TANGEについての資料：<https://funq.jp/bicycle-club/article/10469/>
+![alt](./img/210216_tange_prestige_v2_frame_fork_sticker_set.jpg)
+
+- `熱処理` = 焼き入れ処理 → 金属に高熱を加えて高温状態にし、急冷することで硬化させる処理
+
+- `ダブルバテッド` - チューブの肉厚が途中で変化する（中央部分が薄い）もの。
+![alt](img/20161116-3.png)
+
+> バンデットについての資料
+> -ロードバイク｜現行スチールパイプカタログ -TANGE & KAISEI - <https://www.daiwa-cycle.jp/feature/column/15>
+> - ロードバイクの選び方 ～ フレーム素材編 その③ ～ - <https://www.sbtm.jp/b<og/<-156/>
+> - バテッドって何？ - <https://www.a-dew.com/knowledge/frames/butted>
+
+:::info
 - 700x45cのタイヤが装着可能（フェンダー付き
 
 - リアハブ互換性：135mm QR（アフターマーケットインサートにより142 x 12スルーアクスルに変換可能
 
 - ゲイツカーボンベルトドライブ対応
 
-- オプションのマッチングフォーク。
-A) 標準QRアクスルのラグドフラットクラウン、タンゲインフィニティCrMoスチールフォーク、ダブルアイレットパニアラックおよびミニラックマウント。
+- オプションのマッチングフォーク。  
+A) 標準QRアクスルのラグドフラットクラウン、タンゲインフィニティCrMoスチールフォーク、ダブルアイレットパニアラックおよびミニラックマウント。  
 B)超高剛性ユニクラウンストレートブレード15mmスルーアクスルフォーク（2019年にはデュアルミッドブレードボスを装備）。
+
+> 原文:  
+> - Clearance for 700x45c tires w/ fenders
+> 
+> - Rear hub compatibility:135mm QR (convertible to 142 x 12 thru-axle with aftermarket inserts
+> 
+> - Gates Carbon belt drive compatible
+> 
+> - Optional matching forks:
+> A) lugged flat crown standard QR axle, Tange Infinity CrMo steel fork; double eyelets pannier rack and mini rack mounts.  
+> B) Extra stiff unicrown straight blade 15mm thru-axle fork (w/ dual mid-blade bosses in 2019)
 :::
 
-- `タンゲプレステージ` = ダウンチューブ（BBからヘッドチューブのまでのチューブ）にシールが貼っているのがタンゲプレステージ
-  タンゲプレステージはもともと日本の工場で製造されているいたが、現在は台湾で製造している。
-![alt](./img/210216_tange_prestige_v2_frame_fork_sticker_set.jpg)
+
+- `700x45c` = タイヤ外径700mm x タイヤ幅45mm、`c`はリム直径広を表す。
+  - 参考:タイヤサイズについて - <https://www.cycle-yoshida.com/pc/freepage.php?NUM=82>
+
 ----
 [参考資料]
 
