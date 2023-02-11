@@ -70,7 +70,7 @@ Wolverineのダウンチューブ（BBからヘッドチューブのまでのチ
 - `ダブルバテッド` - チューブの肉厚が途中で変化する（中央部分が薄い）もの。
 ![alt](img/20161116-3.png)
 
-> バンデットについての資料
+> バデットについての資料
 > -ロードバイク｜現行スチールパイプカタログ -TANGE & KAISEI - <https://www.daiwa-cycle.jp/feature/column/15>
 > - ロードバイクの選び方 ～ フレーム素材編 その③ ～ - <https://www.sbtm.jp/b<og/<-156/>
 > - バテッドって何？ - <https://www.a-dew.com/knowledge/frames/butted>
@@ -101,6 +101,13 @@ B)超高剛性ユニクラウンストレートブレード15mmスルーアク�
 
 - `700x45c` = タイヤ外径700mm x タイヤ幅45mm、`c`はリム直径広を表す。
   - 参考:タイヤサイズについて - <https://www.cycle-yoshida.com/pc/freepage.php?NUM=82>
+
+### ジオメトリ
+
+![alt](./img/soma_wolverine_geochart_v3.png)
+
+サイズ52を購入。トップチューブがスローピングしているので
+
 
 ----
 [参考資料]
