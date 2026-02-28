@@ -1,0 +1,58 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// 5×7 ピクセルフォントで "H.NIGO" を描画
+const glyphs: Record<string, string[]> = {
+  H: ['1...1', '1...1', '1...1', '11111', '1...1', '1...1', '1...1'],
+  '.': ['.', '.', '.', '.', '.', '.', '1'],
+  N: ['1...1', '11..1', '11..1', '1.1.1', '1..11', '1..11', '1...1'],
+  I: ['111', '.1.', '.1.', '.1.', '.1.', '.1.', '111'],
+  G: ['.111.', '1...1', '1....', '1.111', '1...1', '1...1', '.111.'],
+  O: ['.111.', '1...1', '1...1', '1...1', '1...1', '1...1', '.111.'],
+};
+
+const word = 'H.NIGO';
+const gap = 2;
+const ROWS = 7;
+
+// 文字を横に並べて1つのグリッドに合成
+let grid: string[] = Array(ROWS).fill('');
+let first = true;
+for (const ch of word) {
+  const g = glyphs[ch];
+  if (!g) continue;
+  if (!first) {
+    for (let r = 0; r < ROWS; r++) grid[r] += '.'.repeat(gap);
+  }
+  for (let r = 0; r < ROWS; r++) grid[r] += g[r];
+  first = false;
+}
+
+// ピクセル座標リストを生成
+const pixels: { x: number; y: number }[] = [];
+for (let r = 0; r < ROWS; r++) {
+  for (let c = 0; c < grid[r].length; c++) {
+    if (grid[r][c] === '1') pixels.push({ x: c, y: r });
+  }
+}
+
+const W = grid[0].length;
+const H = ROWS;
+---
+
+<svg
+  viewBox={`0 0 ${W} ${H}`}
+  class={className}
+  role="img"
+  aria-label="H.NIGO"
+  xmlns="http://www.w3.org/2000/svg"
+  shape-rendering="crispEdges"
+>
+  {pixels.map((p) => (
+    <rect x={p.x} y={p.y} width="0.85" height="0.85" fill="currentColor" />
+  ))}
+</svg>

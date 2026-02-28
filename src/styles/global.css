@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: #3b82f6;
+  color: #e4e4e7;
+}
+
+/* ASCII キャラクター アニメーション */
+@keyframes char-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes char-wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+@keyframes char-walk {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(4px) translateY(-2px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(4px) translateY(-2px); }
+  100% { transform: translateX(0); }
+}
+.ascii-bounce {
+  animation: char-bounce 2s ease-in-out infinite;
+}
+.ascii-wave {
+  animation: char-wave 3s ease-in-out infinite;
+}
+.ascii-walk {
+  animation: char-walk 4s ease-in-out infinite;
+}
+
+/* ピクセルアート アニメーション */
+.ascii-walk,
+.ascii-bounce,
+.ascii-wave {
+  display: inline-block;
+}

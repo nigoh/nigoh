@@ -1,0 +1,270 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PixelLogo from '../components/PixelLogo.astro';
+import PixelRobot from '../components/PixelRobot.astro';
+
+const skills = [
+  { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発' },
+  { name: 'Rust', level: 75, description: '安全で高速なシステム開発' },
+  { name: 'Python', level: 80, description: 'スクリプティング・データ処理・自動化' },
+  { name: 'Git / Linux / Docker', level: 85, description: '開発ツール・インフラストラクチャ' },
+];
+
+const timeline = [
+  { year: '1984', title: 'Born', description: '北海道に生まれる' },
+  { year: '2000s', title: 'Programming', description: 'プログラミングを始める。C/C++ を中心に学ぶ' },
+  { year: '2010s', title: 'Career', description: 'ソフトウェアエンジニアとしてキャリアを積む' },
+  { year: '2020s', title: 'Now', description: 'Rust, Python にも領域を広げ、幅広いシステム開発に従事' },
+];
+
+const projects = [
+  {
+    name: 'nigoh',
+    description: 'このサイトのソースコード。Astro + Tailwind CSS で構築。',
+    url: 'https://github.com/nigoh/nigoh',
+    tags: ['Astro', 'Tailwind CSS', 'TypeScript'],
+  },
+];
+
+const hobbies = [
+  { name: 'Cycling', nameJa: '自転車', description: '休日は札幌近郊をロードバイクで走っています。風を切って走る時間が好きです。', emoji: '🚴' },
+  { name: 'Music', nameJa: '音楽', description: 'ジャンルを問わず幅広く聴いています。特にジャズやエレクトロニカが好き。', emoji: '🎵' },
+  { name: 'Movies', nameJa: '映画', description: 'SF 映画やドキュメンタリーをよく観ます。', emoji: '🎬' },
+];
+---
+
+<BaseLayout title="H.Nigo | Software Engineer">
+  <Header />
+
+  <main class="pt-14">
+
+    {/* ═══════════════════ Hero ═══════════════════ */}
+    <section class="min-h-screen flex items-center justify-center py-24">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* ピクセルアート ロゴ */}
+        <PixelLogo class="w-64 sm:w-80 lg:w-96 mx-auto mb-8 text-blue-400" />
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-10">
+          {/* アバター */}
+          <div class="shrink-0">
+            <img
+              src="https://github.com/nigoh.png"
+              alt="H.Nigo"
+              width="140"
+              height="140"
+              class="rounded-full border-4 border-blue-500/30"
+              loading="eager"
+            />
+          </div>
+
+          <div class="text-center sm:text-left">
+            <p class="text-lg text-blue-400 font-mono mb-4">Software Engineer @ Sapporo</p>
+            <p class="text-zinc-400 font-sans leading-relaxed max-w-md">
+              低レイヤーからアプリケーションまで。
+              C/C++, Rust, Python を使ってものづくりをしています。
+            </p>
+          </div>
+
+          {/* ピクセルロボット騎士キャラ */}
+          <PixelRobot class="w-16 sm:w-20 shrink-0 hidden sm:block ascii-walk" />
+        </div>
+      </div>
+    </section>
+
+    {/* ═══════════════════ About ═══════════════════ */}
+    <section id="about" class="py-24 bg-surface/50">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">About</h2>
+
+        <div class="grid sm:grid-cols-[auto_1fr] gap-x-8 gap-y-4 mb-8">
+          <span class="text-zinc-500 font-mono text-sm">Name</span>
+          <span class="text-zinc-200">Hironobu Nigo</span>
+          <span class="text-zinc-500 font-mono text-sm">Born</span>
+          <span class="text-zinc-200">1984</span>
+          <span class="text-zinc-500 font-mono text-sm">Location</span>
+          <span class="text-zinc-200">札幌市, 北海道, Japan</span>
+          <span class="text-zinc-500 font-mono text-sm">Role</span>
+          <span class="text-zinc-200">Software Engineer</span>
+        </div>
+
+        <div class="text-zinc-300 font-sans leading-relaxed space-y-4">
+          <p>
+            1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
+            低レイヤーからアプリケーションまで、幅広い領域でのシステム開発を行っています。
+          </p>
+          <p>
+            趣味は音楽鑑賞、映画鑑賞、サイクリング。
+            休日は自転車で札幌近郊を走ったり、お気に入りのカフェでコードを書いたりしています。
+          </p>
+        </div>
+
+        {/* ピクセルロボット — くつろぎ中 */}
+        <div class="flex justify-end mt-8">
+          <PixelRobot class="w-14 ascii-bounce" />
+        </div>
+      </div>
+    </section>
+
+    {/* ═══════════════════ Skills ═══════════════════ */}
+    <section id="skills" class="py-24">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">Skills</h2>
+
+        <div class="space-y-6">
+          {skills.map((skill) => (
+            <div>
+              <div class="flex justify-between items-baseline mb-2">
+                <h3 class="font-mono font-bold text-zinc-200">{skill.name}</h3>
+                <span class="text-xs text-zinc-500 font-mono">{skill.level}%</span>
+              </div>
+              <div class="w-full bg-zinc-800 rounded-full h-3 overflow-hidden">
+                <div
+                  class="bg-blue-500 h-3 rounded-full"
+                  style={`width: ${skill.level}%`}
+                />
+              </div>
+              <p class="text-xs text-zinc-500 mt-1 font-sans">{skill.description}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* GitHub Stats */}
+        <div class="mt-12 grid gap-6 sm:grid-cols-2">
+          <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer">
+            <img
+              src="https://github-readme-stats.vercel.app/api/top-langs/?username=nigoh&layout=compact&theme=transparent&hide_border=true&title_color=60a5fa&text_color=a1a1aa&bg_color=00000000"
+              alt="Top Languages"
+              class="w-full rounded-lg border border-zinc-800 bg-surface p-2"
+              loading="lazy"
+            />
+          </a>
+          <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer">
+            <img
+              src="https://github-readme-stats.vercel.app/api?username=nigoh&show_icons=true&theme=transparent&hide_border=true&title_color=60a5fa&text_color=a1a1aa&icon_color=3b82f6&bg_color=00000000"
+              alt="GitHub Stats"
+              class="w-full rounded-lg border border-zinc-800 bg-surface p-2"
+              loading="lazy"
+            />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {/* ═══════════════════ Timeline ═══════════════════ */}
+    <section id="timeline" class="py-24 bg-surface/50">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">Timeline</h2>
+
+        <div class="relative">
+          <div class="absolute left-[2.5rem] top-0 bottom-0 w-px bg-zinc-700"></div>
+          <div class="space-y-10">
+            {timeline.map((event) => (
+              <div class="relative pl-24">
+                <div class="absolute left-0 top-0 w-20 text-right">
+                  <span class="text-xl font-mono font-bold text-blue-400">{event.year}</span>
+                </div>
+                <div class="absolute left-[2.25rem] top-1.5 w-2 h-2 rounded-full bg-blue-500 ring-4 ring-base"></div>
+                <div>
+                  <h3 class="font-mono font-bold text-zinc-200 mb-1">{event.title}</h3>
+                  <p class="text-zinc-400 text-sm font-sans">{event.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ═══════════════════ Portfolio ═══════════════════ */}
+    <section id="portfolio" class="py-24">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">Portfolio</h2>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          {projects.map((project) => (
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block bg-surface border border-zinc-800 rounded-lg p-6 hover:border-blue-500/50 transition-colors group"
+            >
+              <h3 class="font-mono font-bold text-zinc-200 mb-2 group-hover:text-blue-400 transition-colors">
+                {project.name}
+              </h3>
+              <p class="text-zinc-400 text-sm font-sans mb-3">{project.description}</p>
+              <div class="flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <span class="text-xs font-mono text-blue-400/70 bg-blue-500/10 px-2 py-0.5 rounded">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </a>
+          ))}
+        </div>
+
+        {/* ブログリンク */}
+        <div class="mt-8 border border-zinc-800 rounded-lg p-6 bg-surface">
+          <h3 class="font-mono font-bold text-zinc-200 mb-2">Blog</h3>
+          <p class="text-zinc-500 text-sm font-sans">準備中です。技術記事を書く予定です。</p>
+        </div>
+
+        {/* ピクセルロボット — コーディング中 */}
+        <div class="mt-8">
+          <PixelRobot class="w-14 ascii-wave" />
+        </div>
+      </div>
+    </section>
+
+    {/* ═══════════════════ Hobbies ═══════════════════ */}
+    <section id="hobbies" class="py-24 bg-surface/50">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">Hobbies</h2>
+
+        <div class="grid gap-6 sm:grid-cols-3">
+          {hobbies.map((hobby) => (
+            <div class="bg-base border border-zinc-800 rounded-lg p-6 hover:border-blue-500/50 transition-colors group">
+              <p class="text-3xl mb-4">{hobby.emoji}</p>
+              <h3 class="font-mono font-bold text-zinc-200 mb-1 group-hover:text-blue-400 transition-colors">
+                {hobby.name}
+              </h3>
+              <p class="text-xs font-mono text-zinc-500 mb-3">{hobby.nameJa}</p>
+              <p class="text-zinc-400 text-sm font-sans leading-relaxed">{hobby.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {/* ═══════════════════ Contact ═══════════════════ */}
+    <section id="contact" class="py-24">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-6">Contact</h2>
+        <p class="text-zinc-400 font-sans mb-8">
+          お仕事のご依頼やお問い合わせは、GitHub からお気軽にどうぞ。
+        </p>
+        <a
+          href="https://github.com/nigoh"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-3 px-6 py-3 border border-blue-500 rounded-lg text-blue-400 font-mono hover:bg-blue-500/10 transition-colors"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+          </svg>
+          github.com/nigoh
+        </a>
+
+        {/* ピクセルロボット — 手を振る */}
+        <div class="mt-10">
+          <PixelRobot class="w-16 ascii-wave" />
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</BaseLayout>

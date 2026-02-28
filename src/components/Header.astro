@@ -1,0 +1,32 @@
+---
+const base = import.meta.env.BASE_URL;
+
+const sections = [
+  { label: 'About', href: '#about' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Timeline', href: '#timeline' },
+  { label: 'Portfolio', href: '#portfolio' },
+  { label: 'Hobbies', href: '#hobbies' },
+  { label: 'Contact', href: '#contact' },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-base/90 backdrop-blur-md border-b border-zinc-800/60">
+  <nav class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+    <a href={base} class="flex items-center gap-2 text-lg font-mono font-bold text-zinc-200 hover:text-blue-400 transition-colors">
+      <span class="text-blue-400">$</span> H.Nigo
+    </a>
+    <ul class="hidden sm:flex items-center gap-1">
+      {sections.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class="px-3 py-2 text-sm font-mono text-zinc-400 hover:text-blue-400 transition-colors"
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>

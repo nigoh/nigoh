@@ -2,4 +2,5 @@
     "markdownlint.config": {
         "default": true, "MD007": { "indent": 4 }
     },
+    "typescript.inlayHints.parameterNames.enabled": "all",
 }
