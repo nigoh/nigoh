@@ -25,6 +25,52 @@ try {
   // 取得失敗時はフォールバック表示
 }
 
+// ビルド時に GitHub API からリポジトリ言語分布を取得
+interface GitHubLang {
+  name: string;
+  percent: number;
+  color: string;
+}
+
+const langColors: Record<string, string> = {
+  TypeScript: '#3178C6',
+  JavaScript: '#F1E05A',
+  Python: '#3572A5',
+  'C++': '#F34B7D',
+  C: '#555555',
+  Rust: '#DEA584',
+  Astro: '#FF5A03',
+  HTML: '#E34C26',
+  CSS: '#563D7C',
+  Shell: '#89E051',
+};
+
+let topLangs: GitHubLang[] = [];
+try {
+  const reposRes = await fetch(
+    'https://api.github.com/users/nigoh/repos?per_page=100&type=owner',
+    { headers: { Accept: 'application/vnd.github+json' } }
+  );
+  if (reposRes.ok) {
+    const repos: Array<{ language: string | null }> = await reposRes.json();
+    const counts: Record<string, number> = {};
+    for (const r of repos) {
+      if (r.language) counts[r.language] = (counts[r.language] ?? 0) + 1;
+    }
+    const total = Object.values(counts).reduce((a, b) => a + b, 0);
+    topLangs = Object.entries(counts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 6)
+      .map(([name, count]) => ({
+        name,
+        percent: Math.round((count / total) * 100),
+        color: langColors[name] ?? '#64748b',
+      }));
+  }
+} catch {
+  // フォールバック: 空のまま
+}
+
 const skills = [
   {
     category: 'Languages',
@@ -210,20 +256,63 @@ const projects = [
           ))}
         </div>
 
-        {/* GitHub Stats */}
-        <div class="mt-12">
-          <a
-            href="https://github.com/nigoh"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200"
-          >
-            <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">GitHub</h3>
-            <div class="flex flex-wrap gap-3">
-              <img src="https://img.shields.io/github/stars/nigoh?style=for-the-badge&logo=github&label=Stars&color=2563eb" alt="GitHub Stars" loading="lazy" class="h-7" />
-              <img src="https://img.shields.io/github/followers/nigoh?style=for-the-badge&logo=github&label=Followers&color=2563eb" alt="GitHub Followers" loading="lazy" class="h-7" />
+        {/* GitHub Activity */}
+        <div class="mt-12 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">GitHub Activity</h3>
+            <a
+              href="https://github.com/nigoh"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              github.com/nigoh →
+            </a>
+          </div>
+
+          {/* コントリビューション カレンダー */}
+          <div class="mb-5">
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Contribution Calendar</p>
+            <div class="bg-white rounded-lg p-3 border border-slate-200 dark:border-slate-600/40">
+              <img
+                src="https://ghchart.rshah.org/2563eb/nigoh"
+                alt="GitHub Contribution Calendar"
+                class="w-full"
+                loading="lazy"
+              />
             </div>
-            <div class="mt-4 flex flex-wrap gap-2">
+          </div>
+
+          {/* Stats バッジ */}
+          <div class="flex flex-wrap gap-2 mb-5">
+            <img src="https://img.shields.io/github/stars/nigoh?style=for-the-badge&logo=github&label=Stars&color=2563eb" alt="GitHub Stars" loading="lazy" class="h-7" />
+            <img src="https://img.shields.io/github/followers/nigoh?style=for-the-badge&logo=github&label=Followers&color=2563eb" alt="GitHub Followers" loading="lazy" class="h-7" />
+          </div>
+
+          {/* 言語分布グラフ */}
+          {topLangs.length > 0 ? (
+            <div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Language Distribution</p>
+              <div class="flex h-2.5 rounded-full overflow-hidden mb-3">
+                {topLangs.map((lang) => (
+                  <div
+                    style={`width: ${lang.percent}%; background-color: ${lang.color};`}
+                    title={`${lang.name}: ${lang.percent}%`}
+                  />
+                ))}
+              </div>
+              <div class="flex flex-wrap gap-x-4 gap-y-1.5">
+                {topLangs.map((lang) => (
+                  <div class="flex items-center gap-1.5">
+                    <div class="w-2.5 h-2.5 rounded-full shrink-0" style={`background-color: ${lang.color};`} />
+                    <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">{lang.name}</span>
+                    <span class="text-xs text-slate-400 dark:text-slate-500">{lang.percent}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div class="flex flex-wrap gap-2">
               <img src="https://img.shields.io/badge/C%2FC++-00599C?style=flat-square&logo=c%2B%2B&logoColor=white" alt="C/C++" loading="lazy" />
               <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" loading="lazy" />
               <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" loading="lazy" />
@@ -231,7 +320,7 @@ const projects = [
               <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker" loading="lazy" />
               <img src="https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux" loading="lazy" />
             </div>
-          </a>
+          )}
         </div>
       </div>
     </section>
