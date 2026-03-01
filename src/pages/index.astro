@@ -3,6 +3,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
+interface ZennArticle {
+  id: number;
+  title: string;
+  slug: string;
+  emoji: string;
+  article_type: 'tech' | 'idea';
+  published_at: string;
+  liked_count: number;
+}
+
+// ビルド時に Zenn API から記事を取得
+let zennArticles: ZennArticle[] = [];
+try {
+  const res = await fetch('https://zenn.dev/api/articles?username=hironobunigo&order=latest&count=6');
+  if (res.ok) {
+    const data = await res.json();
+    zennArticles = data.articles ?? [];
+  }
+} catch {
+  // 取得失敗時はフォールバック表示
+}
+
 const skills = [
   {
     category: 'Languages',
@@ -340,24 +362,70 @@ const projects = [
           ))}
         </div>
 
-        {/* ブログリンク */}
-        <div class="mt-6">
-          <a
-            href="https://zenn.dev/hironobunigo"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200 group"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-                <span class="text-lg font-bold text-blue-600 dark:text-blue-400">Z</span>
-              </div>
-              <div>
-                <h3 class="font-bold text-slate-900 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Blog (Zenn)</h3>
-                <p class="text-slate-500 dark:text-slate-400 text-sm">技術記事を Zenn で発信しています</p>
-              </div>
+        {/* Zenn 記事一覧 */}
+        <div class="mt-10">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Blog (Zenn)</h3>
+            <a
+              href="https://zenn.dev/hironobunigo"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              すべて見る →
+            </a>
+          </div>
+
+          {zennArticles.length > 0 ? (
+            <div class="space-y-3">
+              {zennArticles.map((article) => (
+                <a
+                  href={`https://zenn.dev/hironobunigo/articles/${article.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200 group"
+                >
+                  <div class="flex-1 p-5 min-w-0">
+                    <div class="flex items-center gap-2 mb-1.5">
+                      <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${article.article_type === 'tech' ? 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30' : 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30'}`}>
+                        {article.article_type === 'tech' ? 'Tech' : 'Idea'}
+                      </span>
+                      <span class="text-xs text-slate-400 dark:text-slate-500">
+                        {new Date(article.published_at).toLocaleDateString('ja-JP')}
+                      </span>
+                      {article.liked_count > 0 && (
+                        <span class="text-xs text-slate-400 dark:text-slate-500">♥ {article.liked_count}</span>
+                      )}
+                    </div>
+                    <p class="font-semibold text-slate-900 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
+                      {article.title}
+                    </p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1.5">zenn.dev</p>
+                  </div>
+                  <div class="w-20 shrink-0 bg-slate-900 dark:bg-slate-950 flex items-center justify-center">
+                    <span class="text-3xl" role="img" aria-label="article emoji">{article.emoji}</span>
+                  </div>
+                </a>
+              ))}
             </div>
-          </a>
+          ) : (
+            <a
+              href="https://zenn.dev/hironobunigo"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200 group"
+            >
+              <div class="flex-1 p-5">
+                <p class="font-semibold text-slate-900 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  技術記事を Zenn で発信しています
+                </p>
+                <p class="text-xs text-slate-400 dark:text-slate-500 mt-1.5">zenn.dev</p>
+              </div>
+              <div class="w-20 shrink-0 bg-slate-900 dark:bg-slate-950 flex items-center justify-center">
+                <span class="text-2xl font-bold text-white">Z</span>
+              </div>
+            </a>
+          )}
         </div>
       </div>
     </section>
