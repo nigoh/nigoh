@@ -2,173 +2,308 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import PixelLogo from '../components/PixelLogo.astro';
-import PixelRobot from '../components/PixelRobot.astro';
 
 const skills = [
-  { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発' },
-  { name: 'Rust', level: 75, description: '安全で高速なシステム開発' },
-  { name: 'Python', level: 80, description: 'スクリプティング・データ処理・自動化' },
-  { name: 'Git / Linux / Docker', level: 85, description: '開発ツール・インフラストラクチャ' },
+  {
+    category: 'Languages',
+    items: [
+      { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発' },
+      { name: 'TypeScript', level: 85, description: 'Webアプリケーション・型安全な開発' },
+      { name: 'Python', level: 80, description: 'スクリプティング・データ処理・自動化' },
+      { name: 'JavaScript', level: 75, description: 'フロントエンド・プロトタイピング' },
+    ],
+  },
+  {
+    category: 'Tools & Infrastructure',
+    items: [
+      { name: 'Git', level: 90, description: 'バージョン管理・チーム開発' },
+      { name: 'Linux', level: 85, description: 'サーバー構築・シェルスクリプト' },
+      { name: 'Docker', level: 80, description: 'コンテナ化・開発環境構築' },
+    ],
+  },
+  {
+    category: 'AI Tools',
+    items: [
+      { name: 'GitHub Copilot', level: 90, description: 'AI ペアプログラミング・SWE Agent 活用' },
+      { name: 'MCP', level: 80, description: 'Model Context Protocol によるツール連携' },
+      { name: 'AI Agent 構築', level: 75, description: 'AGENTS.md / .kiro / Serena 設定' },
+    ],
+  },
 ];
 
 const timeline = [
   { year: '1984', title: 'Born', description: '北海道に生まれる' },
   { year: '2000s', title: 'Programming', description: 'プログラミングを始める。C/C++ を中心に学ぶ' },
   { year: '2010s', title: 'Career', description: 'ソフトウェアエンジニアとしてキャリアを積む' },
-  { year: '2020s', title: 'Now', description: 'Rust, Python にも領域を広げ、幅広いシステム開発に従事' },
+  { year: '2020s', title: 'Now', description: 'TypeScript, Python にも領域を広げ、AI ツールを活用した開発に従事' },
 ];
 
 const projects = [
   {
+    name: 'Focuso',
+    description: 'フォーカスタイマーアプリ。React + Zustand で構築。Copilot SWE Agent & .kiro で AI 駆動開発。',
+    url: 'https://github.com/nigoh/Timer',
+    tags: ['TypeScript', 'React', 'Zustand', 'AI: Copilot SWE Agent'],
+  },
+  {
+    name: 'QR Generator Web',
+    description: 'QRコード生成Webアプリ。Copilot + Serena による AI ペアプログラミングで開発。',
+    url: 'https://github.com/nigoh/qr-generator-web',
+    tags: ['TypeScript', 'React', 'Vite', 'AI: Copilot + Serena'],
+  },
+  {
+    name: 'stocko',
+    description: '株価情報取得ツール。OpenAI Codex & AGENTS.md を活用した AI エージェント開発。',
+    url: 'https://github.com/nigoh/stocko',
+    tags: ['JavaScript', 'HTML/CSS', 'AI: Codex + AGENTS.md'],
+  },
+  {
     name: 'nigoh',
-    description: 'このサイトのソースコード。Astro + Tailwind CSS で構築。',
+    description: 'このサイトのソースコード。Astro + Tailwind CSS で構築した個人紹介サイト。',
     url: 'https://github.com/nigoh/nigoh',
     tags: ['Astro', 'Tailwind CSS', 'TypeScript'],
   },
-];
-
-const hobbies = [
-  { name: 'Cycling', nameJa: '自転車', description: '休日は札幌近郊をロードバイクで走っています。風を切って走る時間が好きです。', emoji: '🚴' },
-  { name: 'Music', nameJa: '音楽', description: 'ジャンルを問わず幅広く聴いています。特にジャズやエレクトロニカが好き。', emoji: '🎵' },
-  { name: 'Movies', nameJa: '映画', description: 'SF 映画やドキュメンタリーをよく観ます。', emoji: '🎬' },
 ];
 ---
 
 <BaseLayout title="H.Nigo | Software Engineer">
   <Header />
 
-  <main class="pt-14">
+  <main class="pt-16">
 
     {/* ═══════════════════ Hero ═══════════════════ */}
-    <section class="min-h-screen flex items-center justify-center py-24">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* ピクセルアート ロゴ */}
-        <PixelLogo class="w-64 sm:w-80 lg:w-96 mx-auto mb-8 text-blue-400" />
-
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-10">
-          {/* アバター */}
+    <section class="py-20 sm:py-28">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row items-center gap-8">
           <div class="shrink-0">
             <img
               src="https://github.com/nigoh.png"
               alt="H.Nigo"
-              width="140"
-              height="140"
-              class="rounded-full border-4 border-blue-500/30"
+              width="120"
+              height="120"
+              class="rounded-full ring-4 ring-slate-200 dark:ring-slate-700 shadow-lg"
               loading="eager"
             />
           </div>
-
           <div class="text-center sm:text-left">
-            <p class="text-lg text-blue-400 font-mono mb-4">Software Engineer @ Sapporo</p>
-            <p class="text-zinc-400 font-sans leading-relaxed max-w-md">
-              低レイヤーからアプリケーションまで。
-              C/C++, Rust, Python を使ってものづくりをしています。
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2">
+              H.Nigo
+            </h1>
+            <p class="text-lg text-blue-600 dark:text-blue-400 font-medium mb-3">
+              Software Engineer
             </p>
+            <p class="text-slate-600 dark:text-slate-400 leading-relaxed max-w-lg">
+              低レイヤーからアプリケーションまで。C/C++, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。
+            </p>
+            <div class="mt-4">
+              <a
+                href="https://github.com/nigoh"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                </svg>
+                github.com/nigoh
+              </a>
+            </div>
           </div>
-
-          {/* ピクセルロボット騎士キャラ */}
-          <PixelRobot class="w-16 sm:w-20 shrink-0 hidden sm:block ascii-walk" />
         </div>
       </div>
     </section>
 
     {/* ═══════════════════ About ═══════════════════ */}
-    <section id="about" class="py-24 bg-surface/50">
+    <section id="about" class="py-20 bg-slate-100/50 dark:bg-slate-800/30 transition-colors duration-300">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">About</h2>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">About</h2>
 
-        <div class="grid sm:grid-cols-[auto_1fr] gap-x-8 gap-y-4 mb-8">
-          <span class="text-zinc-500 font-mono text-sm">Name</span>
-          <span class="text-zinc-200">Hironobu Nigo</span>
-          <span class="text-zinc-500 font-mono text-sm">Born</span>
-          <span class="text-zinc-200">1984</span>
-          <span class="text-zinc-500 font-mono text-sm">Location</span>
-          <span class="text-zinc-200">札幌市, 北海道, Japan</span>
-          <span class="text-zinc-500 font-mono text-sm">Role</span>
-          <span class="text-zinc-200">Software Engineer</span>
-        </div>
+        <div class="grid sm:grid-cols-2 gap-8">
+          {/* 基本情報 */}
+          <div class="bg-white dark:bg-slate-800/50 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700/60 transition-colors duration-300">
+            <dl class="space-y-4">
+              <div>
+                <dt class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Name</dt>
+                <dd class="mt-1 text-slate-900 dark:text-slate-200">Hironobu Nigo</dd>
+              </div>
+              <div>
+                <dt class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Born</dt>
+                <dd class="mt-1 text-slate-900 dark:text-slate-200">1984</dd>
+              </div>
+              <div>
+                <dt class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Location</dt>
+                <dd class="mt-1 text-slate-900 dark:text-slate-200">札幌市, 北海道, Japan</dd>
+              </div>
+              <div>
+                <dt class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Role</dt>
+                <dd class="mt-1 text-slate-900 dark:text-slate-200">Software Engineer</dd>
+              </div>
+            </dl>
+          </div>
 
-        <div class="text-zinc-300 font-sans leading-relaxed space-y-4">
-          <p>
-            1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
-            低レイヤーからアプリケーションまで、幅広い領域でのシステム開発を行っています。
-          </p>
-          <p>
-            趣味は音楽鑑賞、映画鑑賞、サイクリング。
-            休日は自転車で札幌近郊を走ったり、お気に入りのカフェでコードを書いたりしています。
-          </p>
-        </div>
-
-        {/* ピクセルロボット — くつろぎ中 */}
-        <div class="flex justify-end mt-8">
-          <PixelRobot class="w-14 ascii-bounce" />
+          {/* 自己紹介文 */}
+          <div class="text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
+            <p>
+              1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
+              低レイヤーからアプリケーションまで、AI ツールを活用した幅広い領域でのシステム開発を行っています。
+            </p>
+            <p>
+              趣味は音楽鑑賞、映画鑑賞、サイクリング。
+              休日は自転車で札幌近郊を走ったり、お気に入りのカフェでコードを書いたりしています。
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     {/* ═══════════════════ Skills ═══════════════════ */}
-    <section id="skills" class="py-24">
+    <section id="skills" class="py-20">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">Skills</h2>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Skills</h2>
 
-        <div class="space-y-6">
-          {skills.map((skill) => (
+        <div class="space-y-10">
+          {skills.map((group) => (
             <div>
-              <div class="flex justify-between items-baseline mb-2">
-                <h3 class="font-mono font-bold text-zinc-200">{skill.name}</h3>
-                <span class="text-xs text-zinc-500 font-mono">{skill.level}%</span>
+              <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">
+                {group.category}
+              </h3>
+              <div class="space-y-5">
+                {group.items.map((skill) => (
+                  <div>
+                    <div class="flex justify-between items-baseline mb-1.5">
+                      <span class="font-medium text-slate-800 dark:text-slate-200">{skill.name}</span>
+                      <span class="text-sm text-slate-500 dark:text-slate-400 font-mono">{skill.level}%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                      <div
+                        class="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 h-2.5 rounded-full transition-all duration-500"
+                        style={`width: ${skill.level}%`}
+                      />
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{skill.description}</p>
+                  </div>
+                ))}
               </div>
-              <div class="w-full bg-zinc-800 rounded-full h-3 overflow-hidden">
-                <div
-                  class="bg-blue-500 h-3 rounded-full"
-                  style={`width: ${skill.level}%`}
-                />
-              </div>
-              <p class="text-xs text-zinc-500 mt-1 font-sans">{skill.description}</p>
             </div>
           ))}
         </div>
 
         {/* GitHub Stats */}
-        <div class="mt-12 grid gap-6 sm:grid-cols-2">
-          <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer">
-            <img
-              src="https://github-readme-stats.vercel.app/api/top-langs/?username=nigoh&layout=compact&theme=transparent&hide_border=true&title_color=60a5fa&text_color=a1a1aa&bg_color=00000000"
-              alt="Top Languages"
-              class="w-full rounded-lg border border-zinc-800 bg-surface p-2"
-              loading="lazy"
-            />
-          </a>
-          <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer">
-            <img
-              src="https://github-readme-stats.vercel.app/api?username=nigoh&show_icons=true&theme=transparent&hide_border=true&title_color=60a5fa&text_color=a1a1aa&icon_color=3b82f6&bg_color=00000000"
-              alt="GitHub Stats"
-              class="w-full rounded-lg border border-zinc-800 bg-surface p-2"
-              loading="lazy"
-            />
+        <div class="mt-12">
+          <a
+            href="https://github.com/nigoh"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200"
+          >
+            <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">GitHub</h3>
+            <div class="flex flex-wrap gap-3">
+              <img src="https://img.shields.io/github/stars/nigoh?style=for-the-badge&logo=github&label=Stars&color=2563eb" alt="GitHub Stars" loading="lazy" class="h-7" />
+              <img src="https://img.shields.io/github/followers/nigoh?style=for-the-badge&logo=github&label=Followers&color=2563eb" alt="GitHub Followers" loading="lazy" class="h-7" />
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <img src="https://img.shields.io/badge/C%2FC++-00599C?style=flat-square&logo=c%2B%2B&logoColor=white" alt="C/C++" loading="lazy" />
+              <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" loading="lazy" />
+              <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" loading="lazy" />
+              <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript" loading="lazy" />
+              <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker" loading="lazy" />
+              <img src="https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux" loading="lazy" />
+            </div>
           </a>
         </div>
       </div>
     </section>
 
-    {/* ═══════════════════ Timeline ═══════════════════ */}
-    <section id="timeline" class="py-24 bg-surface/50">
+    {/* ═══════════════════ AI-Powered Development ═══════════════════ */}
+    <section id="ai" class="py-20 bg-slate-100/50 dark:bg-slate-800/30 transition-colors duration-300">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">Timeline</h2>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">AI-Powered Development</h2>
+        <p class="text-slate-600 dark:text-slate-400 mb-8">
+          AI ツールを積極的に活用し、個人開発の生産性と品質を向上させています。
+        </p>
+
+        <div class="grid gap-6 sm:grid-cols-2">
+          {/* Copilot SWE Agent */}
+          <div class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-slate-200">GitHub Copilot SWE Agent</h3>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">
+              Issue からの自動実装・PR 作成。Focuso や QR Generator Web で SWE Agent をコントリビューターとして活用。
+            </p>
+          </div>
+
+          {/* Codex */}
+          <div class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
+                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-slate-200">OpenAI Codex</h3>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">
+              AGENTS.md を活用した AI エージェント駆動開発。stocko プロジェクトで Codex によるコード生成を実践。
+            </p>
+          </div>
+
+          {/* MCP */}
+          <div class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
+                <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-slate-200">MCP (Model Context Protocol)</h3>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">
+              GitHub, Playwright, Tailwind CSS 等の MCP サーバーを活用し、AI エージェントの能力を拡張。
+            </p>
+          </div>
+
+          {/* Agent Configuration */}
+          <div class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
+                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-slate-200">Agent スキル管理</h3>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">
+              .instructions.md, AGENTS.md, .kiro, Serena 等の設定でプロジェクトごとに AI エージェントの振る舞いをカスタマイズ。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ═══════════════════ Timeline ═══════════════════ */}
+    <section id="timeline" class="py-20 transition-colors duration-300">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Timeline</h2>
 
         <div class="relative">
-          <div class="absolute left-[2.5rem] top-0 bottom-0 w-px bg-zinc-700"></div>
+          <div class="absolute left-[4.5rem] top-0 bottom-0 w-px bg-slate-300 dark:bg-slate-600"></div>
           <div class="space-y-10">
             {timeline.map((event) => (
-              <div class="relative pl-24">
-                <div class="absolute left-0 top-0 w-20 text-right">
-                  <span class="text-xl font-mono font-bold text-blue-400">{event.year}</span>
+              <div class="relative pl-28">
+                <div class="absolute left-0 top-0 w-16 text-right">
+                  <span class="text-base font-bold text-blue-600 dark:text-blue-400 font-mono">{event.year}</span>
                 </div>
-                <div class="absolute left-[2.25rem] top-1.5 w-2 h-2 rounded-full bg-blue-500 ring-4 ring-base"></div>
+                <div class="absolute left-[4.25rem] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-600 dark:bg-blue-400 ring-4 ring-slate-100 dark:ring-slate-800"></div>
                 <div>
-                  <h3 class="font-mono font-bold text-zinc-200 mb-1">{event.title}</h3>
-                  <p class="text-zinc-400 text-sm font-sans">{event.description}</p>
+                  <h3 class="font-bold text-slate-900 dark:text-slate-200 mb-1">{event.title}</h3>
+                  <p class="text-slate-600 dark:text-slate-400 text-sm">{event.description}</p>
                 </div>
               </div>
             ))}
@@ -178,25 +313,25 @@ const hobbies = [
     </section>
 
     {/* ═══════════════════ Portfolio ═══════════════════ */}
-    <section id="portfolio" class="py-24">
+    <section id="portfolio" class="py-20 bg-slate-100/50 dark:bg-slate-800/30 transition-colors duration-300">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">Portfolio</h2>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Portfolio</h2>
 
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-6 sm:grid-cols-2">
           {projects.map((project) => (
             <a
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="block bg-surface border border-zinc-800 rounded-lg p-6 hover:border-blue-500/50 transition-colors group"
+              class="block bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200 group"
             >
-              <h3 class="font-mono font-bold text-zinc-200 mb-2 group-hover:text-blue-400 transition-colors">
+              <h3 class="font-bold text-slate-900 dark:text-slate-200 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 {project.name}
               </h3>
-              <p class="text-zinc-400 text-sm font-sans mb-3">{project.description}</p>
+              <p class="text-slate-600 dark:text-slate-400 text-sm mb-4">{project.description}</p>
               <div class="flex flex-wrap gap-2">
                 {project.tags.map((tag) => (
-                  <span class="text-xs font-mono text-blue-400/70 bg-blue-500/10 px-2 py-0.5 rounded">
+                  <span class="text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-0.5 rounded-full">
                     {tag}
                   </span>
                 ))}
@@ -206,61 +341,45 @@ const hobbies = [
         </div>
 
         {/* ブログリンク */}
-        <div class="mt-8 border border-zinc-800 rounded-lg p-6 bg-surface">
-          <h3 class="font-mono font-bold text-zinc-200 mb-2">Blog</h3>
-          <p class="text-zinc-500 text-sm font-sans">準備中です。技術記事を書く予定です。</p>
-        </div>
-
-        {/* ピクセルロボット — コーディング中 */}
-        <div class="mt-8">
-          <PixelRobot class="w-14 ascii-wave" />
-        </div>
-      </div>
-    </section>
-
-    {/* ═══════════════════ Hobbies ═══════════════════ */}
-    <section id="hobbies" class="py-24 bg-surface/50">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-10">Hobbies</h2>
-
-        <div class="grid gap-6 sm:grid-cols-3">
-          {hobbies.map((hobby) => (
-            <div class="bg-base border border-zinc-800 rounded-lg p-6 hover:border-blue-500/50 transition-colors group">
-              <p class="text-3xl mb-4">{hobby.emoji}</p>
-              <h3 class="font-mono font-bold text-zinc-200 mb-1 group-hover:text-blue-400 transition-colors">
-                {hobby.name}
-              </h3>
-              <p class="text-xs font-mono text-zinc-500 mb-3">{hobby.nameJa}</p>
-              <p class="text-zinc-400 text-sm font-sans leading-relaxed">{hobby.description}</p>
+        <div class="mt-6">
+          <a
+            href="https://zenn.dev/hironobunigo"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200 group"
+          >
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                <span class="text-lg font-bold text-blue-600 dark:text-blue-400">Z</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-slate-900 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Blog (Zenn)</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm">技術記事を Zenn で発信しています</p>
+              </div>
             </div>
-          ))}
+          </a>
         </div>
       </div>
     </section>
 
     {/* ═══════════════════ Contact ═══════════════════ */}
-    <section id="contact" class="py-24">
+    <section id="contact" class="py-20 transition-colors duration-300">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-mono font-bold text-zinc-100 mb-6">Contact</h2>
-        <p class="text-zinc-400 font-sans mb-8">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">Contact</h2>
+        <p class="text-slate-600 dark:text-slate-400 mb-8">
           お仕事のご依頼やお問い合わせは、GitHub からお気軽にどうぞ。
         </p>
         <a
           href="https://github.com/nigoh"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-3 px-6 py-3 border border-blue-500 rounded-lg text-blue-400 font-mono hover:bg-blue-500/10 transition-colors"
+          class="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
         >
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
           </svg>
           github.com/nigoh
         </a>
-
-        {/* ピクセルロボット — 手を振る */}
-        <div class="mt-10">
-          <PixelRobot class="w-16 ascii-wave" />
-        </div>
       </div>
     </section>
 

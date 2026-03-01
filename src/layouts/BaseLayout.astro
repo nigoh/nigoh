@@ -6,22 +6,67 @@ interface Props {
 
 const { title, description = 'H.Nigo - 札幌在住ソフトウェアエンジニアの自己紹介サイト' } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const siteUrl = 'https://nigoh.github.io/nigoh/';
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
 <!doctype html>
-<html lang="ja">
+<html lang="ja" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <meta name="author" content="Hironobu Nigo" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content="https://github.com/nigoh.png" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:site_name" content="H.Nigo" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://github.com/nigoh.png" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Hironobu Nigo",
+      "url": siteUrl,
+      "jobTitle": "Software Engineer",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "札幌市",
+        "addressRegion": "北海道",
+        "addressCountry": "JP"
+      },
+      "sameAs": [
+        "https://github.com/nigoh",
+        "https://zenn.dev/hironobunigo"
+      ]
+    })} />
+    {/* テーマ切替スクリプト — FOUC 防止のため head 内でインライン実行 */}
+    <script is:inline>
+      (function() {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'light') {
+          document.documentElement.classList.remove('dark');
+        } else if (saved === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else if (!window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
   </head>
-  <body class="min-h-screen bg-base text-zinc-200 font-sans antialiased">
+  <body class="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans antialiased transition-colors duration-300">
     <slot />
   </body>
 </html>
