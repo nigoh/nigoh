@@ -1,6 +1,8 @@
 import { useSpring, animated } from '@react-spring/web';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
+const TRANSLATE_DISTANCE = 40;
+
 interface FadeInProps {
   children: ReactNode;
   direction?: 'up' | 'down' | 'left' | 'right' | 'none';
@@ -34,24 +36,25 @@ export default function FadeIn({
     return () => observer.disconnect();
   }, []);
 
-  const getTranslate = () => {
+  const getInitialTransform = () => {
+    const d = TRANSLATE_DISTANCE;
     switch (direction) {
       case 'up':
-        return 'translateY(40px)';
+        return `translateX(0px) translateY(${d}px)`;
       case 'down':
-        return 'translateY(-40px)';
+        return `translateX(0px) translateY(-${d}px)`;
       case 'left':
-        return 'translateX(40px)';
+        return `translateX(${d}px) translateY(0px)`;
       case 'right':
-        return 'translateX(-40px)';
+        return `translateX(-${d}px) translateY(0px)`;
       case 'none':
-        return 'translateY(0px)';
+        return 'translateX(0px) translateY(0px)';
     }
   };
 
   const spring = useSpring({
     opacity: isVisible ? 1 : 0,
-    transform: isVisible ? 'translateY(0px) translateX(0px)' : getTranslate(),
+    transform: isVisible ? 'translateX(0px) translateY(0px)' : getInitialTransform(),
     delay,
     config: { tension: 120, friction: 14 },
   });

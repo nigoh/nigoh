@@ -1,6 +1,8 @@
 import { useTrail, animated, useSpring } from '@react-spring/web';
 import { useEffect, useState } from 'react';
 
+const INITIAL_AVATAR_ROTATION = -6;
+
 interface AnimatedHeroProps {
   name: string;
   role: string;
@@ -38,7 +40,7 @@ export default function AnimatedHero({
 
   const avatarSpring = useSpring({
     opacity: ready ? 1 : 0,
-    transform: ready ? 'scale(1) rotate(0deg)' : 'scale(0.8) rotate(-6deg)',
+    transform: ready ? 'scale(1) rotate(0deg)' : `scale(0.8) rotate(${INITIAL_AVATAR_ROTATION}deg)`,
     config: { tension: 100, friction: 12 },
     delay: 500,
   });
