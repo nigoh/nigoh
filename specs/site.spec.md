@@ -13,7 +13,7 @@ H.Nigo（Hironobu Nigo）の個人自己紹介・履歴書・スキル表サイ�
 ## ページ構成
 | ページ | パス | 説明 |
 |--------|------|------|
-| トップ | `/` | Hero + About + Skills + AI + Timeline + Portfolio + Contact |
+| トップ | `/` | Hero + About + Skills + AI + Career + Portfolio + Contact |
 
 ## デザイン方針
 - **テーマ**: ロシア構成主義（エル・リシツキー「About Two Squares」1922 年にインスパイア）

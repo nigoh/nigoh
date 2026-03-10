@@ -1,8 +1,6 @@
 import { useTrail, animated, useSpring } from '@react-spring/web';
 import { useEffect, useState } from 'react';
 
-const INITIAL_AVATAR_ROTATION = -6;
-
 interface AnimatedHeroProps {
   name: string;
   role: string;
@@ -24,95 +22,194 @@ export default function AnimatedHero({
     setReady(true);
   }, []);
 
-  const items = [
-    { key: 'name' },
-    { key: 'role' },
-    { key: 'desc' },
-    { key: 'link' },
-  ];
-
-  const trail = useTrail(items.length, {
+  // テキストブロック — 左からスライドイン
+  const trail = useTrail(6, {
     opacity: ready ? 1 : 0,
-    transform: ready ? 'translateY(0px)' : 'translateY(30px)',
-    config: { tension: 120, friction: 14 },
-    delay: 200,
+    transform: ready ? 'translateX(0px)' : 'translateX(-40px)',
+    config: { tension: 100, friction: 18 },
+    delay: 100,
   });
 
+  // 赤い大ブロック（Proun背景）
+  const redBlockSpring = useSpring({
+    opacity: ready ? 1 : 0,
+    transform: ready ? 'scale(1) rotate(-6deg)' : 'scale(0.5) rotate(-30deg)',
+    config: { tension: 70, friction: 14 },
+    delay: 900,
+  });
+
+  // 黒い小ブロック
+  const blackBlockSpring = useSpring({
+    opacity: ready ? 0.9 : 0,
+    transform: ready ? 'translate(0px,0px) rotate(12deg)' : 'translate(-30px,30px) rotate(50deg)',
+    config: { tension: 80, friction: 16 },
+    delay: 1100,
+  });
+
+  // 輪郭円
+  const circleOpacity = useSpring({
+    opacity: ready ? 0.25 : 0,
+    config: { tension: 60, friction: 14 },
+    delay: 1300,
+  });
+
+  // アバター
   const avatarSpring = useSpring({
     opacity: ready ? 1 : 0,
-    transform: ready ? 'scale(1) rotate(0deg)' : `scale(0.8) rotate(${INITIAL_AVATAR_ROTATION}deg)`,
-    config: { tension: 100, friction: 12 },
-    delay: 500,
+    transform: ready ? 'scale(1)' : 'scale(0.7)',
+    config: { tension: 90, friction: 14 },
+    delay: 600,
   });
 
-  const decorSpring = useSpring({
-    opacity: ready ? 0.3 : 0,
-    transform: ready ? 'translate(0px, 0px)' : 'translate(16px, 16px)',
-    config: { tension: 80, friction: 14 },
-    delay: 700,
+  // 下部区切り線
+  const ruleSpring = useSpring({
+    opacity: ready ? 0.2 : 0,
+    config: { tension: 60, friction: 14 },
+    delay: 1500,
   });
 
   return (
-    <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-      <div className="flex flex-col md:flex-row items-start gap-8 md:gap-16">
+    <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16">
+
+      {/* Proun的な幾何学コンポジション — 右上 */}
+      <div className="absolute top-0 right-0 w-80 h-80 pointer-events-none" aria-hidden="true">
+        <animated.div
+          style={redBlockSpring}
+          className="absolute top-8 right-8 w-52 h-52 bg-constructivist-red origin-center"
+        />
+        <animated.div
+          style={blackBlockSpring}
+          className="absolute top-24 right-20 w-24 h-24 bg-constructivist-black origin-center"
+        />
+        <animated.div
+          style={circleOpacity}
+          className="absolute top-4 right-4 w-40 h-40 rounded-full border-4 border-constructivist-cream"
+        />
+      </div>
+
+      <div className="flex flex-col md:flex-row items-start gap-0 md:gap-20">
+
         {/* テキストブロック */}
-        <div className="flex-1">
-          <animated.h1
-            style={trail[0]}
-            className="font-sans text-7xl sm:text-8xl lg:text-9xl text-constructivist-cream tracking-tight leading-none mb-4"
-          >
-            {name}
-          </animated.h1>
-          <animated.div style={trail[1]} className="inline-block bg-constructivist-red px-4 py-2 mb-8">
-            <p className="font-sans text-xl sm:text-2xl text-constructivist-cream tracking-widest">
-              {role}
-            </p>
+        <div className="flex-1 relative">
+
+          {/* 小ラベル — 赤い横線 + キャプション */}
+          <animated.div style={trail[0]} className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-0.5 bg-constructivist-red" />
+            <span className="font-body text-xs text-constructivist-red tracking-[0.3em] uppercase">
+              Software Engineer — Sapporo, Japan
+            </span>
           </animated.div>
+
+          {/* 名前 — 極大 */}
+          <animated.div style={trail[1]} className="relative">
+            {/* 背景の薄い番号（Lissitzky的装飾） */}
+            <div
+              className="absolute -left-2 -top-6 font-sans text-[9rem] text-constructivist-red leading-none select-none pointer-events-none"
+              style={{ opacity: 0.05 }}
+              aria-hidden="true"
+            >
+              01
+            </div>
+            <h1 className="font-sans text-[5.5rem] sm:text-[8rem] lg:text-[10rem] text-constructivist-cream tracking-tighter leading-none relative z-10">
+              {name}
+            </h1>
+          </animated.div>
+
+          {/* ROLE — 楔 + 赤帯 */}
+          <animated.div style={trail[2]} className="flex items-center gap-0 my-6">
+            <div
+              className="shrink-0"
+              style={{
+                width: 0,
+                height: 0,
+                borderTop: '22px solid transparent',
+                borderBottom: '22px solid transparent',
+                borderLeft: '30px solid #D62828',
+              }}
+              aria-hidden="true"
+            />
+            <div className="bg-constructivist-red px-6 py-3">
+              <p className="font-sans text-xl sm:text-2xl text-constructivist-cream tracking-[0.2em]">
+                {role}
+              </p>
+            </div>
+          </animated.div>
+
+          {/* ルール線 */}
+          <animated.div
+            style={{ opacity: trail[3].opacity.to((o) => o * 0.15) }}
+            className="w-full h-px bg-constructivist-cream mb-6"
+            aria-hidden="true"
+          />
+
+          {/* 説明文 — 左ボーダー付き */}
           <animated.p
-            style={trail[2]}
-            className="text-constructivist-gray text-base sm:text-lg leading-relaxed max-w-lg font-body"
+            style={trail[4]}
+            className="text-constructivist-gray text-base sm:text-lg leading-relaxed max-w-md font-body border-l-2 border-constructivist-red pl-4"
           >
             {description}
           </animated.p>
-          <animated.div style={trail[3]} className="mt-8">
+
+          {/* リンク — 楔矢印 */}
+          <animated.div style={trail[5]} className="mt-10">
             <a
               href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 text-constructivist-cream hover:text-constructivist-red transition-colors font-body text-sm tracking-wider"
+              className="group inline-flex items-center gap-0"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fillRule="evenodd"
-                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              GITHUB.COM/NIGOH
+              <div
+                className="shrink-0 group-hover:opacity-70 transition-opacity"
+                style={{
+                  width: 0,
+                  height: 0,
+                  borderTop: '9px solid transparent',
+                  borderBottom: '9px solid transparent',
+                  borderLeft: '15px solid #D62828',
+                }}
+                aria-hidden="true"
+              />
+              <span className="font-sans text-base text-constructivist-cream tracking-widest pl-3 group-hover:text-constructivist-red transition-colors">
+                GITHUB.COM/NIGOH
+              </span>
             </a>
           </animated.div>
         </div>
 
-        {/* 幾何学的アバター */}
-        <div className="shrink-0 relative">
-          <animated.div style={avatarSpring} className="w-40 h-40 sm:w-52 sm:h-52 bg-constructivist-red p-1">
+        {/* アバター — 多重フレーム構成 */}
+        <div className="shrink-0 relative mt-8 md:mt-20">
+          {/* 後ろの黒い正方形（ズレた影） */}
+          <div className="absolute top-5 left-5 w-44 h-44 sm:w-56 sm:h-56 bg-constructivist-black" aria-hidden="true" />
+          {/* 赤い細枠（ズレ） */}
+          <div className="absolute -top-3 -right-3 w-44 h-44 sm:w-56 sm:h-56 border-4 border-constructivist-red" aria-hidden="true" />
+          {/* 本体 */}
+          <animated.div style={avatarSpring} className="relative w-44 h-44 sm:w-56 sm:h-56 z-10">
             <img
               src={avatarUrl}
               alt={name}
-              width="200"
-              height="200"
-              className="w-full h-full object-cover grayscale contrast-125"
+              width="224"
+              height="224"
+              className="w-full h-full object-cover grayscale contrast-[1.3] brightness-90"
               loading="eager"
             />
+            {/* 名前プレート — 赤帯 */}
+            <div className="absolute bottom-0 left-0 right-0 bg-constructivist-red py-1.5 px-3">
+              <p className="font-sans text-xs text-constructivist-cream tracking-widest">H.NIGO / 1984</p>
+            </div>
           </animated.div>
-          {/* 装飾的な正方形 */}
-          <animated.div
-            style={decorSpring}
-            className="absolute -bottom-4 -right-4 w-40 h-40 sm:w-52 sm:h-52 border-2 border-constructivist-cream"
-            aria-hidden="true"
-          />
         </div>
       </div>
+
+      {/* 下部の区切り装飾 */}
+      <animated.div
+        style={ruleSpring}
+        className="mt-12 flex items-center gap-4"
+        aria-hidden="true"
+      >
+        <div className="h-px flex-1 bg-constructivist-cream" />
+        <div className="w-3 h-3 bg-constructivist-red rotate-45 shrink-0" />
+        <div className="h-px w-20 bg-constructivist-red" />
+      </animated.div>
     </div>
   );
 }

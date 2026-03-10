@@ -4,8 +4,8 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import AnimatedHero from '../components/AnimatedHero';
 import AnimatedSkillBar from '../components/AnimatedSkillBar';
-import AnimatedTimeline from '../components/AnimatedTimeline';
 import FadeIn from '../components/FadeIn';
+import ParallaxDecorations from '../components/ParallaxDecorations';
 
 interface ZennArticle {
   id: number;
@@ -79,35 +79,99 @@ const skills = [
   {
     category: 'LANGUAGES',
     items: [
-      { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発' },
-      { name: 'TypeScript', level: 85, description: 'Webアプリケーション・型安全な開発' },
-      { name: 'Python', level: 80, description: 'スクリプティング・データ処理・自動化' },
-      { name: 'JavaScript', level: 75, description: 'フロントエンド・プロトタイピング' },
+      { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発（8年以上）' },
+      { name: 'Python', level: 65, description: 'スクリプティング・データ処理・自動化（約2年）' },
+      { name: 'Java', level: 60, description: 'オブジェクト指向設計・バックエンド開発（約2年）' },
+      { name: 'TypeScript', level: 70, description: '個人開発中心 — Webアプリ・型安全な実装' },
+      { name: 'JavaScript', level: 50, description: 'フロントエンド・プロトタイピング（約1年）' },
+    ],
+  },
+  {
+    category: 'FRAMEWORKS',
+    items: [
+      { name: 'MFC — Windows GUI', level: 70, description: 'Windows デスクトップアプリケーション開発（約3年）' },
+      { name: 'React', level: 65, description: '個人開発中心 — UI 構築・Zustand 連携' },
+      { name: 'Astro', level: 60, description: '個人開発中心 — 静的サイトジェネレーター' },
+    ],
+  },
+  {
+    category: 'OS',
+    items: [
+      { name: 'Windows', level: 90, description: 'デスクトップ・組み込みシステム開発（8年以上）' },
+      { name: 'Linux / Ubuntu / Yocto', level: 65, description: 'サーバー・組み込み Linux（約2年）' },
+    ],
+  },
+  {
+    category: 'DATABASE',
+    items: [
+      { name: 'PostgreSQL', level: 70, description: 'RDB 設計・クエリ最適化（約3年）' },
+      { name: 'Oracle', level: 60, description: 'エンタープライズ DB（約2年）' },
+      { name: 'MongoDB', level: 40, description: 'ドキュメント指向 DB（約6ヶ月）' },
     ],
   },
   {
     category: 'TOOLS & INFRASTRUCTURE',
     items: [
-      { name: 'Git', level: 90, description: 'バージョン管理・チーム開発' },
-      { name: 'Linux', level: 85, description: 'サーバー構築・シェルスクリプト' },
-      { name: 'Docker', level: 80, description: 'コンテナ化・開発環境構築' },
+      { name: 'Git', level: 85, description: 'バージョン管理・ブランチ戦略・チーム開発（約6年）' },
+      { name: 'GitLab', level: 80, description: 'CI/CD・MR フロー整備（約5年）' },
+      { name: 'VS Code', level: 75, description: 'メインエディタ・拡張機能活用（約4年）' },
+      { name: 'Docker', level: 75, description: 'コンテナ化・開発環境標準化（約4年）' },
+      { name: 'AWS S3 / Kinesis', level: 50, description: 'クラウドストレージ・ストリームデータ処理（約1年）' },
     ],
   },
   {
-    category: 'AI TOOLS',
+    category: 'AI TOOLS — 個人開発',
     items: [
-      { name: 'GitHub Copilot', level: 90, description: 'AI ペアプログラミング・SWE Agent 活用' },
-      { name: 'MCP', level: 80, description: 'Model Context Protocol によるツール連携' },
-      { name: 'AI Agent 構築', level: 75, description: 'AGENTS.md / .kiro / Serena 設定' },
+      { name: 'GitHub Copilot', level: 90, description: 'AI ペアプログラミング・SWE Agent による Issue → PR 自動化' },
+      { name: 'MCP', level: 80, description: 'GitHub / Playwright / Tailwind 等の MCP サーバーでエージェント能力を拡張' },
+      { name: 'AI Agent 構築', level: 75, description: 'AGENTS.md / .kiro / .instructions.md でプロジェクト別 AI 挙動をカスタマイズ' },
     ],
   },
 ];
 
-const timeline = [
-  { year: '1984', title: 'BORN', description: '北海道に生まれる' },
-  { year: '2000s', title: 'PROGRAMMING', description: 'プログラミングを始める。C/C++ を中心に学ぶ' },
-  { year: '2010s', title: 'CAREER', description: 'ソフトウェアエンジニアとしてキャリアを積む' },
-  { year: '2020s', title: 'NOW', description: 'TypeScript, Python にも領域を広げ、AI ツールを活用した開発に従事' },
+const career = [
+  {
+    year: '2025',
+    period: '直近〜現在（約1年）',
+    industry: '組み込み制御（改札機コアシステム）',
+    phase: '詳細設計・実装・試験',
+    techs: ['C', 'Linux (Yocto)', 'Make'],
+  },
+  {
+    year: '2022',
+    period: '2022、2025（約3年）',
+    industry: '組み込み制御（改札機制御システム）',
+    phase: '要件定義〜マネジメント（サブリーダー）',
+    techs: ['C++', 'MFC', 'Git', 'Docker'],
+  },
+  {
+    year: '2021',
+    period: '2021～2022（約1年）',
+    industry: '車載地図データツール',
+    phase: '設計・実装・マネジメント',
+    techs: ['C++', 'Oracle', 'VS Code'],
+  },
+  {
+    year: '2020',
+    period: '2020～2021（約1年）',
+    industry: '車載地図データ変換ツール',
+    phase: '設計〜インフラ構築',
+    techs: ['Java', 'C++', 'PostgreSQL', 'AWS'],
+  },
+  {
+    year: '2018',
+    period: '2018～2020（約2年）',
+    industry: '車載地図データツール（サブリーダー）',
+    phase: '設計・実装・マネジメント',
+    techs: ['C++', 'Python', 'PostgreSQL'],
+  },
+  {
+    year: '2016',
+    period: '2016～2018（約1年半）',
+    industry: '自動運転用3D地図・試作モジュール開発',
+    phase: '詳細設計・実装・試験',
+    techs: ['C++11', 'Java', 'Python', 'MongoDB'],
+  },
 ];
 
 const projects = [
@@ -147,17 +211,21 @@ const projects = [
     <section class="relative overflow-hidden bg-constructivist-black min-h-[90vh] flex items-center">
       {/* 幾何学的背景装飾 */}
       <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-        {/* 大きな赤い正方形 — 斜め配置 */}
-        <div class="absolute -top-20 -right-20 w-80 h-80 bg-constructivist-red transform rotate-12 opacity-90"></div>
-        {/* 小さな正方形 */}
-        <div class="absolute bottom-20 left-10 w-16 h-16 bg-constructivist-red transform -rotate-6"></div>
-        {/* 円 */}
-        <div class="absolute top-1/3 right-1/4 w-40 h-40 rounded-full border-4 border-constructivist-cream opacity-20"></div>
-        {/* 斜線 */}
-        <div class="absolute top-0 left-1/3 w-1 h-full bg-constructivist-cream opacity-10 transform rotate-12 origin-top"></div>
-        <div class="absolute bottom-0 right-1/3 w-1 h-2/3 bg-constructivist-red opacity-30 transform -rotate-6 origin-bottom"></div>
-        {/* 小さな黒い正方形（ライトモード対比） */}
-        <div class="absolute bottom-40 right-20 w-8 h-8 bg-constructivist-cream opacity-15 transform rotate-45"></div>
+        <ParallaxDecorations
+          client:only="react"
+          shapes={[
+            { className: "absolute -top-16 -right-16 w-72 h-72 bg-constructivist-red opacity-80", rotate: 0, speed: -0.12 },
+            { className: "absolute -top-16 -right-16 w-48 h-48 bg-constructivist-black opacity-70", rotate: 0, speed: -0.20 },
+            { className: "absolute -top-8 -right-8 w-36 h-36 rounded-full border-4 border-constructivist-cream opacity-25", speed: -0.08 },
+            { className: "absolute top-0 left-1/3 w-px h-full bg-constructivist-cream opacity-8", rotate: 12, speed: -0.06 },
+            { className: "absolute top-0 left-1/2 w-px h-full bg-constructivist-red opacity-10", rotate: -8, speed: 0.07 },
+            { className: "absolute top-1/4 right-1/3 w-20 h-20 bg-constructivist-red opacity-20", rotate: 30, speed: 0.14 },
+            { className: "absolute top-1/3 right-1/4 w-10 h-10 bg-constructivist-black opacity-30", rotate: -20, speed: -0.18 },
+            { className: "absolute top-2/3 left-1/5 w-28 h-28 border-4 border-constructivist-red opacity-15", rotate: 15, speed: 0.10 },
+            { className: "absolute bottom-20 right-10 w-6 h-6 bg-constructivist-red opacity-50", rotate: 45, speed: 0.22 },
+            { className: "absolute bottom-1/3 left-1/3 w-3 h-3 bg-constructivist-cream opacity-40", rotate: 30, speed: -0.15 },
+          ]}
+        />
       </div>
 
       <AnimatedHero
@@ -172,12 +240,21 @@ const projects = [
 
     {/* ═══════════════════ About ═══════════════════ */}
     <section id="about" class="relative py-20 overflow-hidden">
-      {/* 装飾 — 赤い縦バー */}
-      <div class="absolute top-0 left-0 w-2 h-full bg-constructivist-red" aria-hidden="true"></div>
+      {/* 装飾 */}
+      <ParallaxDecorations
+        client:only="react"
+        shapes={[
+          { className: "absolute top-0 left-0 w-2 h-full bg-constructivist-red pointer-events-none", speed: -0.05 },
+          { className: "absolute top-10 -right-20 w-72 h-72 rounded-full border-4 border-constructivist-black opacity-5 pointer-events-none", speed: -0.10 },
+          { className: "absolute bottom-20 right-10 w-10 h-10 border-2 border-constructivist-black opacity-20 pointer-events-none", rotate: 20, speed: 0.15 },
+          { className: "absolute top-1/3 right-32 w-px h-48 bg-constructivist-black opacity-10 pointer-events-none", rotate: 30, speed: -0.08 },
+        ]}
+      />
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn client:visible direction="left">
-          <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-black tracking-tight mb-12">ABOUT</h2>
+          <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-black tracking-tight mb-3">ABOUT</h2>
+          <p class="text-constructivist-darkgray mb-12 font-body">既存を活かす設計と、変化に強い実装を重視するエンジニア。</p>
         </FadeIn>
 
         <div class="grid md:grid-cols-2 gap-12">
@@ -210,11 +287,18 @@ const projects = [
             <div class="text-constructivist-darkgray leading-relaxed space-y-4 font-body">
               <p>
                 1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
-                低レイヤーからアプリケーションまで、AI ツールを活用した幅広い領域でのシステム開発を行っています。
+                低レイヤーからアプリケーションまで、幅広い領域でのシステム開発を行っています。
+                主に C/C++, TypeScript, Python を使用し、AI ツールを活用し個人開発も行っています。
+              </p>
+              <p>
+                C++ / C / Java を中心にオブジェクト指向設計を実践してきました。
+                変更容易性と関心の分離を意識した設計・実装を重視し、後進への技術指導も対応可能です。
+                Git / GitLab を活用したチーム開発フロー整備の経験もあります。
               </p>
               <p>
                 趣味は音楽鑑賞、映画鑑賞、サイクリング。
-                休日は自転車で札幌近郊を走ったり、お気に入りのカフェでコードを書いたりしています。
+                好きなアーティストは、チャーリーパーカー
+                休日は自転車で札幌近郊を走ったり、読書をしたりしています。
               </p>
             </div>
           </FadeIn>
@@ -225,8 +309,16 @@ const projects = [
     {/* ═══════════════════ Skills ═══════════════════ */}
     <section id="skills" class="relative py-20 bg-constructivist-black overflow-hidden">
       {/* 装飾的幾何学図形 */}
-      <div class="absolute top-10 right-10 w-24 h-24 border-4 border-constructivist-red opacity-40 transform rotate-45" aria-hidden="true"></div>
-      <div class="absolute bottom-20 left-20 w-12 h-12 bg-constructivist-red opacity-30 transform -rotate-12" aria-hidden="true"></div>
+      <ParallaxDecorations
+        client:only="react"
+        shapes={[
+          { className: "absolute top-10 right-10 w-24 h-24 border-4 border-constructivist-red opacity-40 pointer-events-none", rotate: 45, speed: -0.15 },
+          { className: "absolute bottom-20 left-20 w-12 h-12 bg-constructivist-red opacity-30 pointer-events-none", rotate: -12, speed: 0.20 },
+          { className: "absolute -bottom-16 -right-16 w-80 h-80 rounded-full border-8 border-constructivist-red opacity-10 pointer-events-none", speed: 0.08 },
+          { className: "absolute top-1/2 left-0 w-1/3 h-px bg-constructivist-cream opacity-10 pointer-events-none", rotate: -8, speed: -0.06 },
+          { className: "absolute top-24 right-1/3 w-6 h-6 bg-constructivist-cream opacity-10 pointer-events-none", rotate: 25, speed: 0.18 },
+        ]}
+      />
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn client:visible direction="left">
@@ -238,7 +330,7 @@ const projects = [
         {/* GitHub Activity */}
         <div class="mt-16 border-l-4 border-constructivist-red pl-6">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xs font-bold text-constructivist-red uppercase tracking-widest font-body">GITHUB ACTIVITY</h3>
+            <h3 class="text-xs font-bold text-constructivist-red uppercase tracking-widest font-body">GITHUB ACTIVITY — 個人開発</h3>
             <a
               href="https://github.com/nigoh"
               target="_blank"
@@ -271,7 +363,7 @@ const projects = [
           {/* 言語分布グラフ */}
           {topLangs.length > 0 ? (
             <div>
-              <p class="text-xs text-constructivist-gray mb-2 font-body">LANGUAGE DISTRIBUTION</p>
+              <p class="text-xs text-constructivist-gray mb-2 font-body">LANGUAGE DISTRIBUTION (個人開発リポジトリより)</p>
               <div class="flex h-3 overflow-hidden mb-3">
                 {topLangs.map((lang) => (
                   <div
@@ -306,14 +398,25 @@ const projects = [
 
     {/* ═══════════════════ AI-Powered Development ═══════════════════ */}
     <section id="ai" class="relative py-20 overflow-hidden">
-      {/* 装飾 — 斜めストライプ */}
-      <div class="absolute -top-10 right-0 w-40 h-40 bg-constructivist-red transform rotate-45 opacity-10" aria-hidden="true"></div>
+      {/* 装飾 */}
+      <ParallaxDecorations
+        client:only="react"
+        shapes={[
+          { className: "absolute -top-10 right-0 w-40 h-40 bg-constructivist-red opacity-10 pointer-events-none", rotate: 45, speed: -0.10 },
+          { className: "absolute -bottom-10 -left-10 w-60 h-60 rounded-full border-4 border-constructivist-black opacity-5 pointer-events-none", speed: 0.12 },
+          { className: "absolute top-0 right-32 w-px h-full bg-constructivist-black opacity-10 pointer-events-none", rotate: 5, speed: -0.07 },
+          { className: "absolute bottom-20 left-10 w-8 h-8 bg-constructivist-red opacity-20 pointer-events-none", rotate: 15, speed: 0.20 },
+        ]}
+      />
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn client:visible direction="left">
           <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-black tracking-tight mb-3">AI-POWERED DEV</h2>
-          <p class="text-constructivist-darkgray mb-12 font-body">
-            AI ツールを積極的に活用し、個人開発の生産性と品質を向上させています。
+          <p class="text-constructivist-darkgray mb-2 font-body">
+            GitHub Copilot・OpenAI Codex・MCP を活用し、個人開発のすべての工程を AI と協働しています。
+          </p>
+          <p class="text-constructivist-darkgray mb-12 font-body text-sm">
+            Issue 起票から実装・PR・レビューまで AI ドリブンで回すワークフローを実践中。
           </p>
         </FadeIn>
 
@@ -335,7 +438,7 @@ const projects = [
           </div>
 
           {/* Codex */}
-          <div class="border-2 border-constructivist-black border-l-0 sm:border-l-0 border-t-0 sm:border-t-2 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
+          <div class="border-2 border-constructivist-black border-t-0 sm:border-t-2 sm:border-l-0 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
             <div class="flex items-center gap-3 mb-3">
               <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
                 <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -365,7 +468,7 @@ const projects = [
           </div>
 
           {/* Agent Configuration */}
-          <div class="border-2 border-constructivist-black border-t-0 border-l-0 sm:border-l-0 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
+          <div class="border-2 border-constructivist-black border-t-0 sm:border-l-0 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
             <div class="flex items-center gap-3 mb-3">
               <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
                 <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -381,27 +484,89 @@ const projects = [
           </div>
         </div>
         </FadeIn>
+
+        {/* INTEREST & FOCUS */}
+        <FadeIn client:visible direction="up" delay={300}>
+          <div class="mt-16 border-l-4 border-constructivist-red pl-6">
+            <h3 class="text-xs font-bold text-constructivist-red uppercase tracking-widest mb-6 font-body">INTEREST & FOCUS</h3>
+            <div class="grid sm:grid-cols-3 gap-0">
+              <div class="border-2 border-constructivist-cream p-5">
+                <h4 class="font-sans text-base tracking-wide text-constructivist-cream mb-2">RAG / AI 意思決定支援</h4>
+                <p class="text-constructivist-gray text-sm font-body">生成 AI を用いた RAG（検索拡張生成）による意思決定支援アプリの開発に強い関心を持ち、個人開発で実践中。</p>
+              </div>
+              <div class="border-2 border-constructivist-cream border-t-0 sm:border-t-2 sm:border-l-0 p-5">
+                <h4 class="font-sans text-base tracking-wide text-constructivist-cream mb-2">開発フロー整備</h4>
+                <p class="text-constructivist-gray text-sm font-body">Docker による環境標準化・Git/GitLab を活用したチーム開発フロー設計・CI/CD パイプライン構築。</p>
+              </div>
+              <div class="border-2 border-constructivist-cream border-t-0 sm:border-l-0 p-5">
+                <h4 class="font-sans text-base tracking-wide text-constructivist-cream mb-2">技術普及・後進育成</h4>
+                <p class="text-constructivist-gray text-sm font-body">チームへの技術指導・コードレビュー文化の醸成。AI ツールを活用した生産性向上の横展開。</p>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </section>
 
-    {/* ═══════════════════ Timeline ═══════════════════ */}
-    <section id="timeline" class="relative py-20 bg-constructivist-black overflow-hidden">
-      {/* 装飾 — 大きな円 */}
-      <div class="absolute -bottom-20 -left-20 w-60 h-60 rounded-full border-8 border-constructivist-red opacity-20" aria-hidden="true"></div>
+    {/* ═══════════════════ Career ═══════════════════ */}
+    <section id="career" class="relative py-20 bg-constructivist-black overflow-hidden">
+      {/* 装飾 */}
+      <ParallaxDecorations
+        client:only="react"
+        shapes={[
+          { className: "absolute -bottom-20 -left-20 w-60 h-60 rounded-full border-8 border-constructivist-red opacity-20 pointer-events-none", speed: 0.08 },
+          { className: "absolute top-10 right-10 w-14 h-14 bg-constructivist-red opacity-25 pointer-events-none", rotate: 20, speed: -0.12 },
+          { className: "absolute top-0 right-1/4 w-px h-full bg-constructivist-cream opacity-10 pointer-events-none", rotate: 8, speed: -0.06 },
+          { className: "absolute top-1/3 -right-8 w-36 h-36 border-4 border-constructivist-cream opacity-10 pointer-events-none", rotate: 15, speed: -0.10 },
+        ]}
+      />
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn client:visible direction="left">
-          <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-cream tracking-tight mb-12">TIMELINE</h2>
+          <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-cream tracking-tight mb-3">CAREER</h2>
+          <p class="text-constructivist-gray mb-12 font-body text-sm">
+            ⚠️ クライアント名・案件番号・具体的な期間は非掲載。業種・技術領域のみ記載。
+          </p>
         </FadeIn>
 
-        <AnimatedTimeline client:visible events={timeline} />
+        <FadeIn client:visible direction="up" delay={200}>
+          <div class="relative">
+            {/* 縦ライン */}
+            <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-constructivist-red" />
+            <div class="space-y-10">
+              {career.map((item) => (
+                <div class="relative pl-14">
+                  {/* ダイヤモンドマーカー */}
+                  <div class="absolute left-[15px] top-[10px] w-3 h-3 bg-constructivist-red rotate-45" />
+                  <span class="font-sans text-2xl text-constructivist-red leading-none block mb-1">{item.year}</span>
+                  <p class="text-xs text-constructivist-gray font-body mb-1">{item.period}</p>
+                  <h3 class="font-sans text-lg text-constructivist-cream tracking-wide mb-1">{item.industry}</h3>
+                  <p class="text-sm text-constructivist-gray font-body mb-2">{item.phase}</p>
+                  <div class="flex flex-wrap gap-2">
+                    {item.techs.map((tech) => (
+                      <span class="text-xs font-bold text-constructivist-black bg-constructivist-cream px-2 py-0.5 font-body tracking-wide">{tech}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </section>
 
     {/* ═══════════════════ Portfolio ═══════════════════ */}
     <section id="portfolio" class="relative py-20 overflow-hidden">
       {/* 装飾 */}
-      <div class="absolute top-0 right-0 w-2 h-full bg-constructivist-red" aria-hidden="true"></div>
+      <ParallaxDecorations
+        client:only="react"
+        shapes={[
+          { className: "absolute top-0 right-0 w-2 h-full bg-constructivist-red pointer-events-none", speed: -0.05 },
+          { className: "absolute -top-20 -left-20 w-80 h-80 rounded-full border-4 border-constructivist-black opacity-5 pointer-events-none", speed: 0.10 },
+          { className: "absolute bottom-10 right-20 w-12 h-12 bg-constructivist-red opacity-20 pointer-events-none", rotate: -15, speed: 0.18 },
+          { className: "absolute bottom-1/3 left-20 w-px h-40 bg-constructivist-black opacity-10 pointer-events-none", rotate: 20, speed: -0.08 },
+        ]}
+      />
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn client:visible direction="left">
@@ -410,12 +575,17 @@ const projects = [
 
         <FadeIn client:visible direction="up" delay={200}>
           <div class="grid gap-0 sm:grid-cols-2">
-          {projects.map((project) => (
+          {projects.map((project, i) => (
             <a
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="block border-2 border-constructivist-black p-6 hover:bg-constructivist-red hover:border-constructivist-red transition-all duration-200 group [&:nth-child(even)]:border-l-0 sm:[&:nth-child(even)]:border-l-0 [&:nth-child(n+3)]:border-t-0"
+              class:list={[
+                "block border-2 border-constructivist-black p-6 hover:bg-constructivist-red hover:border-constructivist-red transition-all duration-200 group",
+                { "border-t-0": i > 0 },
+                { "sm:border-t-2": i === 1 },
+                { "sm:border-l-0": i % 2 === 1 },
+              ]}
             >
               <h3 class="font-sans text-2xl text-constructivist-black group-hover:text-constructivist-cream mb-3 tracking-wide">
                 {project.name}
