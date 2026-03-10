@@ -73,7 +73,7 @@ try {
 
 const skills = [
   {
-    category: 'Languages',
+    category: 'LANGUAGES',
     items: [
       { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発' },
       { name: 'TypeScript', level: 85, description: 'Webアプリケーション・型安全な開発' },
@@ -82,7 +82,7 @@ const skills = [
     ],
   },
   {
-    category: 'Tools & Infrastructure',
+    category: 'TOOLS & INFRASTRUCTURE',
     items: [
       { name: 'Git', level: 90, description: 'バージョン管理・チーム開発' },
       { name: 'Linux', level: 85, description: 'サーバー構築・シェルスクリプト' },
@@ -90,7 +90,7 @@ const skills = [
     ],
   },
   {
-    category: 'AI Tools',
+    category: 'AI TOOLS',
     items: [
       { name: 'GitHub Copilot', level: 90, description: 'AI ペアプログラミング・SWE Agent 活用' },
       { name: 'MCP', level: 80, description: 'Model Context Protocol によるツール連携' },
@@ -100,33 +100,33 @@ const skills = [
 ];
 
 const timeline = [
-  { year: '1984', title: 'Born', description: '北海道に生まれる' },
-  { year: '2000s', title: 'Programming', description: 'プログラミングを始める。C/C++ を中心に学ぶ' },
-  { year: '2010s', title: 'Career', description: 'ソフトウェアエンジニアとしてキャリアを積む' },
-  { year: '2020s', title: 'Now', description: 'TypeScript, Python にも領域を広げ、AI ツールを活用した開発に従事' },
+  { year: '1984', title: 'BORN', description: '北海道に生まれる' },
+  { year: '2000s', title: 'PROGRAMMING', description: 'プログラミングを始める。C/C++ を中心に学ぶ' },
+  { year: '2010s', title: 'CAREER', description: 'ソフトウェアエンジニアとしてキャリアを積む' },
+  { year: '2020s', title: 'NOW', description: 'TypeScript, Python にも領域を広げ、AI ツールを活用した開発に従事' },
 ];
 
 const projects = [
   {
-    name: 'Focuso',
+    name: 'FOCUSO',
     description: 'フォーカスタイマーアプリ。React + Zustand で構築。Copilot SWE Agent & .kiro で AI 駆動開発。',
     url: 'https://github.com/nigoh/Timer',
     tags: ['TypeScript', 'React', 'Zustand', 'AI: Copilot SWE Agent'],
   },
   {
-    name: 'QR Generator Web',
+    name: 'QR GENERATOR WEB',
     description: 'QRコード生成Webアプリ。Copilot + Serena による AI ペアプログラミングで開発。',
     url: 'https://github.com/nigoh/qr-generator-web',
     tags: ['TypeScript', 'React', 'Vite', 'AI: Copilot + Serena'],
   },
   {
-    name: 'stocko',
+    name: 'STOCKO',
     description: '株価情報取得ツール。OpenAI Codex & AGENTS.md を活用した AI エージェント開発。',
     url: 'https://github.com/nigoh/stocko',
     tags: ['JavaScript', 'HTML/CSS', 'AI: Codex + AGENTS.md'],
   },
   {
-    name: 'nigoh',
+    name: 'NIGOH',
     description: 'このサイトのソースコード。Astro + Tailwind CSS で構築した個人紹介サイト。',
     url: 'https://github.com/nigoh/nigoh',
     tags: ['Astro', 'Tailwind CSS', 'TypeScript'],
@@ -134,83 +134,110 @@ const projects = [
 ];
 ---
 
-<BaseLayout title="H.Nigo | Software Engineer">
+<BaseLayout title="H.NIGO | Software Engineer">
   <Header />
 
-  <main class="pt-16">
+  <main class="pt-14">
 
-    {/* ═══════════════════ Hero ═══════════════════ */}
-    <section class="py-20 sm:py-28">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col sm:flex-row items-center gap-8">
-          <div class="shrink-0">
-            <img
-              src="https://github.com/nigoh.png"
-              alt="H.Nigo"
-              width="120"
-              height="120"
-              class="rounded-full ring-4 ring-slate-200 dark:ring-slate-700 shadow-lg"
-              loading="eager"
-            />
-          </div>
-          <div class="text-center sm:text-left">
-            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2">
-              H.Nigo
+    {/* ═══════════════════ Hero — 構成主義的ヒーロー ═══════════════════ */}
+    <section class="relative overflow-hidden bg-constructivist-black min-h-[90vh] flex items-center">
+      {/* 幾何学的背景装飾 */}
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        {/* 大きな赤い正方形 — 斜め配置 */}
+        <div class="absolute -top-20 -right-20 w-80 h-80 bg-constructivist-red transform rotate-12 opacity-90"></div>
+        {/* 小さな正方形 */}
+        <div class="absolute bottom-20 left-10 w-16 h-16 bg-constructivist-red transform -rotate-6"></div>
+        {/* 円 */}
+        <div class="absolute top-1/3 right-1/4 w-40 h-40 rounded-full border-4 border-constructivist-cream opacity-20"></div>
+        {/* 斜線 */}
+        <div class="absolute top-0 left-1/3 w-1 h-full bg-constructivist-cream opacity-10 transform rotate-12 origin-top"></div>
+        <div class="absolute bottom-0 right-1/3 w-1 h-2/3 bg-constructivist-red opacity-30 transform -rotate-6 origin-bottom"></div>
+        {/* 小さな黒い正方形（ライトモード対比） */}
+        <div class="absolute bottom-40 right-20 w-8 h-8 bg-constructivist-cream opacity-15 transform rotate-45"></div>
+      </div>
+
+      <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div class="flex flex-col md:flex-row items-start gap-8 md:gap-16">
+          {/* テキストブロック */}
+          <div class="flex-1">
+            <h1 class="font-sans text-7xl sm:text-8xl lg:text-9xl text-constructivist-cream tracking-tight leading-none mb-4">
+              H.NIGO
             </h1>
-            <p class="text-lg text-blue-600 dark:text-blue-400 font-medium mb-3">
-              Software Engineer
-            </p>
-            <p class="text-slate-600 dark:text-slate-400 leading-relaxed max-w-lg">
+            <div class="inline-block bg-constructivist-red px-4 py-2 mb-8">
+              <p class="font-sans text-xl sm:text-2xl text-constructivist-cream tracking-widest">
+                SOFTWARE ENGINEER
+              </p>
+            </div>
+            <p class="text-constructivist-gray text-base sm:text-lg leading-relaxed max-w-lg font-body">
               低レイヤーからアプリケーションまで。C/C++, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。
             </p>
-            <div class="mt-4">
+            <div class="mt-8">
               <a
                 href="https://github.com/nigoh"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                class="inline-flex items-center gap-3 text-constructivist-cream hover:text-constructivist-red transition-colors font-body text-sm tracking-wider"
               >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
                 </svg>
-                github.com/nigoh
+                GITHUB.COM/NIGOH
               </a>
             </div>
+          </div>
+
+          {/* 幾何学的アバター */}
+          <div class="shrink-0 relative">
+            <div class="w-40 h-40 sm:w-52 sm:h-52 bg-constructivist-red p-1">
+              <img
+                src="https://github.com/nigoh.png"
+                alt="H.Nigo"
+                width="200"
+                height="200"
+                class="w-full h-full object-cover grayscale contrast-125"
+                loading="eager"
+              />
+            </div>
+            {/* 装飾的な正方形 */}
+            <div class="absolute -bottom-4 -right-4 w-40 h-40 sm:w-52 sm:h-52 border-2 border-constructivist-cream opacity-30" aria-hidden="true"></div>
           </div>
         </div>
       </div>
     </section>
 
     {/* ═══════════════════ About ═══════════════════ */}
-    <section id="about" class="py-20 bg-slate-100/50 dark:bg-slate-800/30 transition-colors duration-300">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">About</h2>
+    <section id="about" class="relative py-20 overflow-hidden">
+      {/* 装飾 — 赤い縦バー */}
+      <div class="absolute top-0 left-0 w-2 h-full bg-constructivist-red" aria-hidden="true"></div>
 
-        <div class="grid sm:grid-cols-2 gap-8">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-black tracking-tight mb-12">ABOUT</h2>
+
+        <div class="grid md:grid-cols-2 gap-12">
           {/* 基本情報 */}
-          <div class="bg-white dark:bg-slate-800/50 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700/60 transition-colors duration-300">
-            <dl class="space-y-4">
+          <div class="border-l-4 border-constructivist-black pl-6">
+            <dl class="space-y-6">
               <div>
-                <dt class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Name</dt>
-                <dd class="mt-1 text-slate-900 dark:text-slate-200">Hironobu Nigo</dd>
+                <dt class="text-xs font-bold text-constructivist-gray uppercase tracking-widest font-body">NAME</dt>
+                <dd class="mt-1 text-lg text-constructivist-black font-body">Hironobu Nigo</dd>
               </div>
               <div>
-                <dt class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Born</dt>
-                <dd class="mt-1 text-slate-900 dark:text-slate-200">1984</dd>
+                <dt class="text-xs font-bold text-constructivist-gray uppercase tracking-widest font-body">BORN</dt>
+                <dd class="mt-1 text-lg text-constructivist-black font-body">1984</dd>
               </div>
               <div>
-                <dt class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Location</dt>
-                <dd class="mt-1 text-slate-900 dark:text-slate-200">札幌市, 北海道, Japan</dd>
+                <dt class="text-xs font-bold text-constructivist-gray uppercase tracking-widest font-body">LOCATION</dt>
+                <dd class="mt-1 text-lg text-constructivist-black font-body">札幌市, 北海道, Japan</dd>
               </div>
               <div>
-                <dt class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Role</dt>
-                <dd class="mt-1 text-slate-900 dark:text-slate-200">Software Engineer</dd>
+                <dt class="text-xs font-bold text-constructivist-gray uppercase tracking-widest font-body">ROLE</dt>
+                <dd class="mt-1 text-lg text-constructivist-black font-body">Software Engineer</dd>
               </div>
             </dl>
           </div>
 
           {/* 自己紹介文 */}
-          <div class="text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
+          <div class="text-constructivist-darkgray leading-relaxed space-y-4 font-body">
             <p>
               1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
               低レイヤーからアプリケーションまで、AI ツールを活用した幅広い領域でのシステム開発を行っています。
@@ -225,30 +252,34 @@ const projects = [
     </section>
 
     {/* ═══════════════════ Skills ═══════════════════ */}
-    <section id="skills" class="py-20">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Skills</h2>
+    <section id="skills" class="relative py-20 bg-constructivist-black overflow-hidden">
+      {/* 装飾的幾何学図形 */}
+      <div class="absolute top-10 right-10 w-24 h-24 border-4 border-constructivist-red opacity-40 transform rotate-45" aria-hidden="true"></div>
+      <div class="absolute bottom-20 left-20 w-12 h-12 bg-constructivist-red opacity-30 transform -rotate-12" aria-hidden="true"></div>
 
-        <div class="space-y-10">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-cream tracking-tight mb-12">SKILLS</h2>
+
+        <div class="space-y-12">
           {skills.map((group) => (
             <div>
-              <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">
+              <h3 class="text-xs font-bold text-constructivist-red uppercase tracking-widest mb-6 font-body">
                 {group.category}
               </h3>
-              <div class="space-y-5">
+              <div class="space-y-6">
                 {group.items.map((skill) => (
                   <div>
-                    <div class="flex justify-between items-baseline mb-1.5">
-                      <span class="font-medium text-slate-800 dark:text-slate-200">{skill.name}</span>
-                      <span class="text-sm text-slate-500 dark:text-slate-400 font-mono">{skill.level}%</span>
+                    <div class="flex justify-between items-baseline mb-2">
+                      <span class="font-body font-semibold text-constructivist-cream">{skill.name}</span>
+                      <span class="text-sm text-constructivist-gray font-mono">{skill.level}%</span>
                     </div>
-                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                    <div class="w-full bg-constructivist-darkgray h-3 overflow-hidden">
                       <div
-                        class="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 h-2.5 rounded-full transition-all duration-500"
+                        class="bg-constructivist-red h-3 transition-all duration-500"
                         style={`width: ${skill.level}%`}
                       />
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{skill.description}</p>
+                    <p class="text-xs text-constructivist-gray mt-1 font-body">{skill.description}</p>
                   </div>
                 ))}
               </div>
@@ -257,25 +288,25 @@ const projects = [
         </div>
 
         {/* GitHub Activity */}
-        <div class="mt-12 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
-          <div class="flex items-center justify-between mb-5">
-            <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">GitHub Activity</h3>
+        <div class="mt-16 border-l-4 border-constructivist-red pl-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xs font-bold text-constructivist-red uppercase tracking-widest font-body">GITHUB ACTIVITY</h3>
             <a
               href="https://github.com/nigoh"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+              class="text-xs text-constructivist-gray hover:text-constructivist-red transition-colors font-body tracking-wider"
             >
-              github.com/nigoh →
+              GITHUB.COM/NIGOH →
             </a>
           </div>
 
           {/* コントリビューション カレンダー */}
-          <div class="mb-5">
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Contribution Calendar</p>
-            <div class="bg-white rounded-lg p-3 border border-slate-200 dark:border-slate-600/40">
+          <div class="mb-6">
+            <p class="text-xs text-constructivist-gray mb-2 font-body">CONTRIBUTION CALENDAR</p>
+            <div class="bg-constructivist-cream p-3">
               <img
-                src="https://ghchart.rshah.org/2563eb/nigoh"
+                src="https://ghchart.rshah.org/D62828/nigoh"
                 alt="GitHub Contribution Calendar"
                 class="w-full"
                 loading="lazy"
@@ -284,16 +315,16 @@ const projects = [
           </div>
 
           {/* Stats バッジ */}
-          <div class="flex flex-wrap gap-2 mb-5">
-            <img src="https://img.shields.io/github/stars/nigoh?style=for-the-badge&logo=github&label=Stars&color=2563eb" alt="GitHub Stars" loading="lazy" class="h-7" />
-            <img src="https://img.shields.io/github/followers/nigoh?style=for-the-badge&logo=github&label=Followers&color=2563eb" alt="GitHub Followers" loading="lazy" class="h-7" />
+          <div class="flex flex-wrap gap-2 mb-6">
+            <img src="https://img.shields.io/github/stars/nigoh?style=for-the-badge&logo=github&label=Stars&color=D62828" alt="GitHub Stars" loading="lazy" class="h-7" />
+            <img src="https://img.shields.io/github/followers/nigoh?style=for-the-badge&logo=github&label=Followers&color=D62828" alt="GitHub Followers" loading="lazy" class="h-7" />
           </div>
 
           {/* 言語分布グラフ */}
           {topLangs.length > 0 ? (
             <div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Language Distribution</p>
-              <div class="flex h-2.5 rounded-full overflow-hidden mb-3">
+              <p class="text-xs text-constructivist-gray mb-2 font-body">LANGUAGE DISTRIBUTION</p>
+              <div class="flex h-3 overflow-hidden mb-3">
                 {topLangs.map((lang) => (
                   <div
                     style={`width: ${lang.percent}%; background-color: ${lang.color};`}
@@ -304,9 +335,9 @@ const projects = [
               <div class="flex flex-wrap gap-x-4 gap-y-1.5">
                 {topLangs.map((lang) => (
                   <div class="flex items-center gap-1.5">
-                    <div class="w-2.5 h-2.5 rounded-full shrink-0" style={`background-color: ${lang.color};`} />
-                    <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">{lang.name}</span>
-                    <span class="text-xs text-slate-400 dark:text-slate-500">{lang.percent}%</span>
+                    <div class="w-3 h-3 shrink-0" style={`background-color: ${lang.color};`} />
+                    <span class="text-xs text-constructivist-cream font-body font-medium">{lang.name}</span>
+                    <span class="text-xs text-constructivist-gray font-body">{lang.percent}%</span>
                   </div>
                 ))}
               </div>
@@ -326,71 +357,74 @@ const projects = [
     </section>
 
     {/* ═══════════════════ AI-Powered Development ═══════════════════ */}
-    <section id="ai" class="py-20 bg-slate-100/50 dark:bg-slate-800/30 transition-colors duration-300">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3">AI-Powered Development</h2>
-        <p class="text-slate-600 dark:text-slate-400 mb-8">
+    <section id="ai" class="relative py-20 overflow-hidden">
+      {/* 装飾 — 斜めストライプ */}
+      <div class="absolute -top-10 right-0 w-40 h-40 bg-constructivist-red transform rotate-45 opacity-10" aria-hidden="true"></div>
+
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-black tracking-tight mb-3">AI-POWERED DEV</h2>
+        <p class="text-constructivist-darkgray mb-12 font-body">
           AI ツールを積極的に活用し、個人開発の生産性と品質を向上させています。
         </p>
 
-        <div class="grid gap-6 sm:grid-cols-2">
+        <div class="grid gap-0 sm:grid-cols-2">
           {/* Copilot SWE Agent */}
-          <div class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
+          <div class="border-2 border-constructivist-black p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
             <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
+                <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
                 </svg>
               </div>
-              <h3 class="font-bold text-slate-900 dark:text-slate-200">GitHub Copilot SWE Agent</h3>
+              <h3 class="font-sans text-xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">COPILOT SWE AGENT</h3>
             </div>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">
+            <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
               Issue からの自動実装・PR 作成。Focuso や QR Generator Web で SWE Agent をコントリビューターとして活用。
             </p>
           </div>
 
           {/* Codex */}
-          <div class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
+          <div class="border-2 border-constructivist-black border-l-0 sm:border-l-0 border-t-0 sm:border-t-2 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
             <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
+                <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
                 </svg>
               </div>
-              <h3 class="font-bold text-slate-900 dark:text-slate-200">OpenAI Codex</h3>
+              <h3 class="font-sans text-xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">OPENAI CODEX</h3>
             </div>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">
+            <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
               AGENTS.md を活用した AI エージェント駆動開発。stocko プロジェクトで Codex によるコード生成を実践。
             </p>
           </div>
 
           {/* MCP */}
-          <div class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
+          <div class="border-2 border-constructivist-black border-t-0 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
             <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
-                <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
+                <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
                 </svg>
               </div>
-              <h3 class="font-bold text-slate-900 dark:text-slate-200">MCP (Model Context Protocol)</h3>
+              <h3 class="font-sans text-xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">MCP</h3>
             </div>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">
+            <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
               GitHub, Playwright, Tailwind CSS 等の MCP サーバーを活用し、AI エージェントの能力を拡張。
             </p>
           </div>
 
           {/* Agent Configuration */}
-          <div class="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm transition-colors duration-300">
+          <div class="border-2 border-constructivist-black border-t-0 border-l-0 sm:border-l-0 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
             <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
-                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
+                <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3 class="font-bold text-slate-900 dark:text-slate-200">Agent スキル管理</h3>
+              <h3 class="font-sans text-xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">AGENT CONFIG</h3>
             </div>
-            <p class="text-slate-600 dark:text-slate-400 text-sm">
+            <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
               .instructions.md, AGENTS.md, .kiro, Serena 等の設定でプロジェクトごとに AI エージェントの振る舞いをカスタマイズ。
             </p>
           </div>
@@ -399,22 +433,27 @@ const projects = [
     </section>
 
     {/* ═══════════════════ Timeline ═══════════════════ */}
-    <section id="timeline" class="py-20 transition-colors duration-300">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Timeline</h2>
+    <section id="timeline" class="relative py-20 bg-constructivist-black overflow-hidden">
+      {/* 装飾 — 大きな円 */}
+      <div class="absolute -bottom-20 -left-20 w-60 h-60 rounded-full border-8 border-constructivist-red opacity-20" aria-hidden="true"></div>
+
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-cream tracking-tight mb-12">TIMELINE</h2>
 
         <div class="relative">
-          <div class="absolute left-[4.5rem] top-0 bottom-0 w-px bg-slate-300 dark:bg-slate-600"></div>
-          <div class="space-y-10">
+          {/* 垂直ライン */}
+          <div class="absolute left-[4.5rem] top-0 bottom-0 w-0.5 bg-constructivist-red"></div>
+          <div class="space-y-12">
             {timeline.map((event) => (
               <div class="relative pl-28">
                 <div class="absolute left-0 top-0 w-16 text-right">
-                  <span class="text-base font-bold text-blue-600 dark:text-blue-400 font-mono">{event.year}</span>
+                  <span class="font-sans text-2xl text-constructivist-red">{event.year}</span>
                 </div>
-                <div class="absolute left-[4.25rem] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-600 dark:bg-blue-400 ring-4 ring-slate-100 dark:ring-slate-800"></div>
+                {/* 赤い正方形マーカー */}
+                <div class="absolute left-[4rem] top-2 w-3 h-3 bg-constructivist-red transform rotate-45"></div>
                 <div>
-                  <h3 class="font-bold text-slate-900 dark:text-slate-200 mb-1">{event.title}</h3>
-                  <p class="text-slate-600 dark:text-slate-400 text-sm">{event.description}</p>
+                  <h3 class="font-sans text-xl text-constructivist-cream mb-1 tracking-wide">{event.title}</h3>
+                  <p class="text-constructivist-gray text-sm font-body">{event.description}</p>
                 </div>
               </div>
             ))}
@@ -424,25 +463,28 @@ const projects = [
     </section>
 
     {/* ═══════════════════ Portfolio ═══════════════════ */}
-    <section id="portfolio" class="py-20 bg-slate-100/50 dark:bg-slate-800/30 transition-colors duration-300">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Portfolio</h2>
+    <section id="portfolio" class="relative py-20 overflow-hidden">
+      {/* 装飾 */}
+      <div class="absolute top-0 right-0 w-2 h-full bg-constructivist-red" aria-hidden="true"></div>
 
-        <div class="grid gap-6 sm:grid-cols-2">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-black tracking-tight mb-12">PORTFOLIO</h2>
+
+        <div class="grid gap-0 sm:grid-cols-2">
           {projects.map((project) => (
             <a
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="block bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200 group"
+              class="block border-2 border-constructivist-black p-6 hover:bg-constructivist-red hover:border-constructivist-red transition-all duration-200 group [&:nth-child(even)]:border-l-0 sm:[&:nth-child(even)]:border-l-0 [&:nth-child(n+3)]:border-t-0"
             >
-              <h3 class="font-bold text-slate-900 dark:text-slate-200 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              <h3 class="font-sans text-2xl text-constructivist-black group-hover:text-constructivist-cream mb-3 tracking-wide">
                 {project.name}
               </h3>
-              <p class="text-slate-600 dark:text-slate-400 text-sm mb-4">{project.description}</p>
+              <p class="text-constructivist-darkgray group-hover:text-constructivist-cream text-sm mb-4 font-body">{project.description}</p>
               <div class="flex flex-wrap gap-2">
                 {project.tags.map((tag) => (
-                  <span class="text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-0.5 rounded-full">
+                  <span class="text-xs font-bold text-constructivist-black group-hover:text-constructivist-cream border border-constructivist-black group-hover:border-constructivist-cream px-2 py-0.5 font-body tracking-wide">
                     {tag}
                   </span>
                 ))}
@@ -452,46 +494,46 @@ const projects = [
         </div>
 
         {/* Zenn 記事一覧 */}
-        <div class="mt-10">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Blog (Zenn)</h3>
+        <div class="mt-16">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xs font-bold text-constructivist-red uppercase tracking-widest font-body">BLOG (ZENN)</h3>
             <a
               href="https://zenn.dev/hironobunigo"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+              class="text-xs text-constructivist-darkgray hover:text-constructivist-red transition-colors font-body tracking-wider"
             >
               すべて見る →
             </a>
           </div>
 
           {zennArticles.length > 0 ? (
-            <div class="space-y-3">
+            <div class="space-y-0">
               {zennArticles.map((article) => (
                 <a
                   href={`https://zenn.dev/hironobunigo/articles/${article.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200 group"
+                  class="flex border-2 border-constructivist-black border-b-0 last:border-b-2 overflow-hidden hover:bg-constructivist-black transition-all duration-200 group"
                 >
                   <div class="flex-1 p-5 min-w-0">
                     <div class="flex items-center gap-2 mb-1.5">
-                      <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${article.article_type === 'tech' ? 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30' : 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30'}`}>
-                        {article.article_type === 'tech' ? 'Tech' : 'Idea'}
+                      <span class={`text-xs font-bold px-2 py-0.5 font-body tracking-wide ${article.article_type === 'tech' ? 'text-constructivist-cream bg-constructivist-red' : 'text-constructivist-black bg-constructivist-cream border border-constructivist-black'}`}>
+                        {article.article_type === 'tech' ? 'TECH' : 'IDEA'}
                       </span>
-                      <span class="text-xs text-slate-400 dark:text-slate-500">
+                      <span class="text-xs text-constructivist-gray group-hover:text-constructivist-gray font-body">
                         {new Date(article.published_at).toLocaleDateString('ja-JP')}
                       </span>
                       {article.liked_count > 0 && (
-                        <span class="text-xs text-slate-400 dark:text-slate-500">♥ {article.liked_count}</span>
+                        <span class="text-xs text-constructivist-gray font-body">♥ {article.liked_count}</span>
                       )}
                     </div>
-                    <p class="font-semibold text-slate-900 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
+                    <p class="font-body font-semibold text-constructivist-black group-hover:text-constructivist-cream transition-colors leading-snug line-clamp-2">
                       {article.title}
                     </p>
-                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1.5">zenn.dev</p>
+                    <p class="text-xs text-constructivist-gray mt-1.5 font-body">zenn.dev</p>
                   </div>
-                  <div class="w-20 shrink-0 bg-slate-900 dark:bg-slate-950 flex items-center justify-center">
+                  <div class="w-20 shrink-0 bg-constructivist-red flex items-center justify-center">
                     <span class="text-3xl" role="img" aria-label="article emoji">{article.emoji}</span>
                   </div>
                 </a>
@@ -502,16 +544,16 @@ const projects = [
               href="https://zenn.dev/hironobunigo"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-200 group"
+              class="flex border-2 border-constructivist-black overflow-hidden hover:bg-constructivist-black transition-all duration-200 group"
             >
               <div class="flex-1 p-5">
-                <p class="font-semibold text-slate-900 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <p class="font-body font-semibold text-constructivist-black group-hover:text-constructivist-cream transition-colors">
                   技術記事を Zenn で発信しています
                 </p>
-                <p class="text-xs text-slate-400 dark:text-slate-500 mt-1.5">zenn.dev</p>
+                <p class="text-xs text-constructivist-gray mt-1.5 font-body">zenn.dev</p>
               </div>
-              <div class="w-20 shrink-0 bg-slate-900 dark:bg-slate-950 flex items-center justify-center">
-                <span class="text-2xl font-bold text-white">Z</span>
+              <div class="w-20 shrink-0 bg-constructivist-red flex items-center justify-center">
+                <span class="text-2xl font-bold text-constructivist-cream font-sans">Z</span>
               </div>
             </a>
           )}
@@ -520,22 +562,26 @@ const projects = [
     </section>
 
     {/* ═══════════════════ Contact ═══════════════════ */}
-    <section id="contact" class="py-20 transition-colors duration-300">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">Contact</h2>
-        <p class="text-slate-600 dark:text-slate-400 mb-8">
+    <section id="contact" class="relative py-20 bg-constructivist-black overflow-hidden">
+      {/* 装飾的幾何学 */}
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border-4 border-constructivist-red opacity-10" aria-hidden="true"></div>
+      <div class="absolute top-10 left-10 w-20 h-20 bg-constructivist-red transform rotate-12 opacity-20" aria-hidden="true"></div>
+
+      <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-cream tracking-tight mb-6">CONTACT</h2>
+        <p class="text-constructivist-gray mb-10 font-body">
           お仕事のご依頼やお問い合わせは、GitHub からお気軽にどうぞ。
         </p>
         <a
           href="https://github.com/nigoh"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-3 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
+          class="inline-flex items-center gap-3 px-8 py-4 bg-constructivist-red hover:bg-constructivist-cream text-constructivist-cream hover:text-constructivist-black font-sans text-xl tracking-wider transition-all duration-200"
         >
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
           </svg>
-          github.com/nigoh
+          GITHUB.COM/NIGOH
         </a>
       </div>
     </section>
