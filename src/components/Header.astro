@@ -2,91 +2,57 @@
 const base = import.meta.env.BASE_URL;
 
 const sections = [
-  { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
+  { label: 'ABOUT', href: '#about' },
+  { label: 'SKILLS', href: '#skills' },
   { label: 'AI', href: '#ai' },
-  { label: 'Timeline', href: '#timeline' },
-  { label: 'Portfolio', href: '#portfolio' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'TIMELINE', href: '#timeline' },
+  { label: 'PORTFOLIO', href: '#portfolio' },
+  { label: 'CONTACT', href: '#contact' },
 ];
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700/60 transition-colors duration-300">
-  <nav class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-    {/* ロゴ */}
-    <a href={base} class="text-lg font-bold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-      H.Nigo
+<header class="fixed top-0 left-0 right-0 z-50 bg-constructivist-black">
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+    {/* ロゴ — 構成主義的ボールド */}
+    <a href={base} class="font-sans text-2xl tracking-widest text-constructivist-cream hover:text-constructivist-red transition-colors">
+      H.NIGO
     </a>
 
     {/* デスクトップナビ */}
-    <div class="hidden sm:flex items-center gap-1">
-      <ul class="flex items-center gap-1">
-        {sections.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              class="px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-
-      {/* テーマ切替ボタン */}
-      <button
-        id="theme-toggle"
-        type="button"
-        aria-label="テーマ切替"
-        class="ml-2 p-2 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-      >
-        {/* 太陽アイコン（ダーク時表示） */}
-        <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-        </svg>
-        {/* 月アイコン（ライト時表示） */}
-        <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-        </svg>
-      </button>
-    </div>
-
-    {/* モバイルメニュー: テーマ切替 + ハンバーガー */}
-    <div class="flex items-center gap-1 sm:hidden">
-      <button
-        id="theme-toggle-mobile"
-        type="button"
-        aria-label="テーマ切替"
-        class="p-2 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-      >
-        <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-        </svg>
-        <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-        </svg>
-      </button>
-      <button
-        id="mobile-menu-btn"
-        type="button"
-        aria-label="メニュー"
-        class="p-2 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-      >
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
-      </button>
-    </div>
-  </nav>
-
-  {/* モバイルメニュー（デフォルト非表示） */}
-  <div id="mobile-menu" class="hidden sm:hidden border-t border-slate-200 dark:border-slate-700/60 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
-    <ul class="px-4 py-3 space-y-1">
+    <ul class="hidden sm:flex items-center gap-0">
       {sections.map((item) => (
         <li>
           <a
             href={item.href}
-            class="block px-3 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+            class="px-3 py-2 text-sm font-sans tracking-wider text-constructivist-cream hover:text-constructivist-red transition-colors"
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    {/* モバイルメニューボタン */}
+    <button
+      id="mobile-menu-btn"
+      type="button"
+      aria-label="メニュー"
+      class="sm:hidden p-2 text-constructivist-cream hover:text-constructivist-red transition-colors"
+    >
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="square" d="M3 6h18M3 12h18M3 18h18" />
+      </svg>
+    </button>
+  </nav>
+
+  {/* モバイルメニュー */}
+  <div id="mobile-menu" class="hidden sm:hidden bg-constructivist-black border-t-2 border-constructivist-red">
+    <ul class="px-4 py-3 space-y-0">
+      {sections.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class="block px-3 py-2 font-sans text-sm tracking-wider text-constructivist-cream hover:text-constructivist-red hover:bg-constructivist-darkgray transition-colors"
           >
             {item.label}
           </a>
@@ -97,21 +63,6 @@ const sections = [
 </header>
 
 <script is:inline>
-  // テーマ切替
-  function toggleTheme() {
-    var html = document.documentElement;
-    var isDark = html.classList.contains('dark');
-    if (isDark) {
-      html.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    } else {
-      html.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    }
-  }
-  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-  document.getElementById('theme-toggle-mobile').addEventListener('click', toggleTheme);
-
   // モバイルメニュー開閉
   document.getElementById('mobile-menu-btn').addEventListener('click', function() {
     var menu = document.getElementById('mobile-menu');
