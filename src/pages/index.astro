@@ -174,12 +174,31 @@ const career = [
   },
 ];
 
+// 公開リポジトリ（ソースコード）
 const projects = [
   {
-    name: 'FOCUSO',
-    description: 'フォーカスタイマーアプリ。React + Zustand で構築。Copilot SWE Agent & .kiro で AI 駆動開発。',
-    url: 'https://github.com/nigoh/Timer',
-    tags: ['TypeScript', 'React', 'Zustand', 'AI: Copilot SWE Agent'],
+    name: 'SCORIA',
+    description: '研究テーマや目的を入力すると、学術検索・文献レビューに最適な AI プロンプトを自動生成するツール。',
+    url: 'https://github.com/nigoh/scoria',
+    tags: ['TypeScript', 'AI Prompt 生成'],
+  },
+  {
+    name: 'CLAUDE-FACTORY',
+    description: 'Claude Code ワークフローを工場に見立て、環境構築・自動化率の可視化・最適化を統合した学習ゲーム。',
+    url: 'https://github.com/nigoh/Claude-Factory',
+    tags: ['TypeScript', 'Claude Code', '学習ゲーム'],
+  },
+  {
+    name: 'CGREP',
+    description: 'Confluence・Jira・Gerrit を単一の検索バーから横断検索する Rust 製 grep TUI。tokio で並列非同期検索。',
+    url: 'https://github.com/nigoh/cgrep',
+    tags: ['Rust', 'TUI', 'tokio'],
+  },
+  {
+    name: 'REPO-REPORT',
+    description: 'ネストした Git リポジトリ群の状態を一覧する CLI / TUI ツール。Rust(Ratatui) と Bash の 2 実装、CI 向け JSON 出力対応。',
+    url: 'https://github.com/nigoh/repo_report',
+    tags: ['Rust', 'Bash', 'TUI'],
   },
   {
     name: 'QR GENERATOR WEB',
@@ -198,6 +217,30 @@ const projects = [
     description: 'このサイトのソースコード。Astro + Tailwind CSS で構築した個人紹介サイト。',
     url: 'https://github.com/nigoh/nigoh',
     tags: ['Astro', 'Tailwind CSS', 'TypeScript'],
+  },
+];
+
+// GitHub Pages で公開しているライブサイト
+const demos = [
+  {
+    name: 'QR GENERATOR',
+    description: 'QRコード生成ツールのライブデモ。',
+    url: 'https://nigoh.github.io/qr-generator-web/',
+  },
+  {
+    name: 'AAOS STUDY',
+    description: 'Android Automotive OS (AAOS) の学習ロードマップサイト。',
+    url: 'https://nigoh.github.io/AAOS_STUDY/',
+  },
+  {
+    name: 'LEARN.',
+    description: 'e ラーニングサイト。',
+    url: 'https://nigoh.github.io/Claude-code/',
+  },
+  {
+    name: 'FAJ DASHBOARD',
+    description: '全国活動分析ダッシュボード。',
+    url: 'https://nigoh.github.io/FAJ/',
   },
 ];
 ---
@@ -433,7 +476,7 @@ const projects = [
               <h3 class="font-sans text-xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">COPILOT SWE AGENT</h3>
             </div>
             <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
-              Issue からの自動実装・PR 作成。Focuso や QR Generator Web で SWE Agent をコントリビューターとして活用。
+              Issue からの自動実装・PR 作成。QR Generator Web をはじめ複数の個人プロジェクトで SWE Agent をコントリビューターとして活用。
             </p>
           </div>
 
@@ -600,6 +643,46 @@ const projects = [
               </div>
             </a>
           ))}
+        </div>
+        </FadeIn>
+
+        {/* LIVE — GitHub Pages で公開しているサイト */}
+        <FadeIn client:visible direction="up" delay={250}>
+        <div class="mt-16">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xs font-bold text-constructivist-red uppercase tracking-widest font-body">LIVE — GITHUB PAGES</h3>
+            <a
+              href="https://github.com/nigoh?tab=repositories"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs text-constructivist-darkgray hover:text-constructivist-red transition-colors font-body tracking-wider"
+            >
+              すべて見る →
+            </a>
+          </div>
+          <div class="grid gap-0 sm:grid-cols-2">
+            {demos.map((demo, i) => (
+              <a
+                href={demo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class:list={[
+                  "block border-2 border-constructivist-black p-6 hover:bg-constructivist-black transition-all duration-200 group",
+                  { "border-t-0": i > 0 },
+                  { "sm:border-t-2": i === 1 },
+                  { "sm:border-l-0": i % 2 === 1 },
+                ]}
+              >
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="font-sans text-2xl text-constructivist-black group-hover:text-constructivist-cream tracking-wide">
+                    {demo.name}
+                  </h3>
+                  <span class="text-xs font-bold text-constructivist-red font-body tracking-wider shrink-0">LIVE ↗</span>
+                </div>
+                <p class="text-constructivist-darkgray group-hover:text-constructivist-cream text-sm font-body">{demo.description}</p>
+              </a>
+            ))}
+          </div>
         </div>
         </FadeIn>
 
