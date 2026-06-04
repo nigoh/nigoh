@@ -54,7 +54,6 @@ Actively using **GitHub Copilot SWE Agent**, **OpenAI Codex**, and **MCP servers
 | [QR Generator](https://nigoh.github.io/qr-generator-web/) | QR code generator — live demo |
 | [AAOS Study](https://nigoh.github.io/AAOS_STUDY/) | Android Automotive OS learning roadmap |
 | [Learn.](https://nigoh.github.io/Claude-code/) | e-learning site |
-| [FAJ Dashboard](https://nigoh.github.io/FAJ/) | Nationwide activity analysis dashboard |
 
 ---
 
