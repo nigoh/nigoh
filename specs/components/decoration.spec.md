@@ -1,6 +1,6 @@
 # 装飾レイヤー（Tiled + Phaser）コンポーネント仕様
 
-> ステータス: **設計確定（実装着手可）** — 対話サイクルで枯らした最終設計。
+> ステータス: **実装フェーズ 1〜5 完了（チューニング待ち）** — 全セクションに導入済み。
 > 本書は「Tiled + Phaser による個人サイト装飾」の設計合意を凝縮した SDD 仕様。
 
 ## 目的
@@ -178,17 +178,17 @@ public/decoration-fallback/
 
 ## 受入条件
 
-- [ ] 初期 JS バンドルに Phaser が含まれない（遅延ロードされる）
-- [ ] 可視外セクションの Scene が休止し、CPU 使用が抑えられる
-- [ ] `prefers-reduced-motion` で静的フォールバックが表示される
-- [ ] WebGL 非対応環境でフォールバックまたは Canvas で破綻しない
-- [ ] canvas が `aria-hidden`、本文のスクロール・操作を阻害しない
-- [ ] モバイルでスクロールがタイルパネルに奪われない
-- [ ] 構成主義パレット（赤/黒/クリーム）と既存デザインの一貫性が保たれる
-- [ ] エージェントが巡回しタイルを配置する自律動作が見える
-- [ ] 空きセルクリックで Issue が立ち、エージェントが実装する
-- [ ] Lighthouse Performance 90+ / Accessibility 95+ を維持
-- [ ] `astro check` でエラーがない
+- [x] 初期 JS バンドルに Phaser が含まれない（遅延ロードされる）― build で `game.*.js` が別チャンク（343kB gzip）に分離、reduced-motion 時はそもそも未ダウンロードを確認
+- [x] 可視外セクションの Scene が休止し、CPU 使用が抑えられる ― `IntersectionObserver` で pause/resume
+- [x] `prefers-reduced-motion` で静的フォールバックが表示される ― 検証済（canvas 0 / SVG fallback 表示 / phaser 未ロード）
+- [x] WebGL 非対応環境でフォールバックまたは Canvas で破綻しない ― WebGL 判定でフォールバック分岐
+- [x] canvas が `aria-hidden`、本文のスクロール・操作を阻害しない ― host を `aria-hidden`、コンテンツを `z-10` で上に出す
+- [x] モバイルでスクロールがタイルパネルに奪われない ― Phaser `input.touch.capture=false` + `touch-action: pan-y`
+- [x] 構成主義パレット（赤/黒/クリーム）と既存デザインの一貫性が保たれる ― スクショで確認
+- [x] エージェントが巡回しタイルを配置する自律動作が見える ― Hero スクショで楔エージェント・タイル確認
+- [x] 空きセルクリックで Issue が立ち、エージェントが実装する ― ゴースト→pathfind→設置を実装
+- [ ] Lighthouse Performance 90+ / Accessibility 95+ を維持 ― 実機/CI で要計測（次フェーズ）
+- [x] `astro check` でエラーがない ― 0 errors
 
 ---
 
