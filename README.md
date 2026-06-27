@@ -37,10 +37,23 @@ Actively using **GitHub Copilot SWE Agent**, **OpenAI Codex**, and **MCP servers
 
 | Project | Description | Stack |
 |---|---|---|
-| [Focuso](https://github.com/nigoh/Timer) | Focus timer app — AI-driven dev with Copilot SWE Agent & .kiro | TypeScript, React, Zustand |
+| [scoria](https://github.com/nigoh/scoria) | AI prompt generator for academic search & literature review | TypeScript |
+| [Claude-Factory](https://github.com/nigoh/Claude-Factory) | Gamified learning tool that visualizes & optimizes Claude Code workflows | TypeScript |
+| [cgrep](https://github.com/nigoh/cgrep) | Cross-service grep TUI for Confluence / Jira / Gerrit | Rust, tokio |
+| [repo_report](https://github.com/nigoh/repo_report) | Status reporter for nested git repos — TUI + CI-friendly JSON | Rust, Bash |
 | [QR Generator Web](https://github.com/nigoh/qr-generator-web) | QR code generator — built with Copilot + Serena | TypeScript, React, Vite |
 | [stocko](https://github.com/nigoh/stocko) | Stock info tool — developed with Codex + AGENTS.md | JavaScript |
 | [nigoh](https://github.com/nigoh/nigoh) | This profile site — Astro + Tailwind CSS | Astro, TypeScript |
+
+---
+
+## 🌐 Live Sites (GitHub Pages)
+
+| Site | Description |
+|---|---|
+| [QR Generator](https://nigoh.github.io/qr-generator-web/) | QR code generator — live demo |
+| [AAOS Study](https://nigoh.github.io/AAOS_STUDY/) | Android Automotive OS learning roadmap |
+| [Learn.](https://nigoh.github.io/Claude-code/) | e-learning site |
 
 ---
 
