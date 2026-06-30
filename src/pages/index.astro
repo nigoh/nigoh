@@ -82,14 +82,15 @@ const skills = [
     items: [
       { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発（8年以上）' },
       { name: 'Python', level: 65, description: 'スクリプティング・データ処理・自動化（約2年）' },
-      { name: 'Java', level: 60, description: 'オブジェクト指向設計・バックエンド開発（約2年）' },
+      { name: 'Java', level: 70, description: '組み込み Android アプリ開発（実務・2026〜）／オブジェクト指向設計・バックエンド' },
       { name: 'TypeScript', level: 70, description: '個人開発中心 — Webアプリ・型安全な実装' },
       { name: 'JavaScript', level: 50, description: 'フロントエンド・プロトタイピング（約1年）' },
     ],
   },
   {
-    category: 'FRAMEWORKS',
+    category: 'FRAMEWORKS / PLATFORMS',
     items: [
+      { name: 'Android SDK', level: 55, description: '専用端末向けネイティブアプリの Java 開発（実務・2026〜）' },
       { name: 'MFC — Windows GUI', level: 70, description: 'Windows デスクトップアプリケーション開発（約3年）' },
       { name: 'React', level: 65, description: '個人開発中心 — UI 構築・Zustand 連携' },
       { name: 'Astro', level: 60, description: '個人開発中心 — 静的サイトジェネレーター' },
@@ -114,6 +115,7 @@ const skills = [
     category: 'TOOLS & INFRASTRUCTURE',
     items: [
       { name: 'Git', level: 85, description: 'バージョン管理・ブランチ戦略・チーム開発（約6年）' },
+      { name: 'Android Studio / Gradle', level: 55, description: 'Android 開発環境・ビルドツール（実務・2026〜）' },
       { name: 'GitLab', level: 80, description: 'CI/CD・MR フロー整備（約5年）' },
       { name: 'VS Code', level: 75, description: 'メインエディタ・拡張機能活用（約4年）' },
       { name: 'Docker', level: 75, description: 'コンテナ化・開発環境標準化（約4年）' },
@@ -132,8 +134,15 @@ const skills = [
 
 const career = [
   {
+    year: '2026',
+    period: '2026/04〜現在',
+    industry: '組み込み Android（専用端末向けアプリ）',
+    phase: '詳細設計・実装・試験',
+    techs: ['Java', 'Android SDK', 'Android Studio', 'Gradle', 'Git'],
+  },
+  {
     year: '2025',
-    period: '直近〜現在（約1年）',
+    period: '2025（約1年）',
     industry: '組み込み制御（改札機コアシステム）',
     phase: '詳細設計・実装・試験',
     techs: ['C', 'Linux (Yocto)', 'Make'],
@@ -199,6 +208,49 @@ const projects = [
     description: 'このサイトのソースコード。Astro + Tailwind CSS で構築した個人紹介サイト。',
     url: 'https://github.com/nigoh/nigoh',
     tags: ['Astro', 'Tailwind CSS', 'TypeScript'],
+  },
+];
+
+// AI 駆動開発のツール・実践（各 icon は Heroicons outline の path）
+interface AiTool {
+  title: string;
+  body: string;
+  icon: string[];
+}
+
+const aiTools: AiTool[] = [
+  {
+    title: 'CLAUDE CODE',
+    body: 'designer / frontend のサブエージェントと PreToolUse フックを組み合わせ、役割分担と安全策を備えた自律開発を実践。このサイト自体も Claude Code で構築・改善。',
+    icon: ['M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z'],
+  },
+  {
+    title: 'COPILOT SWE AGENT',
+    body: 'Issue からの自動実装・PR 作成。Focuso や QR Generator Web で SWE Agent をコントリビューターとして活用。',
+    icon: ['M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z'],
+  },
+  {
+    title: 'OPENAI CODEX',
+    body: 'AGENTS.md を活用した AI エージェント駆動開発。stocko プロジェクトで Codex によるコード生成を実践。',
+    icon: ['M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5'],
+  },
+  {
+    title: 'MCP',
+    body: 'GitHub, Playwright, Tailwind CSS 等の MCP サーバーを活用し、AI エージェントの能力を拡張。',
+    icon: ['M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244'],
+  },
+  {
+    title: 'AGENT CONFIG',
+    body: '.instructions.md, AGENTS.md, CLAUDE.md, .kiro 等の設定でプロジェクトごとに AI エージェントの振る舞いをカスタマイズ。',
+    icon: [
+      'M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z',
+      'M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+    ],
+  },
+  {
+    title: 'SPEC-DRIVEN DEV',
+    body: 'specs/** の仕様を AI と更新しながら実装し、受入条件（チェックリスト）で検証する仕様駆動開発（SDD）を実践。',
+    icon: ['M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z'],
   },
 ];
 ---
@@ -268,10 +320,12 @@ const projects = [
               <p>
                 1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
                 低レイヤーからアプリケーションまで、幅広い領域でのシステム開発を行っています。
-                主に C/C++, TypeScript, Python を使用し、AI ツールを活用し個人開発も行っています。
+                主に C/C++, Java, TypeScript, Python を使用し、AI ツールを活用し個人開発も行っています。
               </p>
               <p>
-                C++ / C / Java を中心にオブジェクト指向設計を実践してきました。
+                2026 年からは組み込み Android（専用端末向けアプリ）の開発に Java で従事し、
+                詳細設計・実装・試験を担当しています。
+                これまで C++ / C / Java を中心にオブジェクト指向設計を実践してきました。
                 変更容易性と関心の分離を意識した設計・実装を重視し、後進への技術指導も対応可能です。
                 Git / GitLab を活用したチーム開発フロー整備の経験もあります。
               </p>
@@ -376,7 +430,7 @@ const projects = [
         <FadeIn client:visible direction="left">
           <h2 class="font-sans text-5xl sm:text-6xl text-constructivist-black tracking-tight mb-3">AI-POWERED DEV</h2>
           <p class="text-constructivist-darkgray mb-2 font-body">
-            GitHub Copilot・OpenAI Codex・MCP を活用し、個人開発のすべての工程を AI と協働しています。
+            Claude Code・GitHub Copilot・OpenAI Codex・MCP を活用し、個人開発のすべての工程を AI と協働しています。
           </p>
           <p class="text-constructivist-darkgray mb-12 font-body text-sm">
             Issue 起票から実装・PR・レビューまで AI ドリブンで回すワークフローを実践中。
@@ -385,66 +439,30 @@ const projects = [
 
         <FadeIn client:visible direction="up" delay={200}>
         <div class="grid gap-0 sm:grid-cols-2">
-          {/* Copilot SWE Agent */}
-          <div class="border-2 border-constructivist-black p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
-                <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-                </svg>
+          {aiTools.map((tool, i) => (
+            <div
+              class:list={[
+                "border-2 border-constructivist-black p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group",
+                { "border-t-0": i > 0 },
+                { "sm:border-t-2": i === 1 },
+                { "sm:border-l-0": i % 2 === 1 },
+              ]}
+            >
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    {tool.icon.map((d) => (
+                      <path stroke-linecap="round" stroke-linejoin="round" d={d} />
+                    ))}
+                  </svg>
+                </div>
+                <h3 class="font-sans text-2xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">{tool.title}</h3>
               </div>
-              <h3 class="font-sans text-2xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">COPILOT SWE AGENT</h3>
+              <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
+                {tool.body}
+              </p>
             </div>
-            <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
-              Issue からの自動実装・PR 作成。Focuso や QR Generator Web で SWE Agent をコントリビューターとして活用。
-            </p>
-          </div>
-
-          {/* Codex */}
-          <div class="border-2 border-constructivist-black border-t-0 sm:border-t-2 sm:border-l-0 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
-                <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
-                </svg>
-              </div>
-              <h3 class="font-sans text-2xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">OPENAI CODEX</h3>
-            </div>
-            <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
-              AGENTS.md を活用した AI エージェント駆動開発。stocko プロジェクトで Codex によるコード生成を実践。
-            </p>
-          </div>
-
-          {/* MCP */}
-          <div class="border-2 border-constructivist-black border-t-0 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
-                <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-                </svg>
-              </div>
-              <h3 class="font-sans text-2xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">MCP</h3>
-            </div>
-            <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
-              GitHub, Playwright, Tailwind CSS 等の MCP サーバーを活用し、AI エージェントの能力を拡張。
-            </p>
-          </div>
-
-          {/* Agent Configuration */}
-          <div class="border-2 border-constructivist-black border-t-0 sm:border-l-0 p-6 hover:bg-constructivist-black hover:text-constructivist-cream transition-colors group">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center">
-                <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <h3 class="font-sans text-2xl tracking-wide text-constructivist-black group-hover:text-constructivist-cream">AGENT CONFIG</h3>
-            </div>
-            <p class="text-constructivist-darkgray group-hover:text-constructivist-gray text-sm font-body">
-              .instructions.md, AGENTS.md, .kiro, Serena 等の設定でプロジェクトごとに AI エージェントの振る舞いをカスタマイズ。
-            </p>
-          </div>
+          ))}
         </div>
         </FadeIn>
 
