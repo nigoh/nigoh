@@ -6,6 +6,7 @@ import AnimatedHero from '../components/AnimatedHero';
 import AnimatedSkillBar from '../components/AnimatedSkillBar';
 import FadeIn from '../components/FadeIn';
 import ConstructivistCanvas from '../components/ConstructivistCanvas';
+import ProunCanvas from '../components/ProunCanvas';
 
 interface ZennArticle {
   id: number;
@@ -209,8 +210,8 @@ const projects = [
 
     {/* ═══════════════════ Hero — 構成主義的ヒーロー ═══════════════════ */}
     <section class="relative overflow-hidden bg-constructivist-black min-h-[90vh] flex items-center">
-      {/* 構成主義タイル装飾（Tiled + Phaser） */}
-      <ConstructivistCanvas client:visible section="hero" />
+      {/* El Lissitzky 3D Proun 装飾（Three.js・軸測投影） */}
+      <ProunCanvas client:visible />
 
       <div class="relative z-10 w-full">
         <AnimatedHero

@@ -121,11 +121,18 @@ Tiled (.tmx / .tsx)  ──export──▶  public/tilemaps/*.json (+ tileset pn
 
 ## Hero 変奏のデザイン指針（第一印象 ＝ 赤の主役性と対角の力線）
 
+> **⚠ 更新（3D Proun 導入）**: Hero の背面 2D タイル装飾（`ConstructivistCanvas section="hero"`）は
+> **El Lissitzky の軸測 3D Proun レイヤーへ置換**する方針に決定（正典: `specs/components/proun-3d.spec.md`）。
+> 以下の「装飾タイルの主役性（canvas）」「hero seed の構図調整」節は **2D タイルを維持する場合の指針**として残すが、
+> 3D へ置換した場合は `proun-3d.spec.md` が Hero 背面の正典になる。本文（AnimatedHero）の
+> **タイポ階層・構図・余白・コントラスト・モーション**に関する指針（下記）は **3D 置換後も有効**で、
+> 3D Proun は本文の同じ「二正方形・赤い楔・対角の力線」の語彙を 3D で反復する。
+
 > 対象: `src/pages/index.astro` の最初の `section`（暗背景 `bg-constructivist-black` / `min-h-[90vh]`）、
 > `src/components/AnimatedHero.tsx`、`src/components/phaser/sections.ts` の `hero` 設定、
 > `assets/tiled/gen-tilemaps.mjs` の `hero(d)` seed、`public/tilemaps/hero.json`。
 > Hero はサイトの「掴み」。3 秒以内に「構成主義 × ソフトウェアエンジニア H.NIGO」を視覚で言い切る。
-> 構図プロトタイプ: `prototypes/hero-composition.html`（依存なし・図解用）。
+> 構図プロトタイプ: `prototypes/hero-composition.html`（2D 版）、`prototypes/proun-3d-axonometric.html`（3D 版・依存なし・図解用）。
 
 ### 第一印象の設計原則（エル・リシツキー「About Two Squares」の対）
 
@@ -167,6 +174,8 @@ Hero は **赤い正方形（主役）と黒い正方形（対の重み）が対
 
 ### 装飾タイルの主役性（canvas — sections.ts / seed）
 
+> ※ この節は **2D タイル装飾を維持する場合**の指針。3D Proun へ置換した場合は `proun-3d.spec.md` を参照。
+
 Hero タイル装飾は「掴み」の一部。本文の Proun コンポジションと**同じ二正方形の語彙**を背後で反復し、
 画面全体に構成主義の密度を与える。ただし**本文（極大 H1・赤帯・avatar）が主役**であり、装飾は増幅役。
 
@@ -189,6 +198,8 @@ Hero タイル装飾は「掴み」の一部。本文の Proun コンポジシ�
   （エージェントが組み替えても骨格が崩れない）を重視。
 
 ### hero seed の構図調整（gen-tilemaps.mjs — 対角＋本文回避）
+
+> ※ この節は **2D タイル装飾を維持する場合**の指針。3D Proun へ置換した場合は `proun-3d.spec.md` を参照。
 
 現状の seed は赤正方形が `(2,1)` と `(9,1)` でほぼ左右対称に並び、**対角の力線が弱く・本文カラム左側
 （col 2 付近）に赤正方形が乗って H1 と干渉**しやすい。第一印象の骨格として以下に組み替える方針（14×7 グリッド）:
@@ -387,6 +398,8 @@ public/decoration-fallback/
 - **置換範囲**: `ParallaxDecorations` は段階置換中の**併存のみ許容**。最終的に
   Phaser パネルへ寄せる。Contact など「静」のセクションは Phaser でも CSS でも可
   （実装フェーズ 5〜6 で軽さを見て判断）。
+- **Hero 背面の 3D 化**: Hero に限り 2D タイルを **El Lissitzky 軸測 3D Proun** へ置換（`specs/components/proun-3d.spec.md`）。
+  他セクションは 2D タイルを維持。3D は Hero のみの showpiece。
 
 ## 次サイクル（実装フェーズで検証する論点）
 

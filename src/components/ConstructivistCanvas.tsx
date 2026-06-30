@@ -47,6 +47,8 @@ export default function ConstructivistCanvas({ section }: Props) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const [staticFallback, setStaticFallback] = useState(false);
   const [mapData, setMapData] = useState<TiledMap | null>(null);
+  // 装飾は純背景。セクション毎の不透明度で本文より確実に後退させる（可読性最優先）。
+  const layerOpacity = getSection(section).opacity;
 
   // Tiled seed マップを取得（フォールバック描画にも使う）
   useEffect(() => {
@@ -148,7 +150,8 @@ export default function ConstructivistCanvas({ section }: Props) {
       aria-hidden="true"
       className="absolute inset-0 overflow-hidden"
       // canvas はクリックを拾うがコンテンツは z-10 で上に出す。スクロールは奪わない。
-      style={{ touchAction: 'pan-y' }}
+      // opacity で装飾を背面に後退させ、本文（特に白文字）と競合させない。
+      style={{ touchAction: 'pan-y', opacity: layerOpacity }}
     >
       {staticFallback && <StaticComposition section={section} mapData={mapData} />}
     </div>
@@ -181,7 +184,7 @@ function StaticComposition({ section, mapData }: { section: string; mapData: Til
 
   return (
     <svg
-      className="w-full h-full opacity-90"
+      className="w-full h-full"
       viewBox={`0 0 ${mw} ${mh}`}
       preserveAspectRatio="xMidYMid slice"
       role="presentation"
