@@ -80,18 +80,18 @@ export default function AnimatedHero({
     <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16">
 
       {/* Proun的な幾何学コンポジション — 右端へ寄せ、avatar と別重心に（余白の谷を作る） */}
-      <div className="absolute top-0 right-0 w-80 h-80 pointer-events-none" aria-hidden="true">
+      <div className="absolute top-24 right-0 w-56 h-56 sm:top-0 sm:w-80 sm:h-80 pointer-events-none" aria-hidden="true">
         <animated.div
           style={redBlockSpring}
-          className="absolute top-4 right-0 w-52 h-52 bg-constructivist-red origin-center"
+          className="absolute top-4 right-0 w-36 h-36 sm:w-52 sm:h-52 bg-constructivist-red origin-center"
         />
         <animated.div
           style={blackBlockSpring}
-          className="absolute top-20 right-12 w-24 h-24 bg-constructivist-black origin-center"
+          className="absolute top-12 right-8 w-16 h-16 sm:top-20 sm:right-12 sm:w-24 sm:h-24 bg-constructivist-black origin-center"
         />
         <animated.div
           style={circleOpacity}
-          className="absolute top-0 right-0 w-40 h-40 rounded-full border-4 border-constructivist-cream"
+          className="absolute top-0 right-0 w-28 h-28 sm:w-40 sm:h-40 rounded-full border-4 border-constructivist-cream"
         />
       </div>
 
@@ -164,7 +164,7 @@ export default function AnimatedHero({
               href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-0"
+              className="group inline-flex items-center gap-0 min-h-11"
             >
               <div
                 className="shrink-0 group-hover:opacity-70 transition-opacity"

@@ -37,7 +37,10 @@ function supportsWebGL(): boolean {
 }
 
 function cellSizeFor(width: number): number {
-  return Math.min(58, Math.max(38, Math.round(width / 16)));
+  // モバイル（狭幅）は大きめセル＝疎に。広幅は従来どおり width/16。
+  if (width < 480) return 52;
+  if (width < 768) return 48;
+  return Math.min(58, Math.max(40, Math.round(width / 16)));
 }
 
 export default function ConstructivistCanvas({ section }: Props) {
