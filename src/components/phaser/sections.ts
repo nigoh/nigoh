@@ -80,10 +80,10 @@ export const SECTIONS: Record<string, SectionConfig> = {
   career: {
     key: 'career',
     background: 'dark',
-    density: 0.33,
+    density: 0.28,
     agents: 1,
-    palette: { red: 0.4, black: 0.1, cream: 0.5 },
-    shapeWeights: { barV: 3, diagonal: 2, redSquare: 1, dot: 2, circle: 1 },
+    palette: { red: 0.6, black: 0.1, cream: 0.3 },
+    shapeWeights: { barV: 4, diagonal: 2, dot: 2, redSquare: 1, circle: 1 },
   },
   portfolio: {
     key: 'portfolio',
