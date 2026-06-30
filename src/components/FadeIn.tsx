@@ -1,4 +1,4 @@
-import { useSpring, animated } from '@react-spring/web';
+import { useSpring, animated, useReducedMotion } from '@react-spring/web';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 const TRANSLATE_DISTANCE = 40;
@@ -18,6 +18,8 @@ export default function FadeIn({
 }: FadeInProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  // prefers-reduced-motion: reduce 時は translate を無効化し最終状態を即時表示
+  const reduceMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
     const el = ref.current;
@@ -57,6 +59,7 @@ export default function FadeIn({
     transform: isVisible ? 'translateX(0px) translateY(0px)' : getInitialTransform(),
     delay,
     config: { tension: 120, friction: 14 },
+    immediate: reduceMotion,
   });
 
   return (

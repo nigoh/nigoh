@@ -1,4 +1,4 @@
-import { useTrail, animated, useSpring } from '@react-spring/web';
+import { useTrail, animated, useSpring, useReducedMotion } from '@react-spring/web';
 import { useEffect, useState } from 'react';
 
 interface AnimatedHeroProps {
@@ -17,6 +17,8 @@ export default function AnimatedHero({
   avatarUrl,
 }: AnimatedHeroProps) {
   const [ready, setReady] = useState(false);
+  // prefers-reduced-motion: reduce 時は trail/scale-rotate の派手な動きを抑え、最終状態を即時表示
+  const reduceMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
     setReady(true);
@@ -28,6 +30,7 @@ export default function AnimatedHero({
     transform: ready ? 'translateX(0px)' : 'translateX(-40px)',
     config: { tension: 100, friction: 18 },
     delay: 100,
+    immediate: reduceMotion,
   });
 
   // 赤い大ブロック（Proun背景）
@@ -36,6 +39,7 @@ export default function AnimatedHero({
     transform: ready ? 'scale(1) rotate(-6deg)' : 'scale(0.5) rotate(-30deg)',
     config: { tension: 70, friction: 14 },
     delay: 900,
+    immediate: reduceMotion,
   });
 
   // 黒い小ブロック
@@ -44,6 +48,7 @@ export default function AnimatedHero({
     transform: ready ? 'translate(0px,0px) rotate(12deg)' : 'translate(-30px,30px) rotate(50deg)',
     config: { tension: 80, friction: 16 },
     delay: 1100,
+    immediate: reduceMotion,
   });
 
   // 輪郭円
@@ -51,6 +56,7 @@ export default function AnimatedHero({
     opacity: ready ? 0.25 : 0,
     config: { tension: 60, friction: 14 },
     delay: 1300,
+    immediate: reduceMotion,
   });
 
   // アバター
@@ -59,6 +65,7 @@ export default function AnimatedHero({
     transform: ready ? 'scale(1)' : 'scale(0.7)',
     config: { tension: 90, friction: 14 },
     delay: 600,
+    immediate: reduceMotion,
   });
 
   // 下部区切り線
@@ -66,24 +73,25 @@ export default function AnimatedHero({
     opacity: ready ? 0.2 : 0,
     config: { tension: 60, friction: 14 },
     delay: 1500,
+    immediate: reduceMotion,
   });
 
   return (
     <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16">
 
-      {/* Proun的な幾何学コンポジション — 右上 */}
-      <div className="absolute top-0 right-0 w-80 h-80 pointer-events-none" aria-hidden="true">
+      {/* Proun的な幾何学コンポジション — 右端へ寄せ、avatar と別重心に（余白の谷を作る） */}
+      <div className="absolute top-24 right-0 w-56 h-56 sm:top-0 sm:w-80 sm:h-80 pointer-events-none" aria-hidden="true">
         <animated.div
           style={redBlockSpring}
-          className="absolute top-8 right-8 w-52 h-52 bg-constructivist-red origin-center"
+          className="absolute top-4 right-0 w-36 h-36 sm:w-52 sm:h-52 bg-constructivist-red origin-center"
         />
         <animated.div
           style={blackBlockSpring}
-          className="absolute top-24 right-20 w-24 h-24 bg-constructivist-black origin-center"
+          className="absolute top-12 right-8 w-16 h-16 sm:top-20 sm:right-12 sm:w-24 sm:h-24 bg-constructivist-black origin-center"
         />
         <animated.div
           style={circleOpacity}
-          className="absolute top-4 right-4 w-40 h-40 rounded-full border-4 border-constructivist-cream"
+          className="absolute top-0 right-0 w-28 h-28 sm:w-40 sm:h-40 rounded-full border-4 border-constructivist-cream"
         />
       </div>
 
@@ -95,7 +103,7 @@ export default function AnimatedHero({
           {/* 小ラベル — 赤い横線 + キャプション */}
           <animated.div style={trail[0]} className="flex items-center gap-3 mb-6">
             <div className="w-8 h-0.5 bg-constructivist-red" />
-            <span className="font-body text-xs text-constructivist-red tracking-[0.3em] uppercase">
+            <span className="font-body text-xs text-constructivist-cream tracking-[0.3em] uppercase">
               Software Engineer — Sapporo, Japan
             </span>
           </animated.div>
@@ -156,7 +164,7 @@ export default function AnimatedHero({
               href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-0"
+              className="group inline-flex items-center gap-0 min-h-11"
             >
               <div
                 className="shrink-0 group-hover:opacity-70 transition-opacity"
@@ -176,8 +184,8 @@ export default function AnimatedHero({
           </animated.div>
         </div>
 
-        {/* アバター — 多重フレーム構成 */}
-        <div className="shrink-0 relative mt-8 md:mt-20">
+        {/* アバター — 多重フレーム構成。Proun ブロックより下げて別重心に（余白の谷） */}
+        <div className="shrink-0 relative mt-8 md:mt-32">
           {/* 後ろの黒い正方形（ズレた影） */}
           <div className="absolute top-5 left-5 w-44 h-44 sm:w-56 sm:h-56 bg-constructivist-black" aria-hidden="true" />
           {/* 赤い細枠（ズレ） */}
@@ -186,7 +194,7 @@ export default function AnimatedHero({
           <animated.div style={avatarSpring} className="relative w-44 h-44 sm:w-56 sm:h-56 z-10">
             <img
               src={avatarUrl}
-              alt={name}
+              alt={`${name} のプロフィール写真`}
               width="224"
               height="224"
               className="w-full h-full object-cover grayscale contrast-[1.3] brightness-90"

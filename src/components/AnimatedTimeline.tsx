@@ -1,4 +1,4 @@
-import { useTrail, useSpring, animated } from '@react-spring/web';
+import { useTrail, useSpring, animated, useReducedMotion } from '@react-spring/web';
 import { useEffect, useRef, useState } from 'react';
 
 interface TimelineEvent {
@@ -14,6 +14,8 @@ interface AnimatedTimelineProps {
 export default function AnimatedTimeline({ events }: AnimatedTimelineProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  // prefers-reduced-motion: reduce 時は trail/ライン伸長を無効化し最終状態を即時表示
+  const reduceMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
     const el = ref.current;
@@ -37,12 +39,14 @@ export default function AnimatedTimeline({ events }: AnimatedTimelineProps) {
     transform: isVisible ? 'translateX(0px)' : 'translateX(-50px)',
     config: { tension: 100, friction: 18 },
     delay: 150,
+    immediate: reduceMotion,
   });
 
   const lineSpring = useSpring({
     scaleY: isVisible ? 1 : 0,
     config: { tension: 40, friction: 14 },
     delay: 100,
+    immediate: reduceMotion,
   });
 
   // 楔形のインラインスタイルを生成

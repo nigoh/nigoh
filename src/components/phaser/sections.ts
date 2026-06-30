@@ -48,10 +48,10 @@ export const SECTIONS: Record<string, SectionConfig> = {
   hero: {
     key: 'hero',
     background: 'dark',
-    density: 0.32,
+    density: 0.36,
     agents: 1,
-    palette: { red: 0.55, black: 0.15, cream: 0.3 },
-    shapeWeights: { redSquare: 3, circle: 2, diagonal: 2, dot: 2, barV: 1, arc: 1 },
+    palette: { red: 0.6, black: 0.2, cream: 0.2 },
+    shapeWeights: { redSquare: 4, diagonal: 3, circle: 2, dot: 2, blackSquare: 1, arc: 1 },
   },
   about: {
     key: 'about',
@@ -64,7 +64,7 @@ export const SECTIONS: Record<string, SectionConfig> = {
   skills: {
     key: 'skills',
     background: 'dark',
-    density: 0.5,
+    density: 0.4,
     agents: 1,
     palette: { red: 0.4, black: 0.1, cream: 0.5 },
     shapeWeights: { hollowSquare: 3, redSquare: 2, barH: 2, dot: 2, diagonal: 1 },
@@ -80,10 +80,10 @@ export const SECTIONS: Record<string, SectionConfig> = {
   career: {
     key: 'career',
     background: 'dark',
-    density: 0.33,
+    density: 0.28,
     agents: 1,
-    palette: { red: 0.4, black: 0.1, cream: 0.5 },
-    shapeWeights: { barV: 3, diagonal: 2, redSquare: 1, dot: 2, circle: 1 },
+    palette: { red: 0.6, black: 0.1, cream: 0.3 },
+    shapeWeights: { barV: 4, diagonal: 2, dot: 2, redSquare: 1, circle: 1 },
   },
   portfolio: {
     key: 'portfolio',

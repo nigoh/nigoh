@@ -13,6 +13,30 @@ html {
   color: #F5F0EB;
 }
 
+/* フォーカス可視性（WCAG 2.4.7）— cream 背景は red リング、黒背景は cream リング */
+:focus-visible {
+  outline: 3px solid theme('colors.constructivist.red');
+  outline-offset: 2px;
+}
+
+.bg-constructivist-black :focus-visible {
+  outline-color: theme('colors.constructivist.cream');
+}
+
+/* reduced-motion グローバルガード（CSS アニメ/トランジション抑制 + 即時スクロール） */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 /* ロシア構成主義的アニメーション */
 @keyframes slide-in {
   from { opacity: 0; transform: translateX(-24px) rotate(-2deg); }
