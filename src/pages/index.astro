@@ -41,6 +41,8 @@ const langColors: Record<string, string> = {
   TypeScript: '#3178C6',
   JavaScript: '#F1E05A',
   Python: '#3572A5',
+  Java: '#B07219',
+  Kotlin: '#A97BFF',
   'C++': '#F34B7D',
   C: '#555555',
   Rust: '#DEA584',
@@ -125,6 +127,7 @@ const skills = [
   {
     category: 'AI TOOLS — 個人開発',
     items: [
+      { name: 'Claude Code', level: 85, description: 'サブエージェント・フック・SDD でこのサイトを自律開発' },
       { name: 'GitHub Copilot', level: 90, description: 'AI ペアプログラミング・SWE Agent による Issue → PR 自動化' },
       { name: 'MCP', level: 80, description: 'GitHub / Playwright / Tailwind 等の MCP サーバーでエージェント能力を拡張' },
       { name: 'AI Agent 構築', level: 75, description: 'AGENTS.md / .kiro / .instructions.md でプロジェクト別 AI 挙動をカスタマイズ' },
@@ -270,7 +273,7 @@ const aiTools: AiTool[] = [
           client:load
           name="H.NIGO"
           role="SOFTWARE ENGINEER"
-          description="低レイヤーからアプリケーションまで。C/C++, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。"
+          description="低レイヤーからアプリケーションまで。C/C++, Java, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。"
           githubUrl="https://github.com/nigoh"
           avatarUrl="https://github.com/nigoh.png"
         />
