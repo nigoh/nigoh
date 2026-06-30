@@ -194,7 +194,7 @@ export default function AnimatedHero({
           <animated.div style={avatarSpring} className="relative w-44 h-44 sm:w-56 sm:h-56 z-10">
             <img
               src={avatarUrl}
-              alt={name}
+              alt={`${name} のプロフィール写真`}
               width="224"
               height="224"
               className="w-full h-full object-cover grayscale contrast-[1.3] brightness-90"

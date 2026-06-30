@@ -1,4 +1,4 @@
-import { useSpring, animated } from '@react-spring/web';
+import { useSpring, animated, useReducedMotion } from '@react-spring/web';
 import { useEffect, useRef, useState } from 'react';
 
 interface Skill {
@@ -19,6 +19,8 @@ interface AnimatedSkillBarProps {
 function SkillBar({ skill, delay, index }: { skill: Skill; delay: number; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  // prefers-reduced-motion: reduce 時はバー幅・数値を最終値で即時表示
+  const reduceMotion = useReducedMotion() ?? false;
 
   useEffect(() => {
     const el = ref.current;
@@ -42,12 +44,14 @@ function SkillBar({ skill, delay, index }: { skill: Skill; delay: number; index:
     opacity: isVisible ? 1 : 0,
     delay,
     config: { tension: 50, friction: 18 },
+    immediate: reduceMotion,
   });
 
   const numberSpring = useSpring({
     val: isVisible ? skill.level : 0,
     delay,
     config: { tension: 50, friction: 18 },
+    immediate: reduceMotion,
   });
 
   return (

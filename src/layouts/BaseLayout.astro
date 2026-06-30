@@ -4,6 +4,8 @@ interface Props {
   description?: string;
 }
 
+import '../styles/global.css';
+
 const { title, description = 'H.Nigo - 札幌在住ソフトウェアエンジニアの自己紹介サイト' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const siteUrl = 'https://nigoh.github.io/nigoh/';
