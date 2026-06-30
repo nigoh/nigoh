@@ -81,6 +81,7 @@ function buildSpecs(THREE: typeof THREE_NS): ObjSpec[] {
       rot: [d(8), d(18), d(-48)],
       spin: [0.0, 0.022, 0.01],
       bob: 0.1,
+      mobileDrop: true,
     },
     // D: 黒い正方板（赤の対）— A とは別角度で独立して浮遊（"画面"読みを避ける）。cream 稜線で見せる
     {
@@ -160,7 +161,7 @@ export default function ProunCanvas() {
       const rect = host.getBoundingClientRect();
       let width = Math.max(1, Math.round(rect.width));
       let height = Math.max(1, Math.round(rect.height));
-      const isMobile = width < 480;
+      const isMobile = width < 768;
 
       const scene = new THREE.Scene();
 
@@ -181,7 +182,8 @@ export default function ProunCanvas() {
       let camera = makeCamera(width, height);
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      // モバイルは DPR を抑えてバッテリ/負荷を軽減
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
       renderer.setSize(width, height);
       host.appendChild(renderer.domElement);
 
@@ -189,12 +191,19 @@ export default function ProunCanvas() {
       // 各面を正しい単色にする（Lambert だと陰面が灰色化し cream が濁る）。ライト不要。
       // 軸測（消失点なし）＋オーバーラップ＋傾きで立体を読ませる。
 
-      // Proun を中央右へ寄せ、本文カラム背後（左上）を空ける。
-      // scale を下げて大きな負空間（Proun の主役＝余白）を確保。
+      // 配置: デスクトップは中央右に showpiece。モバイルは本文が縦積みで全幅を使うため、
+      // 構図を上部（極大 H1 周辺）に寄せて説明文の帯を空け、核オブジェのみのコンパクト構図にする。
       const group = new THREE.Group();
-      group.position.set(1.1, 0.6, 0);
-      group.scale.setScalar(0.84);
+      if (isMobile) {
+        group.position.set(-0.5, 2.9, 0);
+        group.scale.setScalar(0.5);
+      } else {
+        group.position.set(1.1, 0.6, 0);
+        group.scale.setScalar(0.84);
+      }
       scene.add(group);
+      // モバイルは H1 近傍に出るため存在感をやや抑える
+      host.style.opacity = String(isMobile ? 0.82 : LAYER_OPACITY);
 
       const geoms: THREE_NS.BufferGeometry[] = [];
       const mats: THREE_NS.Material[] = [];
@@ -308,8 +317,8 @@ export default function ProunCanvas() {
     <div
       ref={hostRef}
       aria-hidden="true"
-      // モバイルでは装飾を非表示（本文の可読性最優先 / three も読まない）。md 以上で showpiece。
-      className="absolute inset-0 overflow-hidden hidden md:block"
+      // 背面装飾。デスクトップは中央右の showpiece、モバイルは上部のコンパクト構図（effect で配置）。
+      className="absolute inset-0 overflow-hidden"
       style={{ opacity: LAYER_OPACITY, pointerEvents: 'none' }}
     >
       {fallback && <ProunFallback />}
@@ -325,7 +334,7 @@ export default function ProunCanvas() {
 function ProunFallback() {
   return (
     <svg
-      className="absolute top-1/2 right-[4%] -translate-y-1/2 w-[48%] sm:w-[44%] max-w-xl"
+      className="absolute right-[3%] top-[9%] w-[58%] sm:top-1/2 sm:-translate-y-1/2 sm:right-[4%] sm:w-[44%] max-w-xl"
       viewBox="0 0 120 92"
       preserveAspectRatio="xMidYMid meet"
       role="presentation"
