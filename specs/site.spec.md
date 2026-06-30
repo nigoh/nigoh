@@ -42,7 +42,8 @@ H.Nigo（Hironobu Nigo）の個人自己紹介・履歴書・スキル表サイ�
 
 ## SEO
 - 各ページに固有の `<title>` と `<meta description>`
-- OGP メタタグ
+- OGP / Twitter Card メタタグ
+- 構造化データ（JSON-LD `Person`、`knowsAbout` に主要技術を列挙）
 - セマンティック HTML
 
 ## 受入条件
