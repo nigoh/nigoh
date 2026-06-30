@@ -1,63 +1,70 @@
 # トップページ仕様
 
 ## 目的
-訪問者に H.Nigo の概要・スキル・経歴を伝える1ページ完結型の履歴書・スキル表サイト。
+訪問者に H.Nigo の概要・スキル・経歴・AI 活用を伝える 1 ページ完結型の履歴書・スキル表サイト。
 
 ## パス
 `/` (`src/pages/index.astro`)
 
+## デザイン言語
+ロシア構成主義（エル・リシツキー）。パレットは `tailwind.config.mjs` の `constructivist.*`
+（red `#D62828` / black `#1A1A1A` / cream `#F5F0EB` / gray `#8B8680` / darkgray `#3D3A37`）が唯一の出典。
+角丸なし・シャープエッジ・ボールドタイポ・大文字見出し。詳細は CLAUDE.md と `specs/components/*`。
+
 ## セクション構成
 
 ### 1. Hero セクション
-- GitHub アバター画像（丸型、`ring-4` 装飾、120x120）
-- 名前: 「H.Nigo」（`text-3xl sm:text-4xl font-bold`）
-- 役割表記: 「Software Engineer」（ブルーアクセント）
-- 簡潔な一行自己紹介
-- GitHub プロフィールリンク（アイコン付き）
-- コンパクトヘッダー形式（フルスクリーンではない）
-- パディング: `py-20 sm:py-28`
+- 背景 `bg-constructivist-black`、`min-h-[90vh]`
+- El Lissitzky 風 3D Proun 装飾（`ProunCanvas`, Three.js・軸測投影, `client:visible`）
+- `AnimatedHero`（名前「H.NIGO」/ 役割「SOFTWARE ENGINEER」/ 一行自己紹介 / GitHub リンク・アバター）
+- 自己紹介文に C/C++・TypeScript・Python と AI ツール活用を明記
 
-### 2. About セクション
-- 2カラムレイアウト（sm以上）:
-  - 左: 基本情報カード（Name / Born / Location / Role）— `dl` 要素、カードスタイル
-  - 右: 自己紹介文（2段落）
-- 背景: `bg-slate-100/50 dark:bg-slate-800/30`（交互背景）
+### 2. About セクション（`#about`）
+- 構成主義タイル装飾（`ConstructivistCanvas section="about"`）＋左端の赤い縦帯
+- 2 カラム（md 以上）:
+  - 左: 基本情報 `dl`（Name / Born / Location / Role）— `border-l-4` のシャープなカード
+  - 右: 自己紹介文（現在の組み込み Android（Java）開発を含む）
 
-### 3. Skills セクション
-- カテゴリ別グループ:
-  - Languages: C/C++ (90%), Rust (75%), Python (80%)
-  - Tools & Infrastructure: Git (90%), Linux (85%), Docker (80%)
-- 各スキルにプログレスバー（ブルーグラデーション）＋パーセント表示
-- GitHub Stats カード（ライト/ダーク別画像、readme-stats 2枚）
+### 3. Skills セクション（`#skills`）
+- 背景 `bg-constructivist-black`、`ConstructivistCanvas section="skills"`
+- カテゴリ別グループ（`AnimatedSkillBar`）: LANGUAGES / FRAMEWORKS・PLATFORMS / OS / DATABASE /
+  TOOLS & INFRASTRUCTURE / AI TOOLS。各スキルに赤系プログレスバー＋パーセント
+- GitHub Activity: コントリビューションカレンダー・Stars/Followers バッジ・
+  言語分布グラフ（ビルド時に GitHub API から取得、失敗時はバッジへフォールバック）
 
-### 4. Career セクション
-- 職務経歴一覧（カード形式、業種・担当工程・技術スタック）
-- 6エントリ: 直近〜現在 / 〜3年前 / 〜4年前 / 〜5年前 / 〜6年前 / 初期
-- クライアント名・案件番号・具体的な期間は非掲載
-- 背景: `bg-constructivist-black`
+### 4. AI-Powered Dev セクション（`#ai`）
+- `ConstructivistCanvas section="ai"`
+- `aiTools` 配列を 2 カラムグリッドで描画（Claude Code / Copilot SWE Agent / Codex /
+  MCP / Agent Config / Spec-Driven Dev）。各カードは Heroicons outline アイコン＋説明
+- INTEREST & FOCUS: RAG / 開発フロー整備 / 技術普及の 3 枚
 
-### 5. Portfolio セクション
-- プロジェクトカード（リンク付き、ホバーエフェクト + タグバッジ）
-- Blog 準備中セクション
+### 5. Career セクション（`#career`）
+- 背景 `bg-constructivist-black`、赤い縦軸＋ダイヤモンドマーカーのタイムライン
+- 7 エントリ（2026 組み込み Android 〜 2016 初期）。年・期間・業種・担当工程・技術スタックを記載
+- クライアント名・案件番号・具体的な期間は非掲載（業種・技術領域のみ）
 
-### 6. Contact セクション
-- 中央寄せ、簡潔な説明文
-- GitHub リンクボタン（`bg-blue-600` ソリッドボタン）
-- 背景: 交互背景
+### 6. Portfolio セクション（`#portfolio`）
+- `projects` をカードグリッドで描画（リンク・ホバー・タグバッジ）＋右端の赤い縦帯
+- Blog (Zenn): ビルド時に Zenn API から最新記事を取得、失敗時はフォールバックカード
+
+### 7. Contact セクション（`#contact`）
+- 背景 `bg-constructivist-black`、中央寄せ、装飾的幾何学（円・回転矩形, `aria-hidden`）
+- GitHub リンクボタン（`bg-constructivist-red`）
 
 ## デザイン指針
-- セクション間のパディング: `py-20`
-- 交互背景: `bg-slate-100/50 dark:bg-slate-800/30` と透明の繰り返し
-- カード: `rounded-xl` + `shadow-sm` + `border` + ホバーで `shadow-md`
-- ダーク/ライト両対応のカラークラスを全要素に適用
+- セクション間パディング: `py-20`
+- 背景は cream / black の交互。装飾は純装飾で `aria-hidden`
+- カードは角丸なし・`border-2`／`border-l-4` のシャープエッジ、隣接セルは枠線を共有
+- 配色は `constructivist.*` のみを使用（新色を足さない）
 
 ## 受入条件
-- [ ] Hero セクションがコンパクトに表示される（フルスクリーンではない）
-- [ ] About セクションが2カラムで表示される（sm以上）
-- [ ] Skills がカテゴリ別にプログレスバーで表示される
-- [ ] GitHub Stats がライト/ダーク別に適切な画像で表示される
-- [ ] Career セクションが職務経歴カード一覧で表示される
-- [ ] Portfolio カードがホバーエフェクト付きで表示される
+- [ ] Hero に 3D Proun 装飾と H.NIGO の一行自己紹介・GitHub リンクが表示される
+- [ ] About が 2 カラムで表示され、現在の Android（Java）開発に言及している
+- [ ] Skills がカテゴリ別にプログレスバーで表示され、Android SDK を含む
+- [ ] GitHub Activity（カレンダー・バッジ・言語分布）が表示される
+- [ ] AI-Powered Dev に Claude Code を含む各カードが表示される
+- [ ] Career が 7 エントリのタイムラインで表示され、最新が 2026 の組み込み Android である
+- [ ] Portfolio カードと Zenn 記事一覧が表示される
 - [ ] Contact に GitHub リンクボタンが表示される
-- [ ] ライト/ダークモードで全セクションが正しく表示される
 - [ ] 全セクションがモバイルで正しく表示される
+- [ ] `npx astro check` が 0 エラー、`npm run build` が成功する

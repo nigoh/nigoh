@@ -2,13 +2,17 @@
 
 **Software Engineer** based in Sapporo, Hokkaido, Japan.
 
-Low-level systems to modern web apps — I build things with C/C++, TypeScript, and Python, powered by AI tools.
+Low-level systems to modern web apps — I build things with C/C++, Java, TypeScript, and Python, powered by AI tools.
+
+Currently working on **embedded Android** (Java) development — detailed design, implementation, and testing.
 
 ---
 
 ## 🛠 Tech Stack
 
 ![C/C++](https://img.shields.io/badge/C%2FC++-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)
+![Java](https://img.shields.io/badge/Java-007396?style=flat-square&logo=openjdk&logoColor=white)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
@@ -18,10 +22,11 @@ Low-level systems to modern web apps — I build things with C/C++, TypeScript, 
 
 ## 🤖 AI-Powered Development
 
+![Claude Code](https://img.shields.io/badge/Claude%20Code-D97757?style=flat-square&logo=anthropic&logoColor=white)
 ![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-000000?style=flat-square&logo=githubcopilot&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-5C2D91?style=flat-square&logoColor=white)
 
-Actively using **GitHub Copilot SWE Agent**, **OpenAI Codex**, and **MCP servers** in personal projects. I manage agent behavior with `.instructions.md`, `AGENTS.md`, and `.kiro` configs.
+Actively using **Claude Code**, **GitHub Copilot SWE Agent**, **OpenAI Codex**, and **MCP servers** in personal projects. I manage agent behavior with `CLAUDE.md`, `.instructions.md`, `AGENTS.md`, and `.kiro` configs, and practice spec-driven development (SDD).
 
 ---
 
