@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Section 3D Accents — 構図プロトタイプ（脇役・軸測 SVG 図解）</title>
+<!--
+  spec: specs/components/section-3d.spec.md
+  依存なし。各セクションの「3D アクセントの隅配置・明暗のエッジ扱い・本文回避」を
+  静止 SVG（軸測）で確認するための図解。実装ではなく構図の合意用。
+  色は constructivist パレットのみ:
+    red #D62828 / black #1A1A1A / cream #F5F0EB / gray #8B8680 / darkgray #3D3A37
+-->
+<style>
+  :root{
+    --red:#D62828; --black:#1A1A1A; --cream:#F5F0EB; --gray:#8B8680; --darkgray:#3D3A37;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#0d0d0d;color:var(--cream);font-family:Inter,system-ui,sans-serif}
+  header{padding:24px 20px 8px;max-width:1100px;margin:0 auto}
+  h1{font-size:18px;letter-spacing:.04em;margin:0 0 4px}
+  header p{margin:0;color:var(--gray);font-size:13px;line-height:1.6}
+  .grid{max-width:1100px;margin:0 auto;padding:16px 20px 40px;display:grid;gap:16px;
+        grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .sec{position:relative;height:240px;overflow:hidden;border:1px solid #2a2a2a}
+  .sec.dark{background:var(--black)}
+  .sec.light{background:var(--cream)}
+  /* 本文カラム（読み幅）のダミー。3D はここに被らない、を示す */
+  .body{position:absolute;z-index:10;inset:0;padding:18px 20px}
+  .h2{font-family:"Bebas Neue",Impact,sans-serif;font-weight:700;font-size:34px;line-height:.9;
+      letter-spacing:.02em;text-transform:uppercase}
+  .sec.light .h2{color:var(--black)} .sec.dark .h2{color:var(--cream)}
+  .lede{font-size:11px;margin-top:8px;max-width:60%;line-height:1.5}
+  .sec.light .lede{color:var(--darkgray)} .sec.dark .lede{color:var(--gray)}
+  .tag{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);font-weight:700}
+  /* 読み幅の参考枠（点線）。3D が侵入しないことを目視するためのガイド */
+  .readband{position:absolute;z-index:5;inset:14px 38% 14px 16px;border:1px dashed rgba(139,134,128,.45)}
+  .sec.light .readband{border-color:rgba(61,58,55,.35)}
+  /* 3D アクセントの隅ビューポート（小矩形）。実装の host div に相当 */
+  .accent{position:absolute;z-index:1;width:34%;aspect-ratio:1/1}
+  .accent.tl{top:8px;left:8px} .accent.tr{top:8px;right:8px}
+  .accent.bl{bottom:8px;left:8px} .accent.br{bottom:8px;right:8px}
+  .accent.rc{top:50%;right:8px;transform:translateY(-50%);width:26%}
+  .accent.cornermark{outline:1px dashed rgba(214,40,40,.35);outline-offset:2px}
+  figure{margin:0}
+  figcaption{font-size:11px;color:var(--gray);padding:6px 4px 0;line-height:1.5}
+  figcaption b{color:var(--cream)}
+  .legend{max-width:1100px;margin:0 auto;padding:0 20px 40px;color:var(--gray);font-size:12px;line-height:1.7}
+  .legend code{color:var(--cream)}
+  .swatches{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 0}
+  .sw{display:flex;align-items:center;gap:6px;font-size:11px}
+  .chip{width:14px;height:14px;border:1px solid #333}
+</style>
+</head>
+<body>
+<header>
+  <h1>Section 3D Accents — 構図プロトタイプ（脇役）</h1>
+  <p>
+    各セクションに置く小さな 3D アクセントの<b>隅配置・明暗のエッジ扱い・本文回避</b>の図解（軸測 SVG・静止）。
+    点線の赤枠＝3D の小矩形ビューポート（host）、点線の灰枠＝本文の読み幅（3D はここに被らない）。
+    実装は <code>specs/components/section-3d.spec.md</code> §2 の表に従う。
+  </p>
+  <div class="swatches">
+    <span class="sw"><span class="chip" style="background:#D62828"></span>red #D62828</span>
+    <span class="sw"><span class="chip" style="background:#1A1A1A"></span>black #1A1A1A</span>
+    <span class="sw"><span class="chip" style="background:#F5F0EB"></span>cream #F5F0EB</span>
+    <span class="sw"><span class="chip" style="background:#8B8680"></span>gray #8B8680</span>
+    <span class="sw"><span class="chip" style="background:#3D3A37"></span>darkgray #3D3A37</span>
+  </div>
+</header>
+
+<div class="grid">
+
+  <!-- ABOUT 明背景・右下隅・黒板＋赤小板＋黒棒 -->
+  <figure>
+    <div class="sec light">
+      <div class="readband"></div>
+      <div class="body"><div class="h2">ABOUT</div><div class="lede">右カラムの紹介文。3D は右下の余白へ。</div></div>
+      <div class="accent br cornermark">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
+          <!-- a3 黒い細棒（対角） -->
+          <polygon points="14,86 18,84 86,40 82,42" fill="#1A1A1A"/>
+          <!-- a1 黒い薄板（軸測平行四辺形） -->
+          <polygon points="30,58 66,48 74,68 38,78" fill="#1A1A1A"/>
+          <!-- a2 赤い小実心板（a1 右上に重ね） -->
+          <polygon points="58,42 76,37 80,49 62,54" fill="#D62828"/>
+        </svg>
+      </div>
+    </div>
+    <figcaption><b>ABOUT</b>（明）右下。黒板＋赤小板＝二正方形の縮小。<br>black/red 実面（cream 面は使わない）。opacity 0.30</figcaption>
+  </figure>
+
+  <!-- SKILLS 暗背景・右上隅・黒板(cream稜線)＋赤円環＋cream棒 -->
+  <figure>
+    <div class="sec dark">
+      <div class="readband"></div>
+      <div class="body"><div class="h2">SKILLS</div><div class="lede">スキルバーが幅広。3D は右上隅へ。</div></div>
+      <div class="accent tr cornermark">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
+          <!-- s3 cream 細棒 -->
+          <polygon points="20,18 24,16 88,52 84,54" fill="#F5F0EB" opacity="0.5"/>
+          <!-- s1 黒板＋cream 稜線 -->
+          <polygon points="26,30 62,20 70,40 34,50" fill="#1A1A1A" stroke="#F5F0EB" stroke-width="1.2"/>
+          <!-- s2 赤い円環 -->
+          <ellipse cx="60" cy="64" rx="16" ry="8" fill="none" stroke="#D62828" stroke-width="2.4" transform="rotate(-14 60 64)"/>
+        </svg>
+      </div>
+    </div>
+    <figcaption><b>SKILLS</b>（暗）右上。黒板は<b>cream 稜線</b>で見せ、red 円環が主役色。opacity 0.34</figcaption>
+  </figure>
+
+  <!-- AI 明背景・右上隅・向き合う2楔＋黒棒 -->
+  <figure>
+    <div class="sec light">
+      <div class="readband"></div>
+      <div class="body"><div class="h2">AI-POWERED</div><div class="lede">2 エージェント協調。3D も 2 楔が呼応。</div></div>
+      <div class="accent tr cornermark">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
+          <!-- ai3 黒い棒（2者を結ぶ） -->
+          <polygon points="26,64 30,62 76,40 72,42" fill="#1A1A1A"/>
+          <!-- ai1 赤い楔（先端を左下へ） -->
+          <polygon points="70,26 88,34 66,44" fill="#D62828"/>
+          <!-- ai2 赤い楔（鏡像・先端を右上へ・向き合う） -->
+          <polygon points="40,68 22,60 44,50" fill="#D62828"/>
+        </svg>
+      </div>
+    </div>
+    <figcaption><b>AI</b>（明）右上。<b>向き合う 2 楔</b>＝協調する 2 エージェント。red 楔＋black 棒。opacity 0.34</figcaption>
+  </figure>
+
+  <!-- CAREER 暗背景・右中段・縦の赤棒＋ダイヤ＋黒板 -->
+  <figure>
+    <div class="sec dark">
+      <div class="readband"></div>
+      <div class="body"><div class="h2">CAREER</div><div class="lede">左に赤い縦タイムライン軸。3D は右に縦の力線で呼応。</div></div>
+      <div class="accent rc cornermark">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
+          <!-- c3 黒板＋cream 稜線（背後にずらす） -->
+          <polygon points="44,40 66,34 72,50 50,56" fill="#1A1A1A" stroke="#F5F0EB" stroke-width="1.2"/>
+          <!-- c1 赤い縦の細棒（時間の柱） -->
+          <polygon points="34,8 40,6 44,92 38,94" fill="#D62828"/>
+          <!-- c2 赤い小ダイヤ（節目） -->
+          <polygon points="38,24 44,28 40,34 34,30" fill="#D62828"/>
+        </svg>
+      </div>
+    </div>
+    <figcaption><b>CAREER</b>（暗）右中段。<b>縦の赤棒＝時間の柱</b>＋ダイヤ（本文マーカー呼応）。黒板は cream 稜線。opacity 0.28</figcaption>
+  </figure>
+
+  <!-- PORTFOLIO 明背景・左下隅・中空枠2つ＋赤点 -->
+  <figure>
+    <div class="sec light">
+      <div class="readband" style="inset:14px 16px 14px 38%"></div>
+      <div class="body" style="text-align:right"><div class="h2">PORTFOLIO</div><div class="lede" style="max-width:60%;margin-left:auto">カードグリッド。右に赤バー。3D は左下隅へ。</div></div>
+      <div class="accent bl cornermark">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
+          <!-- p1 黒い中空正方枠（軸測・線で） -->
+          <polygon points="22,58 58,46 66,66 30,78" fill="none" stroke="#1A1A1A" stroke-width="3"/>
+          <!-- p2 赤い実心小板（枠内の点） -->
+          <polygon points="38,60 50,56 54,64 42,68" fill="#D62828"/>
+          <!-- p3 黒い中空小枠（右上に反復） -->
+          <polygon points="58,36 78,30 84,44 64,50" fill="none" stroke="#1A1A1A" stroke-width="2.2"/>
+        </svg>
+      </div>
+    </div>
+    <figcaption><b>PORTFOLIO</b>（明）左下。<b>中空正方枠 2 つ＋赤点</b>＝枠のリズム。black 枠線＋red 実面。opacity 0.30</figcaption>
+  </figure>
+
+  <!-- CONTACT 暗背景・左上隅・赤円環1つ（最小） -->
+  <figure>
+    <div class="sec dark">
+      <div class="readband" style="inset:14px 20% 14px 20%"></div>
+      <div class="body" style="text-align:center"><div class="h2">CONTACT</div><div class="lede" style="max-width:80%;margin:8px auto 0">中央寄せ・静。3D は左上隅に円環 1 個だけ。</div></div>
+      <div class="accent tl cornermark" style="width:28%">
+        <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
+          <!-- ct1 赤い薄い円環（唯一） -->
+          <ellipse cx="50" cy="50" rx="34" ry="17" fill="none" stroke="#D62828" stroke-width="2.6" transform="rotate(-18 50 50)"/>
+          <!-- ct2 赤い小板（縁に1点） -->
+          <polygon points="74,40 84,36 88,44 78,48" fill="#D62828"/>
+        </svg>
+      </div>
+    </div>
+    <figcaption><b>CONTACT</b>（暗）左上。最も静か＝<b>円環 1 個</b>。中央の大円（CSS）と語彙を合わせる。opacity 0.18</figcaption>
+  </figure>
+
+</div>
+
+<div class="legend">
+  <p><b>読み方</b>：
+    赤い点線＝3D の小矩形ビューポート（実装の host div）。灰色点線＝本文の読み幅（3D は侵入しない）。
+    SVG は軸測（消失点なし）で 3D 初期姿勢を近似した図解で、reduced-motion / WebGL 非対応時のフォールバック構図そのもの。</p>
+  <p><b>明暗の原則</b>：
+    暗背景（skills/career/contact）は<code>黒面=cream 稜線で輪郭・red 主役</code>、
+    明背景（about/ai/portfolio）は<code>black/red 実面・cream 面は不使用</code>。</p>
+  <p><b>隅のジグザグ</b>：about=右下 / skills=右上 / ai=右上 / career=右中 / portfolio=左下 / contact=左上。
+    隣接で同じ隅に連続させず、スクロールで点景がジグザグに散る。本文カラムの逆側に寄せて非干渉。</p>
+</div>
+</body>
+</html>
