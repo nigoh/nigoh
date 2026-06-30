@@ -33,32 +33,6 @@ export default function AnimatedHero({
     immediate: reduceMotion,
   });
 
-  // 赤い大ブロック（Proun背景）
-  const redBlockSpring = useSpring({
-    opacity: ready ? 1 : 0,
-    transform: ready ? 'scale(1) rotate(-6deg)' : 'scale(0.5) rotate(-30deg)',
-    config: { tension: 70, friction: 14 },
-    delay: 900,
-    immediate: reduceMotion,
-  });
-
-  // 黒い小ブロック
-  const blackBlockSpring = useSpring({
-    opacity: ready ? 0.9 : 0,
-    transform: ready ? 'translate(0px,0px) rotate(12deg)' : 'translate(-30px,30px) rotate(50deg)',
-    config: { tension: 80, friction: 16 },
-    delay: 1100,
-    immediate: reduceMotion,
-  });
-
-  // 輪郭円
-  const circleOpacity = useSpring({
-    opacity: ready ? 0.25 : 0,
-    config: { tension: 60, friction: 14 },
-    delay: 1300,
-    immediate: reduceMotion,
-  });
-
   // アバター
   const avatarSpring = useSpring({
     opacity: ready ? 1 : 0,
@@ -79,21 +53,7 @@ export default function AnimatedHero({
   return (
     <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16">
 
-      {/* Proun的な幾何学コンポジション — 右端へ寄せ、avatar と別重心に（余白の谷を作る） */}
-      <div className="absolute top-24 right-0 w-56 h-56 sm:top-0 sm:w-80 sm:h-80 pointer-events-none" aria-hidden="true">
-        <animated.div
-          style={redBlockSpring}
-          className="absolute top-4 right-0 w-36 h-36 sm:w-52 sm:h-52 bg-constructivist-red origin-center"
-        />
-        <animated.div
-          style={blackBlockSpring}
-          className="absolute top-12 right-8 w-16 h-16 sm:top-20 sm:right-12 sm:w-24 sm:h-24 bg-constructivist-black origin-center"
-        />
-        <animated.div
-          style={circleOpacity}
-          className="absolute top-0 right-0 w-28 h-28 sm:w-40 sm:h-40 rounded-full border-4 border-constructivist-cream"
-        />
-      </div>
+      {/* 右上の Proun 装飾は 3D（ProunCanvas）に一本化。ここでは重複させない。 */}
 
       <div className="flex flex-col md:flex-row items-start gap-0 md:gap-20">
 

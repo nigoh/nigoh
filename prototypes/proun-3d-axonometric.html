@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>3D Proun 軸測構図プロトタイプ（El Lissitzky）</title>
+<!--
+  目的: designer → frontend(Three.js) 受け渡し用の軽量プロトタイプ（依存なし・SVG）。
+  El Lissitzky / Proun の「軸測投影（消失点なし）・上下の概念なし・少数の幾何形が
+  負空間に浮遊・赤い楔のアクセント」を、Three.js を使わず SVG の等角投影で図解する。
+  - これは仕様の図解であって本番実装ではない（実装は src/ で frontend が Three.js で行う）。
+  - 本図は OrthographicCamera で見たときの「初期姿勢のスナップショット」を意図する。
+  - 配置の意図: 本文（左の極大 H1）の背後を空け、Proun を右上〜中央右に寄せて重心をずらす。
+    左下に diagonal の楔で対角の力線。reduced-motion 時はこの静止図がフォールバックの基準。
+  パレット: red #D62828 / black #1A1A1A / cream #F5F0EB / gray #8B8680 / darkgray #3D3A37 のみ。
+-->
+<style>
+  :root {
+    --red:#D62828; --black:#1A1A1A; --cream:#F5F0EB; --gray:#8B8680; --darkgray:#3D3A37;
+  }
+  * { box-sizing:border-box; margin:0; }
+  body { background:#0d0d0d; color:var(--cream); font-family:Inter,system-ui,sans-serif; padding:24px; }
+  h2 { font-size:14px; letter-spacing:.25em; text-transform:uppercase; color:var(--gray); margin-bottom:12px; }
+  .stage { position:relative; width:100%; max-width:1100px; aspect-ratio:14/7; background:var(--black); margin:0 auto 28px; overflow:hidden; }
+  .stage svg { position:absolute; inset:0; width:100%; height:100%; }
+  /* 本文カラム（z上）— 実際は AnimatedHero。Proun が背後に来ても読めることを確認するため重ねる */
+  .text { position:absolute; left:4%; top:16%; right:42%; z-index:2; }
+  .label { color:var(--cream); font-size:12px; letter-spacing:.3em; text-transform:uppercase; display:flex; gap:10px; align-items:center; }
+  .label .rule { width:32px; height:2px; background:var(--red); }
+  .h1 { font-family:'Bebas Neue',Impact,sans-serif; font-size:clamp(40px,10vw,140px); line-height:.85; letter-spacing:-.02em; color:var(--cream); margin:.1em 0; }
+  .role { display:inline-flex; align-items:center; }
+  .wedge { width:0;height:0;border-top:14px solid transparent;border-bottom:14px solid transparent;border-left:20px solid var(--red); }
+  .band { background:var(--red); color:var(--cream); padding:6px 16px; font-family:'Bebas Neue',Impact,sans-serif; letter-spacing:.2em; font-size:clamp(14px,2.4vw,26px); }
+  .desc { color:var(--cream); font-size:14px; line-height:1.6; max-width:320px; margin-top:14px; border-left:2px solid var(--red); padding-left:14px; }
+  .avatar { position:absolute; right:5%; top:48%; width:18%; aspect-ratio:1; background:var(--gray); z-index:2; outline:4px solid var(--red); outline-offset:8px; }
+  .annot { color:var(--gray); font-size:12.5px; line-height:1.75; max-width:1100px; margin:0 auto; }
+  .annot b { color:var(--cream); }
+  .annot li { margin-bottom:4px; }
+  code { color:#e8a; font-family:'JetBrains Mono',monospace; font-size:.92em; }
+  .legend { display:flex; gap:18px; flex-wrap:wrap; max-width:1100px; margin:0 auto 16px; font-size:12px; color:var(--gray); }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .sw { width:14px; height:14px; display:inline-block; }
+</style>
+</head>
+<body>
+  <h2>3D Proun 軸測構図プロトタイプ — 消失点なし / 浮遊する幾何形 / 赤い楔</h2>
+
+  <div class="legend" aria-hidden="true">
+    <span><i class="sw" style="background:var(--red)"></i>red #D62828 — 主役の楔・薄面</span>
+    <span><i class="sw" style="background:var(--darkgray)"></i>darkgray #3D3A37 — 陰面（同一立体の暗い側）</span>
+    <span><i class="sw" style="background:var(--cream)"></i>cream #F5F0EB — 細い棒・輪郭円（抑制）</span>
+    <span><i class="sw" style="border:1px solid var(--gray)"></i>black #1A1A1A — 背景の負空間（主役）</span>
+  </div>
+
+  <div class="stage">
+    <!--
+      等角投影 SVG（軸測の図解）。Three.js では OrthographicCamera + isometric 角度に対応。
+      X 右下方向 (1,0.5)、Y 右上方向(? ここでは簡略に画面座標で配置)。
+      立体は「明面=本来の色 / 暗面=darkgray もしくは black寄り」で軸測の陰影を表現（光源1灯の方向性）。
+      消失点はない（全ての平行線は平行のまま）。
+    -->
+    <svg viewBox="0 0 1400 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <!-- ===== 負空間（背景）= 主役。何も描かない黒の海を中央〜左下に大きく残す ===== -->
+
+      <!-- (A) 薄い大スラブ（cream 面）— 中央右に傾いて浮遊。Proun の「平面と空間の緊張」の核。
+           軸測なので長方形は平行四辺形で表現。明面 cream / 側面 darkgray。 -->
+      <g opacity="0.92">
+        <!-- 上面（明） -->
+        <polygon points="900,150 1180,210 1090,330 810,270" fill="#F5F0EB" opacity="0.16"/>
+        <!-- 薄い厚み（側面・暗） -->
+        <polygon points="810,270 1090,330 1090,348 810,288" fill="#3D3A37" opacity="0.5"/>
+      </g>
+
+      <!-- (B) 赤い楔（三角柱）= アクセント。「赤い楔で白を撃て」。
+           中央右のスラブ(A)へ左上から切り込む対角の動勢。明面 red / 側面 darkgray。 -->
+      <g>
+        <!-- 楔の上面（明・赤） -->
+        <polygon points="640,360 980,250 1010,300 670,410" fill="#D62828"/>
+        <!-- 楔の側面（暗） -->
+        <polygon points="640,360 670,410 670,430 640,380" fill="#3D3A37"/>
+        <polygon points="670,410 1010,300 1010,320 670,430" fill="#3D3A37"/>
+      </g>
+
+      <!-- (C) 細長い棒（直方体・cream）= 線的要素。左下→右上の力線。明面 cream / 側面 darkgray。 -->
+      <g>
+        <polygon points="250,560 760,400 778,430 268,590" fill="#F5F0EB" opacity="0.8"/>
+        <polygon points="268,590 778,430 778,452 268,612" fill="#3D3A37" opacity="0.8"/>
+      </g>
+
+      <!-- (D) 黒い正方板（対の重み）= 二正方形の「黒」。右上、赤の対。負空間に半ば溶ける。 -->
+      <g opacity="0.95">
+        <polygon points="1080,120 1230,150 1180,250 1030,220" fill="#1A1A1A"/>
+        <polygon points="1080,120 1230,150 1230,156 1080,126" fill="#3D3A37"/>
+        <!-- 輪郭を cream の細線で（軸測のエッジを立てる・抑制） -->
+        <polygon points="1080,120 1230,150 1180,250 1030,220" fill="none" stroke="#F5F0EB" stroke-width="1.2" opacity="0.5"/>
+      </g>
+
+      <!-- (E) 円盤（薄い円柱・red 輪郭）= 運動。空間に立つ薄い円。中央右やや上。 -->
+      <g>
+        <ellipse cx="1000" cy="420" rx="78" ry="34" fill="none" stroke="#D62828" stroke-width="3" opacity="0.85"/>
+        <!-- 薄い厚み -->
+        <ellipse cx="1000" cy="430" rx="78" ry="34" fill="none" stroke="#3D3A37" stroke-width="1.5" opacity="0.6"/>
+      </g>
+
+      <!-- (F) 小さな赤い実心正方板（点景のアクセント）= リズム。左下、楔と呼応。 -->
+      <g>
+        <polygon points="360,470 430,485 408,540 338,525" fill="#D62828" opacity="0.9"/>
+      </g>
+
+      <!-- (G) 極細の cream 棒（縦に近い斜め）= 負空間を区切る一本の線。右端。 -->
+      <polygon points="1280,90 1296,96 1230,420 1214,414" fill="#F5F0EB" opacity="0.3"/>
+    </svg>
+
+    <!-- 本文（AnimatedHero 相当・z上）— Proun が背後でも H1 が読めることを確認 -->
+    <div class="text">
+      <div class="label"><span class="rule"></span>Software Engineer — Sapporo, Japan</div>
+      <div class="h1">H.NIGO</div>
+      <div class="role"><span class="wedge"></span><span class="band">SOFTWARE ENGINEER</span></div>
+      <div class="desc">低レイヤーからアプリケーションまで。C/C++, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。</div>
+    </div>
+    <div class="avatar" aria-hidden="true"></div>
+  </div>
+
+  <p class="annot">
+    <b>El Lissitzky / Proun に忠実な設計根拠:</b>
+  </p>
+  <ul class="annot">
+    <li><b>軸測投影（消失点なし）:</b> Three.js は必ず <code>OrthographicCamera</code>。PerspectiveCamera は不可。平行線は平行のまま。</li>
+    <li><b>上下の概念なし:</b> 立体はグリッド床に「立つ」のではなく負空間に浮遊。重力が曖昧。極ゆっくりの多軸ドリフトで浮遊感。</li>
+    <li><b>負空間が主役:</b> 中央〜左下の黒の海（本文 H1 の背後）を大きく空ける。少数の要素・大きな余白。</li>
+    <li><b>赤い楔のアクセント (B):</b> 「赤い楔で白を撃て」。赤の三角柱が cream スラブ(A)へ対角に切り込む動勢が構図の核。</li>
+    <li><b>二正方形の対:</b> 赤の楔/赤板(F) と 黒板(D) が赤黒の拮抗を作る。サイトの既存語彙（赤四角・黒四角）と一致。</li>
+    <li><b>軸測の陰影:</b> 各立体は明面（本来色）＋暗面（<code>darkgray #3D3A37</code>）で1灯の方向光を表現。マット（光沢なし）。</li>
+  </ul>
+  <p class="annot" style="margin-top:10px;">
+    <b>本文非干渉:</b> 左4%〜右42%（極大 H1・赤帯）の背後には立体を置かない。Proun は右上〜中央右に重心を寄せ、
+    avatar（右中）とも別重心。<b>不透明度:</b> レイヤー全体を <code>0.5</code> 前後まで後退（背景 canvas の hero opacity と同等思想）。<br>
+    <b>注:</b> 本図は等角 SVG による図解。実座標・カメラ角・速度は <code>specs/components/proun-3d.spec.md</code> と frontend の Three.js 実装で確定する。
+  </p>
+</body>
+</html>
