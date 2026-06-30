@@ -64,7 +64,7 @@ export const SECTIONS: Record<string, SectionConfig> = {
   skills: {
     key: 'skills',
     background: 'dark',
-    density: 0.5,
+    density: 0.4,
     agents: 1,
     palette: { red: 0.4, black: 0.1, cream: 0.5 },
     shapeWeights: { hollowSquare: 3, redSquare: 2, barH: 2, dot: 2, diagonal: 1 },
