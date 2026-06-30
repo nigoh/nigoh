@@ -15,11 +15,21 @@ function put(data, c, r, gid) {
 }
 
 const seeds = {
-  // Hero: 赤い正方形を主役に、円と斜線で運動感（About Two Squares 的）
+  // Hero: 右上の赤い主役正方形 + 黒の対 + 左下→右上の diagonal 力線（About Two Squares 的）。
+  // 左〜中央上（極大 H1・赤帯の背後）は疎にして本文の可読性を守る。構図: prototypes/hero-composition.html
   hero(d) {
-    put(d, 2, 1, 1); put(d, 3, 1, 6); put(d, 5, 2, 4);
-    put(d, 9, 1, 1); put(d, 11, 2, 6); put(d, 10, 4, 9);
-    put(d, 3, 4, 9); put(d, 6, 5, 1); put(d, 8, 3, 5);
+    // 右上の象限: 赤い主役正方形（AnimatedHero の Proun 赤ブロックと前後で重ねて増幅）
+    put(d, 11, 0, 1); put(d, 12, 1, 1);
+    // その斜め下: 黒の対（二正方形の拮抗）
+    put(d, 9, 2, 2);
+    // 左下→右上の diagonal 力線（視線を斜めに流す）
+    put(d, 1, 6, 6); put(d, 3, 5, 6); put(d, 7, 3, 6); put(d, 10, 1, 6);
+    // 中央右の運動（円弧・円）
+    put(d, 7, 2, 4); put(d, 8, 3, 5);
+    // 余白側に散らすドット（リズム）
+    put(d, 2, 6, 9); put(d, 5, 6, 9); put(d, 12, 4, 9);
+    // 左〜中央上は疎: ドット1点のみ（本文 H1 背後を空ける）
+    put(d, 4, 1, 9);
   },
   // About: 黒い力線（縦横バー + 斜線）を控えめに
   about(d) {

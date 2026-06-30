@@ -48,10 +48,10 @@ export const SECTIONS: Record<string, SectionConfig> = {
   hero: {
     key: 'hero',
     background: 'dark',
-    density: 0.32,
+    density: 0.36,
     agents: 1,
-    palette: { red: 0.55, black: 0.15, cream: 0.3 },
-    shapeWeights: { redSquare: 3, circle: 2, diagonal: 2, dot: 2, barV: 1, arc: 1 },
+    palette: { red: 0.6, black: 0.2, cream: 0.2 },
+    shapeWeights: { redSquare: 4, diagonal: 3, circle: 2, dot: 2, blackSquare: 1, arc: 1 },
   },
   about: {
     key: 'about',

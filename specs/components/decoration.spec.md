@@ -119,6 +119,140 @@ Tiled (.tmx / .tsx)  ──export──▶  public/tilemaps/*.json (+ tileset pn
 
 ---
 
+## Hero 変奏のデザイン指針（第一印象 ＝ 赤の主役性と対角の力線）
+
+> 対象: `src/pages/index.astro` の最初の `section`（暗背景 `bg-constructivist-black` / `min-h-[90vh]`）、
+> `src/components/AnimatedHero.tsx`、`src/components/phaser/sections.ts` の `hero` 設定、
+> `assets/tiled/gen-tilemaps.mjs` の `hero(d)` seed、`public/tilemaps/hero.json`。
+> Hero はサイトの「掴み」。3 秒以内に「構成主義 × ソフトウェアエンジニア H.NIGO」を視覚で言い切る。
+> 構図プロトタイプ: `prototypes/hero-composition.html`（依存なし・図解用）。
+
+### 第一印象の設計原則（エル・リシツキー「About Two Squares」の対）
+
+Hero は **赤い正方形（主役）と黒い正方形（対の重み）が対角に拮抗する**構図を全体の骨格にする。
+本文ブロック（左）の `AnimatedHero` の Proun コンポジション（右上の赤ブロック＋黒ブロック＋クリーム円）と、
+背後の canvas タイル装飾が**同じ「二つの正方形」の語彙**を反復し、画面全体を一つの構成主義作品にする。
+語彙は増やさない。**赤の主役性・対角の力線・余白の緊張・タイポ階層**の 4 つで第一印象を高める。
+
+### タイポ階層（AnimatedHero — 実装は frontend）
+
+第一印象は「名前 H.NIGO が極大で最初に目に入り、役割が赤帯で次に、説明文が最後」という
+**明確な 3 段の優先順位**で決まる。現状はこの階層が概ね成立しているが、第一印象を強めるための調整方針:
+
+- **H1（名前 H.NIGO）= 最強**: 現状の `text-[5.5rem]→lg:text-[10rem]` / `tracking-tighter` / `leading-none` を維持。
+  これがファーストビューの「掴み」。背後の薄い `01`（`opacity 0.05`）は Lissitzky 的ナンバリングとして残すが、
+  装飾なので `aria-hidden`（既に付与済）。**H1 と canvas タイルの cream が競合しないこと**が階層維持の条件
+  （後述の palette 調整で担保）。
+- **役割（SOFTWARE ENGINEER）= 第2階層**: 赤帯（`bg-constructivist-red`）＋左の楔（赤三角）で「赤の主役性」を
+  名前直下に置く現状は良い。第一印象を強めるなら、赤帯は H1 の左端から始まる**水平の力線**として効かせ、
+  楔の鋭角で視線を右（本文）へ送る役割を維持する。
+- **小ラベル（Software Engineer — Sapporo, Japan）= 第0階層（リード）**: 赤い短い横線＋`tracking-[0.3em]` uppercase で
+  「これから始まる」という導入。`text-xs text-constructivist-red` のコントラストに注意（後述 a11y）。
+- **説明文 = 第3階層（最弱）**: `text-constructivist-gray` ＋左赤ボーダーで主役を譲る現状を維持。
+  gray on black ≒ 4.82:1 で通常本文 AA(4.5:1) を満たす（後述）。階層上は弱めてよく、現状トークンで可。
+- **リズム**: H1（極大）→ 役割（中・赤帯）→ 説明（小・gray）の**サイズの跳躍を大きく保つ**ことで階層が立つ。
+  中間サイズの要素を増やさない（語彙を増やさない原則）。
+
+### 構図・余白の緊張（対角バランス）
+
+- **対角の力線**: 視線は「左下の小ラベル → 左の極大 H1 → 右上の赤い Proun ブロック → 右の avatar」へと
+  **左下→右上の対角**で流れるのが理想。現状、Proun コンポジションが右上、avatar が右側に**縦に重なって**おり、
+  右側が過密になりがち。frontend への提案: **avatar をやや下げる / Proun ブロックと avatar の間に余白の谷を作り**、
+  右上（Proun）と右中（avatar）が別々の重心として読めるようにする（`md:mt-20` の余白を活かす）。
+- **余白の拮抗（アシンメトリ）**: 左カラム（テキスト）が重いぶん、右上の赤ブロックを**画面右端ぎりぎりまで寄せ**、
+  左下〜中央に**意図的な余白（黒の海）**を残す。この「空」が H1 の大きさを引き立てる。canvas タイル装飾は
+  この余白側（左下・中央下）を**疎**にし、右上〜中央右に密度を寄せて Proun と呼応させる（seed 節参照）。
+- **下部の区切り装飾（赤いダイヤ＋線）**: 現状の `mt-12` の水平ルールは「ここで Hero が閉じる」境界として有効。
+  対角の流れを受け止める**水平の底**として維持。
+
+### 装飾タイルの主役性（canvas — sections.ts / seed）
+
+Hero タイル装飾は「掴み」の一部。本文の Proun コンポジションと**同じ二正方形の語彙**を背後で反復し、
+画面全体に構成主義の密度を与える。ただし**本文（極大 H1・赤帯・avatar）が主役**であり、装飾は増幅役。
+
+- **配色重心 = 赤を主役、cream を抑える**: 現状 `red 0.55 / black 0.15 / cream 0.3`。
+  cream `#F5F0EB` on black ≒ 15.4:1 は非常に明るく、**極大の cream H1 と視覚的に競合**しうる。
+  第一印象では「赤い正方形が主役」を明確にするため、**cream をやや下げ、赤をさらに主役化**する:
+  提案 `red 0.6 / black 0.2 / cream 0.2`。black を 0.15→0.2 に上げるのは「赤の対の黒正方形」を
+  Lissitzky 的に増やし、二正方形の拮抗を canvas でも表現するため（黒は暗背景に沈むので本文を邪魔しない）。
+- **密度 = やや上げて掴みを強める**: 現状 `0.32`。Hero は最も注目される面なので**やや密**に。
+  提案 `0.36`。ただし密度を上げる分、seed と配置重心で**本文カラム（左〜中央）背後を疎**に保ち、
+  右上〜中央右に寄せて H1・赤帯の可読性を守る。
+- **形状 = redSquare 最重 / diagonal で対角の力線 / circle で運動**: 現状
+  `redSquare 3, circle 2, diagonal 2, dot 2, barV 1, arc 1`。第一印象の「対角の力線」を強めるため、
+  **diagonal を circle と同格以上に**し、redSquare の主役性を保つ。提案
+  `{ redSquare: 4, diagonal: 3, circle: 2, dot: 2, blackSquare: 1, arc: 1 }`。
+  barV は Hero では落とす（縦の力線は Career の語彙。Hero は対角＝diagonal が力線）。
+  blackSquare を 1 加えるのは palette の black 増と呼応し「赤の対の黒」を出すため。
+- **エージェント挙動**: `agents: 1`・ゆったり巡回を維持。第一印象では「静かに build される構成主義作品」が
+  ふさわしく、過剰な動きは H1 の可読性を損なう。**初期 seed の時点で対角構図が成立**していること
+  （エージェントが組み替えても骨格が崩れない）を重視。
+
+### hero seed の構図調整（gen-tilemaps.mjs — 対角＋本文回避）
+
+現状の seed は赤正方形が `(2,1)` と `(9,1)` でほぼ左右対称に並び、**対角の力線が弱く・本文カラム左側
+（col 2 付近）に赤正方形が乗って H1 と干渉**しやすい。第一印象の骨格として以下に組み替える方針（14×7 グリッド）:
+
+- **対角の力線**: 左下（col 1〜3, row 5〜6）から右上（col 10〜12, row 0〜1）へ **diagonal(gid6) を斜めに連ね**、
+  左下→右上の視線の流れを seed レベルで作る。
+- **赤の主役正方形**: 主役の redSquare(gid1) は**右上の象限（col 10〜12, row 0〜1）**に置き、
+  AnimatedHero の右上 Proun 赤ブロックと**前後で重なって増幅**させる。対の blackSquare(gid2) を
+  その斜め下（col 9, row 2 付近）に置き「二正方形の対」を作る。
+- **本文カラム回避**: 左〜中央上（col 1〜6, row 0〜2＝極大 H1 と赤帯の背後）は**疎**にし、ドット(gid9)や
+  細い要素のみ。redSquare をこの帯に置かない（H1 cream との干渉回避）。
+- **運動の円・刻みのドット**: circle(gid4)/arc(gid5) は中央右（col 7〜9）に 1〜2 点、dot(gid9) を余白側に散らして
+  リズムを作る。形状語彙は sections.ts の shapeWeights と整合させる（barV は使わない）。
+
+> 具体的な put 座標は frontend が seed を書き換える際に上記の「象限の役割分担」に従う。
+> 骨格: 右上＝赤の主役、その斜め下＝黒の対、左下→右上＝diagonal の力線、左中上＝疎（本文回避）。
+> 参考レイアウトは `prototypes/hero-composition.html` を見ること。
+
+### 配色・コントラスト（暗背景 #1A1A1A 上 / a11y）— 実測値
+
+- **red `#D62828` on black ≒ 3.48:1** — 装飾図形（非テキスト・グラフィカル要素は 3:1 で十分）として OK。
+  **赤い正方形を主役**にできる。ただし**赤を本文テキスト色には使わない**（通常テキスト AA 4.5:1 未達）。
+- **小ラベル `text-xs text-constructivist-red` on black ≒ 3.48:1** は**通常テキスト AA(4.5:1) 未達**。
+  第一印象上は赤のアクセントとして許容範囲だが、厳密には
+  **小ラベルを `text-constructivist-cream`（cream on black ≒ 15.4:1）にし、赤は横線・楔だけで担保**する案を推奨。
+- **役割の赤帯**: cream on red ≒ 4.42:1。`text-xl sm:text-2xl`（大文字・大サイズ）で**大テキスト AA(3:1) を満たす**。
+  通常テキスト基準(4.5:1)にもほぼ達しており問題なし。
+- **説明文 `text-constructivist-gray (#8B8680)` on black ≒ 4.82:1** は**通常本文 AA(4.5:1) を満たす**。現状トークンで可。
+- 装飾は canvas（`relative z-10` の本文より下層）。**装飾の密度を上げても本文テキストのコントラストは
+  装飾が背後で下げない**こと（タイルは本文カラム背後で疎）。
+
+### モーション（reduced-motion 配慮）
+
+- `AnimatedHero` の react-spring（trail スライドイン・赤/黒ブロックの scale+rotate）は第一印象の演出として有効。
+  ただし**`prefers-reduced-motion: reduce` 時は遷移を無効化し、最終状態（`ready`）を即時表示**する設計にする
+  （frontend: `useReducedMotion` 等で `immediate` 化、または初期 transform をスキップ）。装飾の派手な回転は
+  reduced-motion では出さない。
+- canvas 装飾は既存方針どおり reduced-motion / 非対応時は静的フォールバック（`public/decoration-fallback/hero.svg`）。
+  フォールバックでも**「右上の赤い主役正方形＋黒の対＋左下→右上の diagonal 力線」の対角構図が静止で読める**こと。
+
+### 受入条件（Hero）
+
+- [x] `hero` の配色重心が**赤主体**（red ≥ black かつ red ≥ cream／cream は極大 H1 と競合しないよう抑制）。
+      ― `palette: { red: 0.6, black: 0.2, cream: 0.2 }`（sections.ts 反映済）
+- [x] `shapeWeights` が **redSquare 最重**、diagonal で対角の力線、circle で運動、blackSquare で対の重み。
+      barV は出現しない（縦の力線は Career の語彙）。 ― `{ redSquare: 4, diagonal: 3, circle: 2, dot: 2, blackSquare: 1, arc: 1 }`
+- [x] `density` を**やや上げて掴みを強める**（`0.36`）一方、本文カラム背後（左〜中央上）は seed で疎に保つ。
+      ― density 0.36、seed の左中上(col 1〜6,row 0〜2)はドット1点(col4,row1)のみ。
+- [x] hero seed が**左下→右上の diagonal 力線**と**右上の赤い主役正方形（＋斜め下の黒の対）**を持ち、
+      極大 H1・赤帯の背後（左〜中央上）に redSquare を置かない（本文との干渉回避）。
+      ― gid1 を (11,0)/(12,1)、対の gid2 を (9,2)、diagonal(gid6) を (1,6)→(3,5)→(7,3)→(10,1) に連ねた。
+- [x] タイポ階層が H1（極大 cream）→ 役割（赤帯）→ 説明（gray・小）の**明確な 3 段**で、サイズの跳躍が大きい。
+      ― H1 `text-[5.5rem]→lg:text-[10rem]`、役割 `text-xl sm:text-2xl` 赤帯、説明 `text-base sm:text-lg` gray を維持。
+- [ ] 右側（Proun ブロックと avatar）が過密にならず、対角の流れと余白の谷が成立（avatar とブロックが別重心）。
+      ― Proun を右端へ寄せ（red `right-0`）、avatar を `md:mt-32` へ下げて別重心化。最終的な「谷」の見えは preview 目視待ち。
+- [x] 小ラベルの赤テキストは AA(4.5:1) 未達のため cream 化を推奨（赤は横線・楔で担保）。説明文 gray は AA 達成で現状可。
+      ― 小ラベルを `text-constructivist-cream` 化、近傍の `w-8 h-0.5 bg-constructivist-red` 横線で赤を担保。
+- [x] reduced-motion 時に `AnimatedHero` の遷移が無効化され最終状態が即時表示、canvas は静的フォールバック。
+      ― `useReducedMotion()` で全 spring/trail を `immediate` 化。canvas フォールバックは既存 `StaticComposition`（hero.json から SVG）。
+- [ ] 暗背景上で赤い主役正方形が視認でき、cream タイルが極大 cream H1 と混同・競合しない。
+      ― palette cream 0.2 へ抑制し seed の左中上に cream を置かない設計だが、最終視認は preview 目視待ち（本環境では playwright 不在）。
+
+---
+
 ## Career 変奏のデザイン指針（縦の力線 ＝ 時間軸）
 
 > 対象: `src/pages/index.astro` の `id="career"`（暗背景／縦ライン＋ダイヤモンドマーカーの時系列）と
