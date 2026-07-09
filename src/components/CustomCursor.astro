@@ -1,0 +1,70 @@
+---
+// 幾何カスタムカーソル（redesign-2026-bold.spec §10.1）
+// ・pointer:fine かつ hover:hover のみ（タッチ/粗ポインタは既定カーソル）
+// ・十字（既定）→ 塗り四角（リンク/ボタン上）→ 中空正方形（大ターゲット）の 3 状態
+// ・PRM で追従 lerp を無効化し即座スナップ／JS 失敗時はネイティブカーソルを残す
+// ・最前面・pointer-events:none・aria-hidden
+---
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  // pointer:fine かつ hover:hover のみ有効（タッチ端末では既定カーソル）
+  const fine = window.matchMedia('(pointer: fine) and (hover: hover)').matches;
+
+  if (cursor && fine) {
+    const prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // JS 成功後にのみ cursor:none を有効化（無効時はネイティブカーソルが残る）
+    document.body.classList.add('fine');
+
+    let tx = window.innerWidth / 2;
+    let ty = window.innerHeight / 2;
+    let cx = tx;
+    let cy = ty;
+
+    const place = () => {
+      cursor.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+    };
+    place();
+
+    window.addEventListener('mousemove', (e) => {
+      tx = e.clientX;
+      ty = e.clientY;
+      // PRM: lerp を切ってポインタへ即座スナップ
+      if (prm) {
+        cx = tx;
+        cy = ty;
+        place();
+      }
+    });
+
+    if (!prm) {
+      // 追従 lerp（係数 0.2）
+      const loop = () => {
+        cx += (tx - cx) * 0.2;
+        cy += (ty - cy) * 0.2;
+        place();
+        requestAnimationFrame(loop);
+      };
+      loop();
+    }
+
+    // 要素種別で瞬時変形（transition なし＝機械的）
+    document.addEventListener('mouseover', (e) => {
+      const t = e.target instanceof Element ? e.target.closest('a, button') : null;
+      cursor.classList.remove('on-link', 'on-big');
+      if (!t) return;
+      // 大ターゲット（地図プレート・INDEX・OPEN AN ISSUE・CTA）は照準拡大
+      if (
+        t.classList.contains('plate') ||
+        t.classList.contains('issue-btn') ||
+        t.classList.contains('idx-btn') ||
+        t.hasAttribute('data-cursor-big')
+      ) {
+        cursor.classList.add('on-big');
+      } else {
+        cursor.classList.add('on-link');
+      }
+    });
+  }
+</script>

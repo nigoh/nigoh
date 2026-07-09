@@ -5,6 +5,8 @@ interface Props {
 }
 
 import '../styles/global.css';
+import PosterIntro from '../components/PosterIntro.astro';
+import CustomCursor from '../components/CustomCursor.astro';
 
 const { title, description = 'H.Nigo - 札幌在住ソフトウェアエンジニアの自己紹介サイト' } = Astro.props;
 const base = import.meta.env.BASE_URL;
@@ -81,6 +83,10 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
   </head>
   <body class="min-h-screen bg-[var(--c-page)] text-[var(--c-ink)] font-body antialiased">
     {/* T6a 進捗バーは redesign-2026-bold.spec §3.1 の決定により廃止（進捗は番号列に集約） */}
+    {/* ポスター組み上げイントロ（§7・初回のみ）— body 先頭に置き、素の Hero を覆う */}
+    <PosterIntro />
+    {/* 幾何カスタムカーソル（§10.1・pointer:fine のみ・JS 成功後に有効化） */}
+    <CustomCursor />
     <slot />
   </body>
 </html>

@@ -514,9 +514,15 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
       ― Hero は field（black）両モード不変。cream 15.37／説明の gray on black 4.82（本文）。
 
 ### イントロ
-- [ ] 初回のみ（`sessionStorage`）ポスター組み上げが `steps/linear` で走り、SKIP・任意入力で中断できる。
-- [ ] **PRM ではイントロ非実行**（素の Hero が即表示）。JS 無効でも Hero が壊れない。
-- [ ] イントロ中フォーカストラップ・`inert`、退場後の焦点/スクロール位置が破綻しない。
+- [x] 初回のみ（`sessionStorage`）ポスター組み上げが `steps/linear` で走り、SKIP・任意入力で中断できる。
+      ― `PosterIntro.astro`。`sessionStorage.introSeen` で 1 セッション 1 回。赤块 steps(4)／帯 steps(3)／H.NIGO 各字 steps(1)・40ms stagger／
+      円・斜線 steps(4)／退場は clip-path inset steps(6)。`SKIP ▸` クリック・任意 keydown・pointerdown で `end()`（idempotent）。
+- [x] **PRM ではイントロ非実行**（素の Hero が即表示）。JS 無効でも Hero が壊れない。
+      ― `.intro{display:none}` が既定（built CSS で確認）。JS が `prm || seen` を判定して `.run` を付与しない限り覆わない。
+      JS 無効時も `.run` が付かず素の Hero が表示。PRM/既読時は `introSeen` を既読化して以後も非実行。
+- [x] イントロ中フォーカストラップ・`inert`、退場後の焦点/スクロール位置が破綻しない。
+      ― 開始時に背景（`#topbar`/`.railnav`/`#main-content`/`footer`）を `inert`＋`documentElement.overflow:hidden`、SKIP へフォーカス。
+      非 inert の可フォーカス要素は SKIP のみ＝実質トラップ。退場後は inert 解除・overflow 復帰・`scrollTo(0,0)`、H1 へは焦点を渡さない。
 
 ### 装飾一本化
 - [x] Phaser `ConstructivistCanvas` の各セクション設置が撤去され、初期 JS が明確に減る（Phaser チャンク未ロード）。
@@ -526,14 +532,23 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
       ― 赤縦バー・大円・回転赤块・ダイヤモンドマーカー等の CSS 幾何は維持。軽量 3D 脇役 `SectionAccent`（three.js・遅延）を各セクションに残置。
 
 ### 署名インタラクション
-- [ ] AI セクションで「OPEN AN ISSUE」→ 幾何が `steps` で組み上がり、`ISSUE #n` が進む（見せ場として成立）。
-- [ ] `<button>`・キーボード操作可・`aria-live` 通知・生成幾何は `aria-hidden`。触らなくても情報は完全。
-- [ ] **PRM で飛来アニメなし・最終配置を即時反映**。
+- [x] AI セクションで「OPEN AN ISSUE」→ 幾何が `steps` で組み上がり、`ISSUE #n` が進む（見せ場として成立）。
+      ― `IssueForge.astro`。5 種の幾何（赤块/黒块縁取り/赤円/赤斜梁/クリーム方形）が画面外から `steps(4)` で飛来しスナップ配置。
+      各起票でカウンタ `ISSUES IMPLEMENTED — #0n` が進み、既存構成を `replaceChildren` でリファクタ（微回転）して組み替える。
+- [x] `<button>`・キーボード操作可・`aria-live` 通知・生成幾何は `aria-hidden`。触らなくても情報は完全。
+      ― 実 `<button aria-label="Issue を起票して構成を組み立てる">`。`.forge-stage` は `aria-hidden`、`.sr-live`（`aria-live="polite"`）で
+      「Issue #n を実装しました」を通知。AI セクションの説明・ツールカードは FORGE と独立に完全に読める。
+- [x] **PRM で飛来アニメなし・最終配置を即時反映**。
+      ― `matchMedia('(prefers-reduced-motion: reduce)')` 判定で飛来 translate を経ず `placed`＋最終 rotate を即時付与。
 
 ### カーソル / スクロール
-- [ ] `pointer:fine` のみカスタムカーソル（十字→塗り四角→照準の 3 状態）。粗ポインタは既定カーソル。
-- [ ] **PRM で追従 lerp 無効・瞬時変形**。JS 失敗時はネイティブカーソルが残る（`cursor:none` は JS 成功後のみ）。
-- [ ] 慣性スクロールライブラリ非導入。全モーションが `linear/steps`。
+- [x] `pointer:fine` のみカスタムカーソル（十字→塗り四角→照準の 3 状態）。粗ポインタは既定カーソル。
+      ― `CustomCursor.astro`。`matchMedia('(pointer: fine) and (hover: hover)')` のみ有効化。十字（cream 1px 縁取り）→ `.on-link` 塗り四角 →
+      地図プレート/INDEX/OPEN AN ISSUE/CTA（`data-cursor-big`）で `.on-big` 中空正方形。状態変形は transition なし＝瞬時。
+- [x] **PRM で追従 lerp 無効・瞬時変形**。JS 失敗時はネイティブカーソルが残る（`cursor:none` は JS 成功後のみ）。
+      ― PRM 時は rAF lerp を回さず mousemove で即スナップ。`cursor:none` は JS が付与する `body.fine` 配下のみ、`.cursor` は既定 `display:none`。
+- [x] 慣性スクロールライブラリ非導入。全モーションが `linear/steps`。
+      ― 追加した署名/カーソル/イントロは transition steps・CSS steps・rAF lerp（線形）のみ。smooth-scroll ライブラリ無し。
 
 ### 横断
 - [x] 角丸（矩形）・ソフトシャドウ・glassmorphism・バウンス easing の導入ゼロ。新規の重い依存ゼロ
@@ -541,7 +556,11 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
       ― フェーズ 1 で追加したモーションはトグル steps(1)／地図シャッター steps(4)・linear のみ。角丸・影・glass 無し。phaser 依存を除去し正味減。
 - [x] `npx astro check` 0 エラー、`npm run build` 成功。
 - [ ] Lighthouse A11y 95+ を維持（デプロイ後計測）。Performance は 3D/モーション込みで現実的に最適化。
-- [ ] 全新規モーションが PRM で静的フォールバックを持つ（本 spec 各章の定義どおり）。
+      ― **未計測（デプロイ後の実機 Lighthouse で確認する項目）**。実装側の a11y 前提（両モード AA・PRM 全経路・focus 可視・
+      dialog トラップ・aria）は充足済み。
+- [x] 全新規モーションが PRM で静的フォールバックを持つ（本 spec 各章の定義どおり）。
+      ― イントロ=非実行（素の Hero）／カーソル=lerp 無効・即スナップ／署名=飛来なし即時配置。既存（3D Hero・キネティック・
+      マーキー・地図シャッター・reveal）も PRM 静的化済み（フェーズ1・2）。
 
 ---
 

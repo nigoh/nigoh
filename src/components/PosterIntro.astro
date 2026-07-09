@@ -1,0 +1,112 @@
+---
+// ポスター組み上げイントロ（redesign-2026-bold.spec §7）
+// 初回ロード時に赤黒要素が構成されて完成する短い導入。
+// ・初回のみ（sessionStorage.introSeen）／SKIP・任意入力で中断
+// ・prefers-reduced-motion では非実行（オーバーレイは既定 display:none のまま素の Hero）
+// ・JS 無効でも既定 display:none のためコンテンツを覆わない
+// H.NIGO の各字は inline の animation-delay で 40ms ずつスナップ（steps）。
+const introName = 'H.NIGO';
+---
+<div class="intro" id="poster-intro">
+  <div class="isq" aria-hidden="true"></div>
+  <div class="ibar" aria-hidden="true"></div>
+  <div class="ititle" aria-hidden="true">
+    {
+      introName.split('').map((ch, i) => (
+        <span style={`animation-delay:${(0.35 + i * 0.04).toFixed(2)}s`}>{ch}</span>
+      ))
+    }
+  </div>
+  <div class="icirc" aria-hidden="true"></div>
+  <div class="idiag" aria-hidden="true"></div>
+  <button class="iskip" id="intro-skip" type="button">SKIP ▸</button>
+</div>
+
+<script is:inline>
+  (function () {
+    var intro = document.getElementById('poster-intro');
+    if (!intro) return;
+
+    var prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var seen = false;
+    try {
+      seen = sessionStorage.getItem('introSeen') === '1';
+    } catch (e) {}
+
+    // PRM / 既読 / (JS 無効は到達しない) では実行せず、既読扱いにして以後も出さない
+    if (prm || seen) {
+      try {
+        sessionStorage.setItem('introSeen', '1');
+      } catch (e) {}
+      return;
+    }
+
+    var skip = document.getElementById('intro-skip');
+    var ended = false;
+    var auto;
+
+    function bgEls() {
+      return [
+        document.getElementById('topbar'),
+        document.querySelector('.railnav'),
+        document.getElementById('main-content'),
+        document.querySelector('footer'),
+      ];
+    }
+    function setInert(on) {
+      bgEls().forEach(function (el) {
+        if (!el) return;
+        if (on) el.setAttribute('inert', '');
+        else el.removeAttribute('inert');
+      });
+    }
+
+    function end() {
+      if (ended) return;
+      ended = true;
+      clearTimeout(auto);
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('pointerdown', end);
+      intro.classList.add('leave');
+      setTimeout(function () {
+        intro.classList.remove('run', 'leave');
+        setInert(false);
+        document.documentElement.style.overflow = '';
+        // 退場後はスクロール最上部・H1 へフォーカスを渡さない
+        window.scrollTo(0, 0);
+      }, 380);
+      try {
+        sessionStorage.setItem('introSeen', '1');
+      } catch (e) {}
+    }
+    function onKey() {
+      end();
+    }
+
+    // 即時開始（Hero が下に描画される前にオーバーレイで覆う・スクロール固定）
+    intro.classList.add('run');
+    document.documentElement.style.overflow = 'hidden';
+    window.scrollTo(0, 0);
+    auto = setTimeout(end, 1400);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('pointerdown', end);
+    if (skip) {
+      skip.addEventListener('click', function (e) {
+        e.stopPropagation();
+        end();
+      });
+      try {
+        skip.focus();
+      } catch (e) {}
+    }
+
+    // 背景の inert は DOM 構築後に付与（この時点で main/footer 等は未パースのことがある）
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () {
+        if (!ended) setInert(true);
+      });
+    } else if (!ended) {
+      setInert(true);
+    }
+  })();
+</script>
