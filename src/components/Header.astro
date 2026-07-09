@@ -162,8 +162,11 @@ const sections: Section[] = [
             if (e.isIntersecting) setCurrent(e.target.id);
           });
         },
-        // ビューポート中央付近の薄い帯に入ったセクションを現在地とする
-        { rootMargin: '-45% 0px -45% 0px' }
+        // 現在地判定の帯（redesign-2026-bold.spec §6.2 の落とし穴対応）。
+        // Hero は 250vh sticky で尺が伸びる。観測対象はその 250vh ラッパー（#hero）自体なので、
+        // 上寄り（35%）に判定線を置くと Hero 通過中は Hero が現在地に留まり、
+        // 直後に About が判定線を越えて手前で切り替わる（帯が薄すぎて谷が出るのを防ぐ）。
+        { rootMargin: '-35% 0px -55% 0px' }
       );
       targets.forEach(function (t) {
         io.observe(t);

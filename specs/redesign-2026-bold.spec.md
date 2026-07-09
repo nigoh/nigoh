@@ -484,21 +484,34 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
       ― Header の 6 リンク列＋ハンバーガーを撤去。375px でも INDEX が同一地図を開くことを確認。
 
 ### 破壊的グリッド
-- [ ] §4.1 の強弱表どおり loud/mid/calm が実装され、**データ表示（スキルバー・年表・凡例）は崩れず整列**。
-- [ ] 重なり/回転は装飾块に限定され、**テキストの可読部に被らず**コントラストを侵さない。
-- [ ] モバイルで破壊が縮退し、構図が崩れて読めなくなる箇所がない。
+- [x] §4.1 の強弱表どおり loud/mid/calm が実装され、**データ表示（スキルバー・年表・凡例）は崩れず整列**。
+      ― About/Skills/Career=calm（見出し bleed のみ・データ整列）、AI=mid→loud（bleed＋赤块＋キネティック）、
+      Portfolio=mid、Contact=loud（極大＋シャッター）。※ Portfolio の「カード ±1 セル食い違い」は PR#11 の
+      連結ボーダー・データグリッドの可読性を守るため、赤块の角食い込み＋見出し bleed に縮約（§4.1「カード本文・タグは
+      各カード内で整列」を優先した frontend 判断）。
+- [x] 重なり/回転は装飾块に限定され、**テキストの可読部に被らず**コントラストを侵さない（装飾块は `z<10`・aria-hidden・
+      本文 z-10 の背後。テキストブロックは回転させず、Skills の番号のみ回転＝aria-hidden）。
+- [x] モバイルで破壊が縮退し、構図が崩れて読めなくなる箇所がない（`bleed-heading` は -0.5rem 上限、装飾块は縮小）。
 
 ### キネティックタイポ
-- [ ] 可変フォントを**追加していない**（Bebas + transform で実現）。
-- [ ] loud 見出しに letter-spacing 伸縮 / skew / シャッターマスク等が効き、**最終状態は正立・全字・可読**。
-- [ ] scroll 連動は `@supports (animation-timeline: view())` + PRM 内。非対応/PRM で静的最終状態。
-- [ ] calm 見出しは現行 reveal のまま（キネティック上乗せなし）。
+- [x] 可変フォントを**追加していない**（Bebas + transform で実現。フォント構成は不変）。
+- [x] loud 見出しに letter-spacing 伸縮 / skew / シャッターマスク等が効き、**最終状態は正立・全字・可読**。
+      ― Hero H1=letter-spacing 伸縮＋scale ピン、ROLE=skewX（内側逆 skew で字は正立）、AI h2=letter-spacing 伸縮、
+      Contact h2=clip-path シャッター（steps(6)）。
+- [x] scroll 連動は `@supports (animation-timeline: view())` + PRM 内。非対応/PRM で静的最終状態。
+      ― H1 は JS の rAF が供給する `--hero-p` で駆動し、既定値（未設定/PRM/JS 無効）は正立・可読の静的状態。
+- [x] calm 見出しは現行 reveal のまま（キネティック上乗せなし。About/Skills/Career は bleed のみ）。
 
 ### 没入 3D ヒーロー
-- [ ] Hero がスクロール駆動でフルビューポートの主役（軸測回転・組み上げ・H1 ピン）。他セクションは軽量。
-- [ ] Three.js は遅延ロード（初期バンドルに載らない）。WebGL 非対応は静的 SVG 完成 Proun。
-- [ ] **PRM で 3D スクロールが無効化され、完成した軸測 Proun を静止表示**（Hero は 100vh 静的ポスターで成立）。
-- [ ] H1・役割・説明は実テキストで DOM に存在し、両モードでコントラスト AA。
+- [x] Hero がスクロール駆動でフルビューポートの主役（軸測回転・組み上げ・H1 ピン）。他セクションは軽量。
+      ― `hero-wrap`=250vh（モバイル 200vh）／`hero-stick`=sticky 100vh。p∈[0,0.6] で組み上げ・[0.6,1] でドリー、
+      yaw 0→28°・pitch 0→-6°。Header の IntersectionObserver rootMargin を `-35% 0px -55%` に調整（§6.2 の落とし穴）。
+- [x] Three.js は遅延ロード（初期バンドルに載らない）。WebGL 非対応は静的 SVG 完成 Proun。
+      ― `ProunCanvas` は `client:visible`＋`import('three')`。three は 705kB の別チャンクで初期バンドル外（build ログ確認）。
+- [x] **PRM で 3D スクロールが無効化され、完成した軸測 Proun を静止表示**（Hero は 100vh 静的ポスターで成立）。
+      ― PRM で `ProunCanvas` は静的 SVG フォールバック、CSS が `hero-wrap` を 100vh に畳む、H1 は正立静止。
+- [x] H1・役割・説明は実テキストで DOM に存在し、両モードでコントラスト AA。
+      ― Hero は field（black）両モード不変。cream 15.37／説明の gray on black 4.82（本文）。
 
 ### イントロ
 - [ ] 初回のみ（`sessionStorage`）ポスター組み上げが `steps/linear` で走り、SKIP・任意入力で中断できる。

@@ -163,6 +163,10 @@ export default function ProunCanvas() {
       let height = Math.max(1, Math.round(rect.height));
       const isMobile = width < 768;
 
+      // 250vh sticky ラッパー（#hero）。スクロール進捗 --hero-p を JS が設定する。
+      // ここではその値を毎フレーム読み、Proun を軸測回転・組み上げ・ドリーする（§6.1）。
+      const heroEl = host.closest('#hero') as HTMLElement | null;
+
       const scene = new THREE.Scene();
 
       const makeCamera = (w: number, h: number) => {
@@ -194,12 +198,13 @@ export default function ProunCanvas() {
       // 配置: デスクトップは中央右に showpiece。モバイルは本文が縦積みで全幅を使うため、
       // 構図を上部（極大 H1 周辺）に寄せて説明文の帯を空け、核オブジェのみのコンパクト構図にする。
       const group = new THREE.Group();
+      const baseScale = isMobile ? 0.5 : 0.84;
       if (isMobile) {
         group.position.set(-0.5, 2.9, 0);
-        group.scale.setScalar(0.5);
+        group.scale.setScalar(baseScale);
       } else {
-        group.position.set(1.1, 0.6, 0);
-        group.scale.setScalar(0.84);
+        group.position.set(1.4, 0.4, 0);
+        group.scale.setScalar(baseScale);
       }
       scene.add(group);
       // モバイルは H1 近傍に出るため存在感をやや抑える
@@ -207,7 +212,11 @@ export default function ProunCanvas() {
 
       const geoms: THREE_NS.BufferGeometry[] = [];
       const mats: THREE_NS.Material[] = [];
-      const meshes: Array<{ mesh: THREE_NS.Mesh; spec: ObjSpec; baseY: number }> = [];
+      const meshes: Array<{
+        mesh: THREE_NS.Mesh;
+        spec: ObjSpec;
+        home: [number, number, number];
+      }> = [];
 
       for (const spec of buildSpecs(THREE)) {
         if (isMobile && spec.mobileDrop) continue;
@@ -235,7 +244,7 @@ export default function ProunCanvas() {
           geoms.push(eg);
           mats.push(em);
         }
-        meshes.push({ mesh, spec, baseY: spec.pos[1] });
+        meshes.push({ mesh, spec, home: spec.pos });
       }
 
       const resize = () => {
@@ -253,7 +262,16 @@ export default function ProunCanvas() {
       const ro = new ResizeObserver(resize);
       ro.observe(host);
 
-      // 緩慢ドリフト（重力の曖昧さ）。スクロール連動なし。
+      // スクロール駆動の軸測回転・組み上げ・ドリー（§6.1）。
+      // 進捗 p = 0→1 を #hero の --hero-p（JS が rAF で設定）から読む。未設定時は 0（＝flat 初期姿勢）。
+      // 微小な bob（上下揺れ）だけ時間で残し、静止に見えないようにする。
+      const readProgress = (): number => {
+        if (!heroEl) return 0;
+        const v = parseFloat(heroEl.style.getPropertyValue('--hero-p'));
+        return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0;
+      };
+      const D28 = d(28);
+      const DN6 = d(-6);
       let last = 0;
       let elapsed = 0;
       let running = true;
@@ -264,14 +282,26 @@ export default function ProunCanvas() {
         const dt = last ? Math.min((t - last) / 1000, 0.05) : 0;
         last = t;
         elapsed += dt;
-        for (const { mesh, spec, baseY } of meshes) {
-          mesh.rotation.x += spec.spin[0] * dt;
-          mesh.rotation.y += spec.spin[1] * dt;
-          mesh.rotation.z += spec.spin[2] * dt;
-          if (spec.bob) {
-            mesh.position.y =
-              baseY + Math.sin(elapsed * 0.4 + baseY * 1.7) * spec.bob;
-          }
+
+        const p = readProgress();
+        // 組み上げ: p∈[0,0.6] で分散（flat・中央寄り）→ 定位置へ集合
+        const a = Math.min(1, p / 0.6);
+        const spread = 0.55 + 0.45 * a; // xy の広がり（初期 55% → 100%）
+        const depth = 0.3 + 0.7 * a; // z の奥行き（初期 flat 寄り → 100%）
+        // ドリー: p∈[0.6,1] で軽く寄る（主役正方形が画面を占有していく）
+        const dolly = Math.min(1, Math.max(0, (p - 0.6) / 0.4));
+        group.scale.setScalar(baseScale * (1 + 0.18 * dolly));
+        // 軸測回転（等角の範囲を保つ）
+        group.rotation.y = p * D28;
+        group.rotation.x = p * DN6;
+
+        for (const { mesh, spec, home } of meshes) {
+          const bob = spec.bob ? Math.sin(elapsed * 0.4 + home[1] * 1.7) * spec.bob : 0;
+          mesh.position.set(
+            home[0] * spread,
+            home[1] * spread + bob,
+            home[2] * depth
+          );
         }
         renderer.render(scene, camera);
       };

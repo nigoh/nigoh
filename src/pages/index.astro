@@ -275,20 +275,24 @@ const aiTools: AiTool[] = [
   {/* 各セクションの id アンカーは固定バー（56px）の下に着地させる（scroll-mt-14） */}
   <main id="main-content" class="pt-14 [&_section]:scroll-mt-14">
 
-    {/* ═══════════════════ Hero — 構成主義的ヒーロー（索引 01・field 側・両モード不変） ═══════════════════ */}
-    <section id="hero" class="relative overflow-hidden bg-constructivist-black min-h-[90vh] flex items-center">
-      {/* El Lissitzky 3D Proun 装飾（Three.js・軸測投影） */}
-      <ProunCanvas client:visible />
+    {/* ═══════════════════ Hero — 没入 3D・スクロール駆動主役（索引 01・250vh sticky・§6） ═══════════════════
+        ラッパー 250vh を通過する進捗 p=0→1 で Proun が軸測回転・組み上げ、H1 が letter-spacing 伸縮＋scale ピン。
+        進捗は下部のモジュールスクリプトが --hero-p として #hero に設定（PRM 非実行）。
+        PRM/WebGL 非対応は ProunCanvas が静的 SVG（完成姿勢）にフォールバックし、CSS が尺を 100vh に畳む。 */}
+    <section id="hero" class="hero-wrap relative bg-constructivist-black">
+      <div class="hero-stick sticky top-0 h-screen overflow-hidden flex items-center bg-constructivist-black">
+        {/* El Lissitzky 3D Proun（Three.js・軸測投影・スクロールで組み上がる主役） */}
+        <ProunCanvas client:visible />
 
-      <div class="relative z-10 w-full">
         <AnimatedHero
           client:load
           name="H.NIGO"
           role="SOFTWARE ENGINEER"
           description="低レイヤーからアプリケーションまで。C/C++, Java, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。"
           githubUrl="https://github.com/nigoh"
-          avatarUrl="https://github.com/nigoh.png"
         />
+
+        <p class="scroll-hint" aria-hidden="true">SCROLL ▾ ASSEMBLE THE PROUN</p>
       </div>
     </section>
 
@@ -304,9 +308,10 @@ const aiTools: AiTool[] = [
         {/* T1/T6b 見出しグループ — mono 頁番号＋h2＋引かれる赤罫線（scroll-driven リビール） */}
         <div class="reveal-heading">
           <p class="font-mono text-xs tracking-widest text-[var(--c-ink-muted)] mb-2" aria-hidden="true">02 / 07</p>
-          <h2 class="font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">ABOUT</h2>
+          {/* calm: 見出しのみ左へ bleed。本文・dl は 12 列内で整列（§4.1） */}
+          <h2 class="bleed-heading font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">ABOUT</h2>
           <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-6" aria-hidden="true"></div>
-          <p class="text-[var(--c-ink-muted)] mb-12 font-body">あるものを大切にしながら、変化にも柔軟に対応できるエンジニアを目指しています。</p>
+          <p class="text-[var(--c-ink-muted)] mb-12 font-body max-w-[68ch]">あるものを大切にしながら、変化にも柔軟に対応できるエンジニアを目指しています。</p>
         </div>
 
         <div class="grid md:grid-cols-2 gap-12">
@@ -336,7 +341,7 @@ const aiTools: AiTool[] = [
 
           {/* 自己紹介文 */}
           <FadeIn client:visible direction="up" delay={400}>
-            <div class="text-[var(--c-ink-muted)] leading-relaxed space-y-4 font-body">
+            <div class="text-[var(--c-ink-muted)] leading-relaxed space-y-4 font-body max-w-[68ch]">
               <p>
                 1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
                 低レイヤーからアプリケーションまで、幅広い領域でのシステム開発を行っています。
@@ -368,8 +373,9 @@ const aiTools: AiTool[] = [
       <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* T1/T6b 見出しグループ */}
         <div class="reveal-heading">
-          <p class="font-mono text-xs tracking-widest text-constructivist-gray mb-2" aria-hidden="true">03 / 07</p>
-          <h2 class="font-sans text-heading-fluid text-constructivist-cream tracking-tight mb-3">SKILLS</h2>
+          {/* calm: 見出しのみ bleed・番号だけ回転（§4.1）。スキルバー等のデータは厳密整列 */}
+          <p class="font-mono text-xs tracking-widest text-constructivist-gray mb-2 inline-block origin-left" style="transform: rotate(-6deg);" aria-hidden="true">03 / 07</p>
+          <h2 class="bleed-heading font-sans text-heading-fluid text-constructivist-cream tracking-tight mb-3">SKILLS</h2>
           <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-12" aria-hidden="true"></div>
         </div>
 
@@ -467,12 +473,17 @@ const aiTools: AiTool[] = [
       <SectionAccent client:visible section="ai" />
       {/* 紙の grain（ライトの明側のみ） */}
       <div class="grain-overlay" aria-hidden="true"></div>
+      {/* mid→loud: 見出し背後に回転した赤块（本文 z-10 より下・テキストに被せない・§4.2） */}
+      <div class="destructive-block" style="left: 2%; top: 64px;" aria-hidden="true">
+        <div class="w-20 h-20 sm:w-28 sm:h-28 bg-constructivist-red" style="transform: rotate(10deg);"></div>
+      </div>
 
       <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* T1/T6b 見出しグループ */}
         <div class="reveal-heading">
           <p class="font-mono text-xs tracking-widest text-[var(--c-ink-muted)] mb-2" aria-hidden="true">04 / 07</p>
-          <h2 class="font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">AI-POWERED DEV</h2>
+          {/* loud 見出し: bleed + キネティック（letter-spacing 伸縮・§5.2） */}
+          <h2 class="bleed-heading kinetic-heading font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">AI-POWERED DEV</h2>
           <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-6" aria-hidden="true"></div>
           <p class="text-[var(--c-ink-muted)] mb-2 font-body">
             Claude Code・GitHub Copilot・OpenAI Codex・MCP を活用し、個人開発のすべての工程を AI と協働しています。
@@ -543,7 +554,8 @@ const aiTools: AiTool[] = [
         {/* T1/T6b 見出しグループ */}
         <div class="reveal-heading">
           <p class="font-mono text-xs tracking-widest text-constructivist-gray mb-2" aria-hidden="true">05 / 07</p>
-          <h2 class="font-sans text-heading-fluid text-constructivist-cream tracking-tight mb-3">CAREER</h2>
+          {/* calm: 見出しのみ bleed。年表データ（縦ライン・マーカー・技術タグ）は厳密整列（§4.1） */}
+          <h2 class="bleed-heading font-sans text-heading-fluid text-constructivist-cream tracking-tight mb-3">CAREER</h2>
           <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-6" aria-hidden="true"></div>
           <p class="text-constructivist-gray mb-12 font-body text-sm">
             <span class="inline-block w-2 h-2 bg-constructivist-red rotate-45 mr-1.5" aria-hidden="true"></span>
@@ -584,12 +596,17 @@ const aiTools: AiTool[] = [
       <div class="absolute top-0 right-0 w-2 h-full bg-constructivist-red pointer-events-none" aria-hidden="true"></div>
       {/* 紙の grain（ライトの明側のみ） */}
       <div class="grain-overlay" aria-hidden="true"></div>
+      {/* mid: 見出し右の空きに回転した赤块（テキストに被せない・z-10 より下・§4.1/§4.2） */}
+      <div class="destructive-block" style="right: 11%; top: 92px;" aria-hidden="true">
+        <div class="w-16 h-16 sm:w-24 sm:h-24 bg-constructivist-red" style="transform: rotate(-12deg);"></div>
+      </div>
 
       <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* T1/T6b 見出しグループ */}
         <div class="reveal-heading">
           <p class="font-mono text-xs tracking-widest text-[var(--c-ink-muted)] mb-2" aria-hidden="true">06 / 07</p>
-          <h2 class="font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">PORTFOLIO</h2>
+          {/* mid: 見出し bleed。カード本文・タグは各カード内で整列（§4.1） */}
+          <h2 class="bleed-heading font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">PORTFOLIO</h2>
           <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-12" aria-hidden="true"></div>
         </div>
 
@@ -705,7 +722,9 @@ const aiTools: AiTool[] = [
         {/* T1/T6b 見出しグループ（中央揃えセクションのため罫線は mx-auto） */}
         <div class="reveal-heading">
           <p class="font-mono text-xs tracking-widest text-constructivist-gray mb-2" aria-hidden="true">07 / 07</p>
-          <h2 class="font-sans text-heading-fluid text-constructivist-cream tracking-tight mb-3">CONTACT</h2>
+          {/* loud: 極大 CONTACT が中央から破断。赤块シャッターで刷り出す（clip-path steps・§5.2）。
+              大円・赤块の重なりは下部の装飾块が担う。CTA は中央整列で単独明快。 */}
+          <h2 class="contact-heading shutter-heading font-sans text-constructivist-cream tracking-tight mb-3">CONTACT</h2>
           <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mx-auto mb-6" aria-hidden="true"></div>
         </div>
         <FadeIn client:visible direction="none">
@@ -731,3 +750,32 @@ const aiTools: AiTool[] = [
 
   <Footer />
 </BaseLayout>
+
+{/* 没入 3D ヒーローのスクロール進捗（§6.2）— #hero を通過する p=0→1 を --hero-p として設定する。
+    ScrollTimeline 非対応環境でも動く rAF 実装（メインスレッド節約のため rAF で throttle）。
+    ProunCanvas（3D）と .hero-h1-kinetic（H1）の両方がこの custom property を購読する。
+    PRM 時は駆動しない（CSS が尺を 100vh に畳み、Proun は完成姿勢の静的 SVG にフォールバック）。 */}
+<script>
+  (() => {
+    const hero = document.getElementById('hero');
+    if (!hero) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const total = hero.offsetHeight - window.innerHeight;
+      const p = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / (total || 1)));
+      hero.style.setProperty('--hero-p', p.toFixed(4));
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  })();
+</script>

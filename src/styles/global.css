@@ -463,3 +463,141 @@ html[data-theme='dark'] .grain-overlay {
     transform: translateX(-50%);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   破壊的グリッド（redesign-2026-bold.spec §4）— bleed / offset / 装飾块
+   原則: テキストブロックは回転しない（装飾块のみ）。calm はデータ整列を死守。
+   装飾块は本文（z-10）より下（z<10）に置き、可読部・コントラストを侵さない。
+   ═══════════════════════════════════════════════════════════════ */
+@layer components {
+  /* 見出し bleed（calm/mid/loud 共通で許容・§4.2）。極大語は section の overflow-hidden で切る */
+  .bleed-heading {
+    margin-left: clamp(-4rem, -1rem - 2vw, -0.5rem);
+  }
+
+  /* mid: 隣接ブロックの食い違い（重なり量は要素幅の 10–20% 上限・§4.2） */
+  .destructive-offset {
+    transform: translate(clamp(-1.5rem, -3vw, -0.5rem), clamp(0.5rem, 1.5vw, 1.5rem));
+  }
+
+  /* 装飾块（赤/黒の正方形・帯）— 本文より下の z で重ねる純装飾 */
+  .destructive-block {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* モバイル（<640px）は破壊を縮退（§4.2・構図が崩れて読めなくなるのを防ぐ） */
+  @media (max-width: 640px) {
+    .bleed-heading {
+      margin-left: -0.5rem;
+    }
+    .destructive-offset {
+      transform: translate(-0.5rem, 0.5rem);
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   キネティック・タイポ（redesign-2026-bold.spec §5）
+   手法: Bebas + transform（可変フォントは採らない）。loud 見出しのみ。
+   scroll 連動は @media(PRM no-pref) かつ @supports(animation-timeline) の内側。
+   非対応/PRM は最終状態（正立・全字・既定 tracking）を静的表示。
+   ※ これらは Tailwind の @layer utilities（tracking-*）より優先させるため非レイヤーで宣言する。
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Hero H1: letter-spacing 伸縮 + scale ピン。進捗 --hero-p は JS（rAF）が供給。
+   既定（PRM / JS 無効 / --hero-p 未設定）は正立・可読の静的状態（不可視化しない）。 */
+.hero-h1-kinetic {
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-h1-kinetic {
+    letter-spacing: calc(0.02em + 0.12em * var(--hero-p, 0));
+    transform: scale(calc(0.96 + 0.04 * var(--hero-p, 0)));
+    transform-origin: left center;
+  }
+}
+
+/* Hero ROLE: skewX の斜線力線（静的装飾・§5.2）。内側 span で逆 skew して字は正立・可読に保つ */
+.hero-role-skew {
+  transform: skewX(-8deg);
+}
+.hero-role-inner {
+  transform: skewX(8deg);
+}
+
+/* loud 見出しのスクロール連動キネティック（§5.2） */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* letter-spacing がスクロールで「広がる」（entry→cover）。最終は 0.14em で正立・可読 */
+    .kinetic-heading {
+      animation: kinetic-track 1s linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+    /* 赤块シャッターが横切って刷り出す（clip-path steps）。最終は全字表示 */
+    .shutter-heading {
+      animation: shutter-reveal 1s steps(6) both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+  }
+}
+@keyframes kinetic-track {
+  from {
+    letter-spacing: 0.02em;
+  }
+  to {
+    letter-spacing: 0.14em;
+  }
+}
+@keyframes shutter-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   没入 3D ヒーロー（redesign-2026-bold.spec §6）— 250vh sticky スクロール駆動
+   ═══════════════════════════════════════════════════════════════ */
+.hero-wrap {
+  height: 250vh;
+}
+@media (max-width: 640px) {
+  /* モバイルは尺を短縮（電池・スクロール量の縮退） */
+  .hero-wrap {
+    height: 200vh;
+  }
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 22px;
+  left: 5vw;
+  z-index: 10;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--c-field-muted);
+}
+
+/* PRM: sticky の長尺を畳んで単一 100vh の静的ポスターとして成立させる（§6.2） */
+@media (prefers-reduced-motion: reduce) {
+  .hero-wrap {
+    height: auto;
+  }
+  .hero-stick {
+    position: relative;
+    height: 100vh;
+  }
+}
+
+/* Contact loud 見出し（極大・中央から破断・§4.1/§5） */
+.contact-heading {
+  font-size: clamp(3.4rem, 11vw, 7rem);
+  line-height: 0.95;
+}
