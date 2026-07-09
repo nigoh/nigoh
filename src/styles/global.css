@@ -5,6 +5,54 @@
 /* フォントは BaseLayout.astro の <head>（preconnect + link, display=swap）で読み込む
    — trends-2026-refresh.spec F-5（render-blocking @import の廃止） */
 
+/* ═══════════════════════════════════════════════════════════════
+   5 色トークン（唯一の出典は tailwind.config.mjs。ここは theme() で参照するだけ）
+   — redesign-2026-bold.spec §2.1（新色ゼロ・hex は不変）
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --red: theme('colors.constructivist.red');
+  --black: theme('colors.constructivist.black');
+  --cream: theme('colors.constructivist.cream');
+  --gray: theme('colors.constructivist.gray');
+  --darkgray: theme('colors.constructivist.darkgray');
+}
+
+/* ═══ セマンティックトークン（役割 → hex）— redesign-2026-bold.spec §2.3 ═══
+   hex 値自体は不変。role → hex の対応だけをモードで反転する（トークン純度を保つ）。 */
+:root,
+html[data-theme='light'] {
+  --c-page: var(--cream);
+  --c-ink: var(--black);
+  --c-ink-muted: var(--darkgray);
+  --c-line: var(--black);
+  --c-field: var(--black);
+  --c-field-ink: var(--cream);
+  --c-field-muted: var(--gray);
+  --c-block: var(--black);
+  --c-block-ink: var(--cream);
+  --c-block-muted: var(--gray);
+  --c-accent: var(--red);
+  --c-focus: var(--red);
+}
+
+/* ダーク = 反転ポスター（黒地・クリーム文字・赤は大要素のみ）。
+   明側セクション地は cream ではなく darkgray（大面積 cream 反転を作らない）。
+   明側 副テキストは gray/darkgray=3.13 が NG のため cream に寄せる（--c-ink-muted）。 */
+html[data-theme='dark'] {
+  --c-page: var(--darkgray);
+  --c-ink: var(--cream);
+  --c-ink-muted: var(--cream);
+  --c-line: var(--cream);
+  --c-field: var(--black);
+  --c-field-ink: var(--cream);
+  --c-field-muted: var(--gray);
+  --c-block: var(--cream);
+  --c-block-ink: var(--black);
+  --c-block-muted: var(--darkgray);
+  --c-accent: var(--red);
+  --c-focus: var(--cream);
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -21,19 +69,41 @@ p {
   text-wrap: pretty;
 }
 
+/* ::selection はライト/ダーク不変で red/cream（cream on red は大扱いで可） */
 ::selection {
-  background-color: #D62828;
-  color: #F5F0EB;
+  background-color: var(--red);
+  color: var(--cream);
 }
 
-/* フォーカス可視性（WCAG 2.4.7）— cream 背景は red リング、黒背景は cream リング */
+/* フォーカス可視性（WCAG 2.4.7）— モードでリング色を反転（--c-focus） */
 :focus-visible {
-  outline: 3px solid theme('colors.constructivist.red');
+  outline: 3px solid var(--c-focus);
   outline-offset: 2px;
 }
 
-.bg-constructivist-black :focus-visible {
-  outline-color: theme('colors.constructivist.cream');
+/* 黒地（field＝上部バー・番号列・地図・暗側セクション）内は常に cream リング */
+.bg-constructivist-black :focus-visible,
+.topbar :focus-visible,
+.railnav :focus-visible,
+.map-overlay :focus-visible {
+  outline-color: var(--cream);
+}
+
+/* スキップリンク（キーボード動線の短縮 — redesign-2026-bold.spec §11） */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  background: var(--red);
+  color: var(--cream);
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.12em;
+  padding: 8px 16px;
+  transform: translateY(-120%);
+}
+.skip-link:focus {
+  transform: translateY(0);
 }
 
 /* reduced-motion グローバルガード（CSS アニメ/トランジション抑制 + 即時スクロール） */
@@ -50,40 +120,31 @@ p {
   }
 }
 
-/* 旧 slide-in / wedge-in / proun-float keyframes と .animate-* ユーティリティは
-   未使用のため削除済み — trends-2026-refresh.spec F-3 */
-
 /* ═══ T3 — 版ずれ（misregistration）ホバー ═══
-   2 色刷りの刷り位置ズレ。トランジション 0s（即時）・blur ゼロのシャープな複製のみ。
-   文字色は変えない（小テキストの red 化を除去 — a11y.spec と整合）。 */
+   2 色刷りの刷り位置ズレ。トランジション 0s（即時）・blur ゼロのシャープな複製のみ。 */
 @layer components {
-  /* テキストの赤版ずれ（自身の hover / focus-visible） */
   .misprint-text:hover,
   .misprint-text:focus-visible {
-    text-shadow: 2px 2px 0 theme('colors.constructivist.red');
+    text-shadow: 2px 2px 0 var(--red);
   }
 
-  /* テキストの赤版ずれ（親 .group の hover / focus-visible 連動） */
   .group:hover .misprint-text-in-group,
   .group:focus-visible .misprint-text-in-group {
-    text-shadow: 2px 2px 0 theme('colors.constructivist.red');
+    text-shadow: 2px 2px 0 var(--red);
   }
 
-  /* 面の赤版ずれ（カード）— translate しない・ズレるだけ */
   .misprint-box-red:hover,
   .misprint-box-red:focus-visible {
-    box-shadow: 4px 4px 0 0 theme('colors.constructivist.red');
+    box-shadow: 4px 4px 0 0 var(--red);
   }
 
-  /* 面の黒版ずれ（red 面の CTA） */
   .misprint-box-black:hover,
   .misprint-box-black:focus-visible {
-    box-shadow: 4px 4px 0 0 theme('colors.constructivist.black');
+    box-shadow: 4px 4px 0 0 var(--black);
   }
 
-  /* ═══ T4 — 紙の grain オーバーレイ（cream 面のみ・静止画） ═══
-     1920 年代リトグラフの紙肌。feTurbulence（baseFrequency 0.9 / numOctaves 2 / 160px タイル）。
-     opacity は 0.05（上限 0.06）— cream 地の全テキストペアの AA を維持する。 */
+  /* ═══ T4 — 紙の grain オーバーレイ（ライトの明側のみ・静止画） ═══
+     ダークは grain 無し（黒インクのベタ＝反転ポスターの物質感） — §2.5。 */
   .grain-overlay {
     position: absolute;
     inset: 0;
@@ -95,32 +156,261 @@ p {
   }
 }
 
-/* ═══ T6a — スクロール進捗バー（ビューポート最上端 3px・Header より上） ═══
-   既定は display:none。scroll() タイムライン対応かつ PRM no-preference のときだけ出現する
-   — 非対応・reduce 環境に中途半端な固定赤バーを残さない。 */
-.scroll-progress {
+/* ダークでは grain を無効化（黒インクのベタ） */
+html[data-theme='dark'] .grain-overlay {
   display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background-color: theme('colors.constructivist.red');
-  transform-origin: left;
-  z-index: 60;
-  pointer-events: none;
 }
 
-/* ═══ T6c — ナビ現在地（aria-current）═══
-   2px の赤下線（非テキスト 3:1 OK）。文字色は cream のまま・出現は即時（版ずれと同じ即物性）。 */
-.nav-link[aria-current='true'] {
-  box-shadow: inset 0 -2px 0 theme('colors.constructivist.red');
+/* ═══════════════════════════════════════════════════════════════
+   実験的ナビ — 地図/索引（常設番号列 ＋ フル画面地図）— redesign-2026-bold.spec §3
+   ═══════════════════════════════════════════════════════════════ */
+@layer components {
+  /* ── 上部バー（§3.3・高さ 56px・field 地・赤い下罫線） ── */
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    z-index: 50;
+    background: var(--c-field);
+    color: var(--c-field-ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px 0 20px;
+    border-bottom: 2px solid var(--red);
+  }
+  .topbar .cur-label {
+    color: var(--c-field-muted);
+  }
+  .topbar .cur-label b {
+    color: var(--c-field-ink);
+    font-weight: 400;
+  }
+
+  /* INDEX / CLOSE ボタン（border 赤・hover は misprint 版ずれで AA を侵さない） */
+  .idx-btn {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.18em;
+    color: var(--c-field-ink);
+    padding: 6px 12px;
+    border: 2px solid var(--red);
+  }
+  .idx-btn:hover,
+  .idx-btn:focus-visible {
+    box-shadow: 4px 4px 0 0 var(--red);
+  }
+
+  /* 幾何学 配色トグル（赤四角が LIGHT↔DARK へ steps(1) で瞬間移動・補間なし＝機械的） */
+  .theme-switch {
+    width: 52px;
+    height: 26px;
+    border: 2px solid var(--c-field-ink);
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .theme-switch::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 20px;
+    height: 20px;
+    background: var(--red);
+    transition: transform 0.001ms steps(1);
+  }
+  html[data-theme='dark'] .theme-switch::after {
+    transform: translateX(24px);
+  }
+
+  /* ── 常設 番号列（§3.1・右端固定・01–07・進捗の触覚も兼ねる） ── */
+  .railnav {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 45;
+    width: 40px;
+    background: color-mix(in srgb, var(--c-field) 85%, transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    gap: 2px;
+    border-left: 2px solid var(--red);
+  }
+  .railnav a {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--c-field-muted);
+    padding: 7px 0;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+  .railnav a[aria-current='page'] {
+    color: var(--c-field-ink);
+  }
+  /* 現在地マーク: 赤い実心正方形 8px（非テキスト図形 3:1 OK） */
+  .railnav a[aria-current='page']::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+  }
+  @media (max-width: 640px) {
+    .railnav {
+      width: 36px;
+    }
+    .railnav a {
+      font-size: 10px;
+    }
+  }
+
+  /* ── フル画面 地図インデックス（§3.2・dialog・機械シャッター clip-path steps） ── */
+  .map-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: var(--c-field);
+    color: var(--c-field-ink);
+    clip-path: inset(0 0 0 100%);
+    visibility: hidden;
+    transition: clip-path 0.24s steps(4), visibility 0s 0.24s;
+    padding: 72px 5vw 40px;
+    overflow: auto;
+  }
+  .map-overlay[data-open='true'] {
+    clip-path: inset(0 0 0 0);
+    visibility: visible;
+    transition: clip-path 0.24s steps(4), visibility 0s;
+  }
+  .map-overlay .map-title {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--c-field-muted);
+    margin-bottom: 18px;
+  }
+  .map-overlay .map-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+  }
+  .map-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 12px;
+  }
+  .plate {
+    border: 2px solid var(--c-field-ink);
+    padding: 16px 18px;
+    min-height: 120px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .plate:hover,
+  .plate:focus-visible {
+    box-shadow: 6px 6px 0 0 var(--red);
+  }
+  .plate .p-num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--c-field-muted);
+  }
+  .plate .p-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    letter-spacing: 0.02em;
+    line-height: 0.85;
+  }
+  .plate .glyph {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 16px;
+    height: 16px;
+    background: var(--red);
+  }
+  /* 現在地プレートは赤で塗る（§3.2）。cream on red は大テキスト（p-name）のみ許容し、
+     小さな p-num は非表示にして AA を侵さない（cream on red 小 4.42 は NG のため）。 */
+  .plate.is-current {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--cream);
+  }
+  .plate.is-current .p-num {
+    display: none;
+  }
+  .plate.is-current .glyph {
+    background: var(--cream);
+  }
+  /* 破壊的グリッドの縮図（非対称配置・各行で開始列を ±2 ずらす） */
+  .plate.p1 {
+    grid-column: 1 / 5;
+    grid-row: 1;
+  }
+  .plate.p2 {
+    grid-column: 8 / 13;
+    grid-row: 1;
+    margin-top: 26px;
+  }
+  .plate.p3 {
+    grid-column: 2 / 7;
+    grid-row: 2;
+  }
+  .plate.p4 {
+    grid-column: 8 / 12;
+    grid-row: 2;
+    margin-top: -14px;
+  }
+  .plate.p5 {
+    grid-column: 1 / 5;
+    grid-row: 3;
+    margin-top: 20px;
+  }
+  .plate.p6 {
+    grid-column: 6 / 10;
+    grid-row: 3;
+  }
+  .plate.p7 {
+    grid-column: 10 / 13;
+    grid-row: 3;
+    margin-top: 34px;
+  }
+  @media (max-width: 760px) {
+    .map-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .plate {
+      grid-column: auto !important;
+      grid-row: auto !important;
+      margin-top: 0 !important;
+    }
+    .plate:nth-child(even) {
+      margin-left: 1rem !important;
+    }
+    .plate:nth-child(odd) {
+      margin-right: 1rem !important;
+    }
+  }
 }
 
-/* ═══ T1 / T6a / T7 — スクロール駆動・マーキーのモーション宣言 ═══
+/* ═══ T1 / T7 — スクロール駆動リビール・マーキーのモーション宣言 ═══
    global の reduced-motion ガード（duration 潰し）は scroll-driven animation に効かないため、
    これらは必ず PRM no-preference の内側に置く（trends-2026-refresh.spec §10）。
-   初期隠蔽（opacity 0 / scaleX 0）は @supports ゲートの内側のみ — Firefox では静的に完全表示。 */
+   初期隠蔽（opacity 0 / scaleX 0）は @supports ゲートの内側のみ — Firefox では静的に完全表示。
+   ※ T6a 進捗バーは redesign-2026-bold.spec §3.1 の決定により廃止（進捗は番号列に集約）。 */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     /* T1 見出しグループ: 左下 → 定位置（Hero の対角力線と同じ向き）・linear */
@@ -139,16 +429,7 @@ p {
     }
   }
 
-  @supports (animation-timeline: scroll()) {
-    /* T6a 進捗バー: ページ全体のスクロール量に等速追従 */
-    .scroll-progress {
-      display: block;
-      animation: scroll-progress-grow 1s linear both;
-      animation-timeline: scroll(root block);
-    }
-  }
-
-  /* T7 マーキー: 等速 ≈50px/s（トラック半幅 ≈2200px ÷ 45s）。reduce 時は静止帯として残る */
+  /* T7 マーキー: 等速 ≈50px/s。reduce 時は静止帯として残る */
   .marquee-track {
     animation: marquee-scroll 45s linear infinite;
   }
@@ -166,15 +447,6 @@ p {
 }
 
 @keyframes reveal-rule-draw {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-@keyframes scroll-progress-grow {
   from {
     transform: scaleX(0);
   }

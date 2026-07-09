@@ -13,10 +13,23 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {/* 配色モード初期化 — FOUC 防止のため描画前に <head> インラインで data-theme を確定
+        （localStorage.theme を優先し、無ければ prefers-color-scheme に追従） — redesign-2026-bold.spec §2.5 */}
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var osDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', stored || (osDark ? 'dark' : 'light'));
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
     <meta name="description" content={description} />
     <meta name="author" content="Hironobu Nigo" />
     <meta name="robots" content="index, follow" />
@@ -66,9 +79,8 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
       ]
     })} />
   </head>
-  <body class="min-h-screen bg-constructivist-cream text-constructivist-black font-body antialiased">
-    {/* T6a スクロール進捗バー（純装飾 — scroll() タイムライン対応ブラウザのみ表示） */}
-    <div class="scroll-progress" aria-hidden="true"></div>
+  <body class="min-h-screen bg-[var(--c-page)] text-[var(--c-ink)] font-body antialiased">
+    {/* T6a 進捗バーは redesign-2026-bold.spec §3.1 の決定により廃止（進捗は番号列に集約） */}
     <slot />
   </body>
 </html>

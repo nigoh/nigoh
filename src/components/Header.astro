@@ -1,104 +1,240 @@
 ---
+// 地図/索引ナビ（redesign-2026-bold.spec §3）
+// 現行の水平リンク列を廃し、常設番号列 01–07 ＋ フル画面地図（dialog）＋ 配色トグルへ再構築。
 const base = import.meta.env.BASE_URL;
 
-const sections = [
-  { label: 'ABOUT', href: '#about' },
-  { label: 'SKILLS', href: '#skills' },
-  { label: 'AI', href: '#ai' },
-  { label: 'CAREER', href: '#career' },
-  { label: 'PORTFOLIO', href: '#portfolio' },
-  { label: 'CONTACT', href: '#contact' },
+interface Section {
+  n: string;
+  id: string;
+  label: string;
+}
+
+// Hero を 01 に昇格し 01–07 に統一（index.astro のセクション id と一致させる）
+const sections: Section[] = [
+  { n: '01', id: 'hero', label: 'HERO' },
+  { n: '02', id: 'about', label: 'ABOUT' },
+  { n: '03', id: 'skills', label: 'SKILLS' },
+  { n: '04', id: 'ai', label: 'AI DEV' },
+  { n: '05', id: 'career', label: 'CAREER' },
+  { n: '06', id: 'portfolio', label: 'PORTFOLIO' },
+  { n: '07', id: 'contact', label: 'CONTACT' },
 ];
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-constructivist-black">
-  <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-    {/* ロゴ — 構成主義的ボールド */}
-    <a href={base} class="font-sans text-2xl tracking-widest text-constructivist-cream hover:text-constructivist-red transition-colors">
-      H.NIGO
-    </a>
+{/* スキップリンク — main へ（キーボード動線短縮・§11） */}
+<a href="#main-content" class="skip-link">本文へスキップ</a>
 
-    {/* デスクトップナビ */}
-    <ul class="hidden sm:flex items-center gap-0">
-      {sections.map((item) => (
-        <li>
-          <a
-            href={item.href}
-            class="misprint-text nav-link block px-3 py-2 text-sm font-sans tracking-wider text-constructivist-cream"
-          >
-            {item.label}
-          </a>
-        </li>
-      ))}
-    </ul>
+{/* ═══ 上部バー（§3.3・縮約） ═══ */}
+<header class="topbar" id="topbar">
+  <a href={base} class="misprint-text font-sans text-2xl tracking-widest leading-none">H.NIGO</a>
 
-    {/* モバイルメニューボタン */}
+  {/* 中央: 現在地ラベル（情報は番号列が担うため aria-hidden） */}
+  <p class="cur-label font-sans text-xl tracking-wider hidden sm:block" aria-hidden="true">
+    <span class="font-mono text-sm" id="cur-num">01</span> — <b id="cur-name">HERO</b>
+  </p>
+
+  <div class="flex items-center gap-3">
     <button
-      id="mobile-menu-btn"
+      id="theme-switch"
       type="button"
-      aria-label="メニュー"
-      class="sm:hidden p-2.5 text-constructivist-cream hover:text-constructivist-red transition-colors"
+      class="theme-switch"
+      aria-pressed="false"
+      aria-label="配色モード切替（ライト / ダーク）"
+    ></button>
+    <button
+      id="index-btn"
+      type="button"
+      class="idx-btn"
+      aria-haspopup="dialog"
+      aria-expanded="false"
+      aria-controls="map-overlay"
     >
-      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-        <path stroke-linecap="square" d="M3 6h18M3 12h18M3 18h18" />
-      </svg>
+      INDEX ▨
     </button>
-  </nav>
-
-  {/* モバイルメニュー */}
-  <div id="mobile-menu" class="hidden sm:hidden bg-constructivist-black border-t-2 border-constructivist-red">
-    <ul class="px-4 py-3 space-y-0">
-      {sections.map((item) => (
-        <li>
-          <a
-            href={item.href}
-            class="misprint-text nav-link block px-3 py-3 font-sans text-sm tracking-wider text-constructivist-cream hover:bg-constructivist-darkgray"
-          >
-            {item.label}
-          </a>
-        </li>
-      ))}
-    </ul>
   </div>
 </header>
 
-<script is:inline>
-  // モバイルメニュー開閉
-  document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-    var menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
-  });
-  // メニューリンクをクリックしたら閉じる
-  document.querySelectorAll('#mobile-menu a').forEach(function(link) {
-    link.addEventListener('click', function() {
-      document.getElementById('mobile-menu').classList.add('hidden');
-    });
-  });
+{/* ═══ 常設 番号列（§3.1・右端固定） ═══ */}
+<nav class="railnav" aria-label="セクション索引">
+  {
+    sections.map((s) => (
+      <a href={`#${s.id}`} data-name={s.label} aria-current={s.id === 'hero' ? 'page' : undefined}>
+        {s.n}
+      </a>
+    ))
+  }
+</nav>
 
-  // T6c ナビ現在地 — 可視セクションに対応するリンクへ aria-current="true" を付与
-  // （装飾ではなく情報なので aria で公開する — trends-2026-refresh.spec §7c）
-  (function() {
-    var links = Array.prototype.slice.call(document.querySelectorAll('.nav-link'));
-    var byId = {};
-    links.forEach(function(link) {
-      var href = link.getAttribute('href') || '';
-      if (href.charAt(0) !== '#') return;
-      var id = href.slice(1);
-      (byId[id] = byId[id] || []).push(link);
-    });
-    var targets = Object.keys(byId)
-      .map(function(id) { return document.getElementById(id); })
-      .filter(Boolean);
-    if (!('IntersectionObserver' in window) || targets.length === 0) return;
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (!entry.isIntersecting) return;
-        links.forEach(function(link) { link.removeAttribute('aria-current'); });
-        byId[entry.target.id].forEach(function(link) {
-          link.setAttribute('aria-current', 'true');
-        });
+{/* ═══ フル画面 地図インデックス（§3.2・dialog） ═══ */}
+<div
+  class="map-overlay"
+  id="map-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="セクション索引"
+  data-open="false"
+>
+  <p class="map-title">SITE INDEX — 07 SECTIONS</p>
+  <button id="map-close" type="button" class="idx-btn map-close">CLOSE ✕</button>
+  <div class="map-grid">
+    {
+      sections.map((s, i) => (
+        <a
+          href={`#${s.id}`}
+          class:list={['plate', `p${i + 1}`, { 'is-current': s.id === 'hero' }]}
+        >
+          <span class="p-num">{s.n}</span>
+          <span class="p-name">{s.label}</span>
+          <i class="glyph" aria-hidden="true" />
+        </a>
+      ))
+    }
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    // このスクリプトは Header（main より前）でインライン実行されるため、
+    // main 内のセクション参照は DOM 構築後に初期化する。
+    function init() {
+    var root = document.documentElement;
+
+    /* ── 配色トグル（手動上書き・localStorage 永続）＋ OS 追従 ── */
+    var sw = document.getElementById('theme-switch');
+    function syncSwitch() {
+      if (sw) sw.setAttribute('aria-pressed', String(root.getAttribute('data-theme') === 'dark'));
+    }
+    syncSwitch();
+    if (sw) {
+      sw.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try {
+          localStorage.setItem('theme', next);
+        } catch (e) {}
+        syncSwitch();
       });
-    }, { rootMargin: '-40% 0px -55% 0px' });
-    targets.forEach(function(target) { observer.observe(target); });
+    }
+    // 手動上書きが無いときだけ OS に追従
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+      var stored = null;
+      try {
+        stored = localStorage.getItem('theme');
+      } catch (err) {}
+      if (!stored) {
+        root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        syncSwitch();
+      }
+    });
+
+    /* ── 番号列 現在地（IntersectionObserver）＋ 上部バー現在ラベル＋地図プレート ── */
+    var railLinks = Array.prototype.slice.call(document.querySelectorAll('.railnav a'));
+    var plates = Array.prototype.slice.call(document.querySelectorAll('.plate'));
+    var curNum = document.getElementById('cur-num');
+    var curName = document.getElementById('cur-name');
+    function setCurrent(id) {
+      railLinks.forEach(function (a) {
+        var on = a.getAttribute('href') === '#' + id;
+        if (on) {
+          a.setAttribute('aria-current', 'page');
+          if (curNum) curNum.textContent = a.textContent.trim();
+          if (curName) curName.textContent = a.getAttribute('data-name') || '';
+        } else {
+          a.removeAttribute('aria-current');
+        }
+      });
+      plates.forEach(function (p) {
+        p.classList.toggle('is-current', p.getAttribute('href') === '#' + id);
+      });
+    }
+    var ids = ['hero', 'about', 'skills', 'ai', 'career', 'portfolio', 'contact'];
+    var targets = ids
+      .map(function (id) {
+        return document.getElementById(id);
+      })
+      .filter(Boolean);
+    if ('IntersectionObserver' in window && targets.length) {
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) setCurrent(e.target.id);
+          });
+        },
+        // ビューポート中央付近の薄い帯に入ったセクションを現在地とする
+        { rootMargin: '-45% 0px -45% 0px' }
+      );
+      targets.forEach(function (t) {
+        io.observe(t);
+      });
+    }
+
+    /* ── フル地図 dialog（開閉・フォーカストラップ・Esc・inert・フォーカス復帰） ── */
+    var overlay = document.getElementById('map-overlay');
+    var idxBtn = document.getElementById('index-btn');
+    var closeBtn = document.getElementById('map-close');
+    var lastFocus = null;
+    var bgEls = [
+      document.getElementById('topbar'),
+      document.querySelector('.railnav'),
+      document.getElementById('main-content'),
+      document.querySelector('footer'),
+    ].filter(Boolean);
+    function focusables() {
+      return [closeBtn].concat(Array.prototype.slice.call(overlay.querySelectorAll('.plate')));
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') {
+        closeMap();
+        return;
+      }
+      if (e.key === 'Tab') {
+        var f = focusables();
+        var i = f.indexOf(document.activeElement);
+        if (e.shiftKey && i <= 0) {
+          e.preventDefault();
+          f[f.length - 1].focus();
+        } else if (!e.shiftKey && i === f.length - 1) {
+          e.preventDefault();
+          f[0].focus();
+        }
+      }
+    }
+    function openMap() {
+      lastFocus = document.activeElement;
+      overlay.setAttribute('data-open', 'true');
+      idxBtn.setAttribute('aria-expanded', 'true');
+      bgEls.forEach(function (el) {
+        el.setAttribute('inert', '');
+      });
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', onKey);
+      closeBtn.focus();
+    }
+    function closeMap() {
+      overlay.setAttribute('data-open', 'false');
+      idxBtn.setAttribute('aria-expanded', 'false');
+      bgEls.forEach(function (el) {
+        el.removeAttribute('inert');
+      });
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', onKey);
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    if (overlay && idxBtn && closeBtn) {
+      idxBtn.addEventListener('click', openMap);
+      closeBtn.addEventListener('click', closeMap);
+      plates.forEach(function (p) {
+        p.addEventListener('click', closeMap);
+      });
+    }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   })();
 </script>
