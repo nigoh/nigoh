@@ -579,5 +579,73 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
 
 > 各段は独立に価値がある（途中で止めても壊れない）よう積む。1→3 で「土台と perf 予算」を確保してから
 > 4→7 の攻めを載せる。
+
+---
+
+## 17. パララックス / 奥行き深度（IMMERSIVE PARALLAX）
+
+> ステータス: **追記（frontend 実装済み）**。既存の 3D・スクロール駆動（§6・§5）を土台に、
+> 「**層ごとにスクロール速度差で動く**」パララックスを重ねて 2026 の没入感を一段強める。
+> DNA は不変（機械的・線形・角丸/影/glass 無し・パレット外ゼロ）。**動かすのは純装飾のみ**。
+
+### 17.1 原則（既存 spec と一貫）
+
+- **モーションは位置比例＝線形（機械的）**。パララックスはスクロール位置（`--hero-p` / `animation-timeline`）
+  またはポインタ位置に**直接比例**させる。バウンス・オーバーシュート・ふわふわイージング禁止。
+- **本文・データは動かさない**（H1/ROLE/説明はほぼ content 速度・±20px 以内、Skills バー・Career 年表・
+  カード本文・凡例は**一切動かさない**）。可読性・CLS を死守（`transform` のみ・`top/left/width/height` 不変）。
+- **prefers-reduced-motion で全無効**（層は静止＝中立位置 translateY(0)）。
+  scroll 駆動宣言は `@media (prefers-reduced-motion: no-preference)` の内側、view() 依存は
+  `@supports (animation-timeline: view())` の内側。**非対応/PRM で装飾が消えたり不可視化しない**（既定 = 静止表示）。
+- 純装飾は `aria-hidden`。rAF を増やさない（Hero は既存 ProunCanvas の rAF に統合、
+  セクション装飾は CSS `animation-timeline: view()` で JS レス）。`will-change` は使わない（compositor 変形で十分）。
+
+### 17.2 ヒーローの多層スクロールパララックス（§6 の `--hero-p` を流用）
+
+Hero は 250vh sticky で `--hero-p`（進捗 0→1）を JS が供給済み。同じ値で**層を分けて速度差**をつける
+（`translateY` を `--hero-p` に線形比例。`@media (prefers-reduced-motion: no-preference)` 内・既定 `var(--hero-p,0)=0`）。
+
+| 層 | 要素 | translateY（p=0→1） | 深度読み |
+|---|---|---|---|
+| 背景（最も遅い） | `.hero-parallax-bg`（薄い巨大 `01`・cream の斜め力線） | `0 → +64px`（下へドリフト） | 最奥・遅い |
+| 中間 | `.hero-proun-layer`（3D Proun ホスト。3D 自身の組み上げ＋回転に加算） | `0 → +22px` | 中景 |
+| 前景（content 速度） | `.hero-parallax-fg`（H1・ROLE・説明の実テキスト） | `0 → -14px` | 手前・可読最優先 |
+
+- 量は控えめ（背景 64px ≤ 80px、前景 14px ≤ 20px、可読性を侵さない）。全て `transform` のみ・CLS ゼロ。
+- 非対応/PRM: `--hero-p` 未供給 → 全層 translateY(0)＝§6 の静止完成ポスターのまま。
+
+### 17.3 ヒーロー3D のポインタ・パララックス（デスクトップのみ）
+
+- **`(pointer: fine) and (hover: hover)` かつ PRM 無効時のみ**有効化（タッチ/粗ポインタ/PRM は無効）。
+- マウス位置を正規化（`-1..1`）→ Proun group を**わずかに傾ける**（yaw/pitch に `±5°` を線形加算）。
+  既存 rAF `tick` に**統合**（多重ループを作らない）。追従は単極 lerp（係数 0.18・**オーバーシュートしない**機械的追従）。
+- スクロール駆動の軸測回転（`p*28° / p*-6°`）に**加算**する（`rotation.y = p*28° + ptrX*5°`、`rotation.x = p*-6° + ptrY*5°`）。
+  タッチ・キーボード操作を阻害しない（`pointermove` は passive・装飾のみ）。
+
+### 17.4 セクション装飾のスクロールパララックス（サイト全体の奥行き）
+
+- 各セクションの純装飾（`SectionAccent` の 3D 脇役・赤い縦バー・大円・回転赤块・`destructive-block`）を
+  `.parallax-layer`（`position:absolute; inset:0; pointer-events:none; aria-hidden`）でラップし、
+  `animation-timeline: view()` で **`translateY` を線形ドリフト**（本文と異なる速度）。
+  - 速度: `.parallax-layer`（既定 ±38px）/ `.p-subtle`（±22px・3D 脇役）/ `.p-slow`（±60px・大装飾块）。
+  - `animation-range: cover`・`linear`・`both`。セクション中央付近で translateY≈0（中立）。
+- **ラップ方式の理由**: 装飾自身の transform（`-translate-x-1/2` 等の中央寄せ・`rotate`）を壊さないよう、
+  **外側ラッパーにドリフトを掛け**、内側要素は自前の transform を保持する（transform 衝突回避）。
+- **本文テキスト・データ（Skills バー・Career 年表・カード・凡例）は `.parallax-layer` に入れない**（動かさない）。
+- 非対応/PRM: アニメ無し → translateY(0)＝従来の静止装飾のまま（消えない・ズレない）。
+
+### 17.5 受入条件
+
+- [x] Hero が 3 層（背景 `+64px` / Proun `+22px` / 前景 `-14px`）で `--hero-p` に線形比例して速度差ドリフトする。
+      `transform` のみ・CLS ゼロ・本文は content 速度（±20px 以内）。
+- [x] Hero 3D が `(pointer: fine) and (hover: hover)` かつ PRM 無効時のみポインタで `±5°` 傾く。
+      既存 rAF に統合（多重ループなし）・単極 lerp（オーバーシュート無し）・タッチ/キーボードを阻害しない。
+- [x] セクション純装飾（3D 脇役・縦バー・大円・回転赤块・block）が `animation-timeline: view()` で
+      本文と異なる速度でドリフトし、**本文/データは動かない**。装飾は `aria-hidden`・`pointer-events:none`。
+- [x] **PRM で全パララックス無効**（層は translateY(0)＝中立/完成位置で静止）。scroll 駆動は
+      `@media (prefers-reduced-motion: no-preference)`、view() 依存は `@supports (animation-timeline: view())` の内側。
+- [x] 非対応ブラウザ（view() 無し）で装飾が消えず・ズレず、静止表示で成立（既定 translateY(0)）。
+- [x] rAF を増やさない（Hero は既存ループ統合・セクションは CSS のみ）。パレット外ゼロ・角丸/影/glass 無し・
+      `npx astro check` 0 エラー・`npm run build` 成功。
 </content>
 </invoke>

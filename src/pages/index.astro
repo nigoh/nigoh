@@ -281,16 +281,28 @@ const aiTools: AiTool[] = [
         PRM/WebGL 非対応は ProunCanvas が静的 SVG（完成姿勢）にフォールバックし、CSS が尺を 100vh に畳む。 */}
     <section id="hero" class="hero-wrap relative bg-constructivist-black">
       <div class="hero-stick sticky top-0 h-screen overflow-hidden flex items-center bg-constructivist-black">
-        {/* El Lissitzky 3D Proun（Three.js・軸測投影・スクロールで組み上がる主役） */}
-        <ProunCanvas client:visible />
+        {/* 背景層（最も遅い・§17.2）— 薄い巨大 01 と cream の斜め力線。--hero-p に対し +64px ドリフト */}
+        <div class="hero-parallax-bg" aria-hidden="true">
+          <span class="hero-bg-01">01</span>
+          <span class="hero-bg-line"></span>
+        </div>
 
-        <AnimatedHero
-          client:load
-          name="H.NIGO"
-          role="SOFTWARE ENGINEER"
-          description="低レイヤーからアプリケーションまで。C/C++, Java, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。"
-          githubUrl="https://github.com/nigoh"
-        />
+        {/* 中間層（§17.2）— El Lissitzky 3D Proun（軸測投影・スクロールで組み上がる主役＋ポインタ微傾き）。
+            ホストを +22px ドリフトさせ、3D 自身の回転・組み上げに視差を加える */}
+        <div class="hero-proun-layer" aria-hidden="true">
+          <ProunCanvas client:visible />
+        </div>
+
+        {/* 前景層（content 速度・§17.2）— 実テキスト。可読性最優先で -14px の微小ドリフトのみ */}
+        <div class="hero-parallax-fg w-full">
+          <AnimatedHero
+            client:load
+            name="H.NIGO"
+            role="SOFTWARE ENGINEER"
+            description="低レイヤーからアプリケーションまで。C/C++, Java, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。"
+            githubUrl="https://github.com/nigoh"
+          />
+        </div>
 
         <p class="scroll-hint" aria-hidden="true">SCROLL ▾ ASSEMBLE THE PROUN</p>
       </div>
@@ -298,9 +310,14 @@ const aiTools: AiTool[] = [
 
     {/* ═══════════════════ About（索引 02・明側 = --c-page） ═══════════════════ */}
     <section id="about" class="relative py-20 overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役） */}
-      <SectionAccent client:visible section="about" />
-      <div class="absolute top-0 left-0 w-2 h-full bg-constructivist-red pointer-events-none" aria-hidden="true"></div>
+      {/* 3D アクセント装飾（軸測・脇役）— スクロール視差（§17.4・p-subtle） */}
+      <div class="parallax-layer p-subtle" aria-hidden="true">
+        <SectionAccent client:visible section="about" />
+      </div>
+      {/* 赤い縦バー — 本文と異なる速度でドリフト（§17.4） */}
+      <div class="parallax-layer" aria-hidden="true">
+        <div class="absolute top-0 left-0 w-2 h-full bg-constructivist-red pointer-events-none"></div>
+      </div>
       {/* 紙の grain（リトグラフの紙肌・静止画。ライトの明側のみ。装飾より上・本文 z-10 より下） */}
       <div class="grain-overlay" aria-hidden="true"></div>
 
@@ -367,8 +384,10 @@ const aiTools: AiTool[] = [
 
     {/* ═══════════════════ Skills（索引 03・暗側 = --c-field・両モード不変） ═══════════════════ */}
     <section id="skills" class="relative py-20 bg-constructivist-black overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役） */}
-      <SectionAccent client:visible section="skills" />
+      {/* 3D アクセント装飾（軸測・脇役）— スクロール視差（§17.4・p-subtle） */}
+      <div class="parallax-layer p-subtle" aria-hidden="true">
+        <SectionAccent client:visible section="skills" />
+      </div>
 
       <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* T1/T6b 見出しグループ */}
@@ -469,13 +488,17 @@ const aiTools: AiTool[] = [
 
     {/* ═══════════════════ AI-Powered Development（索引 04・明側 = --c-page） ═══════════════════ */}
     <section id="ai" class="relative py-20 overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役・向き合う 2 楔） */}
-      <SectionAccent client:visible section="ai" />
-      {/* 紙の grain（ライトの明側のみ） */}
+      {/* 3D アクセント装飾（軸測・脇役・向き合う 2 楔）— スクロール視差（§17.4・p-subtle） */}
+      <div class="parallax-layer p-subtle" aria-hidden="true">
+        <SectionAccent client:visible section="ai" />
+      </div>
+      {/* 紙の grain（ライトの明側のみ・静止＝視差なし） */}
       <div class="grain-overlay" aria-hidden="true"></div>
-      {/* mid→loud: 見出し背後に回転した赤块（本文 z-10 より下・テキストに被せない・§4.2） */}
-      <div class="destructive-block" style="left: 2%; top: 64px;" aria-hidden="true">
-        <div class="w-20 h-20 sm:w-28 sm:h-28 bg-constructivist-red" style="transform: rotate(10deg);"></div>
+      {/* mid→loud: 見出し背後に回転した赤块（本文 z-10 より下・テキストに被せない・§4.2）。大装飾块は p-slow でドリフト */}
+      <div class="parallax-layer p-slow" aria-hidden="true">
+        <div class="destructive-block" style="left: 2%; top: 64px;">
+          <div class="w-20 h-20 sm:w-28 sm:h-28 bg-constructivist-red" style="transform: rotate(10deg);"></div>
+        </div>
       </div>
 
       <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -547,8 +570,10 @@ const aiTools: AiTool[] = [
 
     {/* ═══════════════════ Career（索引 05・暗側 = --c-field・両モード不変） ═══════════════════ */}
     <section id="career" class="relative py-20 bg-constructivist-black overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役・縦の力線） */}
-      <SectionAccent client:visible section="career" />
+      {/* 3D アクセント装飾（軸測・脇役・縦の力線）— スクロール視差（§17.4・p-subtle） */}
+      <div class="parallax-layer p-subtle" aria-hidden="true">
+        <SectionAccent client:visible section="career" />
+      </div>
 
       <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* T1/T6b 見出しグループ */}
@@ -591,14 +616,21 @@ const aiTools: AiTool[] = [
 
     {/* ═══════════════════ Portfolio（索引 06・明側 = --c-page） ═══════════════════ */}
     <section id="portfolio" class="relative py-20 overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役・中空枠のリズム） */}
-      <SectionAccent client:visible section="portfolio" />
-      <div class="absolute top-0 right-0 w-2 h-full bg-constructivist-red pointer-events-none" aria-hidden="true"></div>
-      {/* 紙の grain（ライトの明側のみ） */}
+      {/* 3D アクセント装飾（軸測・脇役・中空枠のリズム）— スクロール視差（§17.4・p-subtle） */}
+      <div class="parallax-layer p-subtle" aria-hidden="true">
+        <SectionAccent client:visible section="portfolio" />
+      </div>
+      {/* 赤い縦バー — 本文と異なる速度でドリフト（§17.4） */}
+      <div class="parallax-layer" aria-hidden="true">
+        <div class="absolute top-0 right-0 w-2 h-full bg-constructivist-red pointer-events-none"></div>
+      </div>
+      {/* 紙の grain（ライトの明側のみ・静止＝視差なし） */}
       <div class="grain-overlay" aria-hidden="true"></div>
-      {/* mid: 見出し右の空きに回転した赤块（テキストに被せない・z-10 より下・§4.1/§4.2） */}
-      <div class="destructive-block" style="right: 11%; top: 92px;" aria-hidden="true">
-        <div class="w-16 h-16 sm:w-24 sm:h-24 bg-constructivist-red" style="transform: rotate(-12deg);"></div>
+      {/* mid: 見出し右の空きに回転した赤块（テキストに被せない・z-10 より下・§4.1/§4.2）。大装飾块は p-slow */}
+      <div class="parallax-layer p-slow" aria-hidden="true">
+        <div class="destructive-block" style="right: 11%; top: 92px;">
+          <div class="w-16 h-16 sm:w-24 sm:h-24 bg-constructivist-red" style="transform: rotate(-12deg);"></div>
+        </div>
       </div>
 
       <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -712,11 +744,15 @@ const aiTools: AiTool[] = [
 
     {/* ═══════════════════ Contact（索引 07・暗側 = --c-field・両モード不変） ═══════════════════ */}
     <section id="contact" class="relative py-20 bg-constructivist-black overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役・円環 1 個） */}
-      <SectionAccent client:visible section="contact" />
-      {/* 装飾的幾何学 */}
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border-4 border-constructivist-red opacity-10 pointer-events-none" aria-hidden="true"></div>
-      <div class="absolute top-10 left-10 w-20 h-20 bg-constructivist-red transform rotate-12 opacity-20" aria-hidden="true"></div>
+      {/* 3D アクセント装飾（軸測・脇役・円環 1 個）— スクロール視差（§17.4・p-subtle） */}
+      <div class="parallax-layer p-subtle" aria-hidden="true">
+        <SectionAccent client:visible section="contact" />
+      </div>
+      {/* 装飾的幾何学（大円・回転赤块）— 大装飾块は p-slow でドリフト（内側の中央寄せ/回転 transform は保持） */}
+      <div class="parallax-layer p-slow" aria-hidden="true">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border-4 border-constructivist-red opacity-10 pointer-events-none"></div>
+        <div class="absolute top-10 left-10 w-20 h-20 bg-constructivist-red transform rotate-12 opacity-20"></div>
+      </div>
 
       <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* T1/T6b 見出しグループ（中央揃えセクションのため罫線は mx-auto） */}

@@ -596,6 +596,114 @@ html[data-theme='dark'] .grain-overlay {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   パララックス / 奥行き深度（redesign-2026-bold.spec §17）
+   すべて transform のみ・CLS ゼロ。純装飾のみ動かす（本文/データは不動）。
+   PRM で全無効（中立 translateY(0)）。view() 非対応でも既定 translateY(0)＝静止表示。
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Hero 多層（§17.2）: --hero-p（JS 供給）に線形比例。既定 var(--hero-p,0)=0 ＝ 静止 ── */
+.hero-parallax-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* 薄い巨大 01（背景テクスチャ・aria-hidden・red on black は非テキスト図形で AA 対象外） */
+.hero-bg-01 {
+  position: absolute;
+  right: 2vw;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(20rem, 52vw, 60rem);
+  line-height: 0.8;
+  color: var(--red);
+  opacity: 0.05;
+  user-select: none;
+}
+/* cream の斜め力線（Lissitzky 的な背景の一本） */
+.hero-bg-line {
+  position: absolute;
+  left: -8%;
+  bottom: 24%;
+  width: 60%;
+  height: 2px;
+  background: var(--cream);
+  opacity: 0.08;
+  transform: rotate(-24deg);
+}
+.hero-proun-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-parallax-fg {
+  position: relative;
+  z-index: 10;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-parallax-bg {
+    transform: translateY(calc(64px * var(--hero-p, 0)));
+  }
+  .hero-proun-layer {
+    transform: translateY(calc(22px * var(--hero-p, 0)));
+  }
+  .hero-parallax-fg {
+    transform: translateY(calc(-14px * var(--hero-p, 0)));
+  }
+}
+
+/* ── セクション装飾（§17.4）: view() timeline で translateY を線形ドリフト（本文と異なる速度）──
+   純装飾を .parallax-layer（absolute inset-0）でラップし、内側要素の自前 transform を壊さず外側を動かす。
+   本文/データ（Skills バー・Career 年表・カード・凡例）は .parallax-layer に入れない＝不動。 */
+.parallax-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .parallax-layer {
+      animation: parallax-drift linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+    .parallax-layer.p-subtle {
+      animation-name: parallax-drift-subtle;
+    }
+    .parallax-layer.p-slow {
+      animation-name: parallax-drift-slow;
+    }
+  }
+}
+@keyframes parallax-drift {
+  from {
+    transform: translateY(38px);
+  }
+  to {
+    transform: translateY(-38px);
+  }
+}
+@keyframes parallax-drift-subtle {
+  from {
+    transform: translateY(22px);
+  }
+  to {
+    transform: translateY(-22px);
+  }
+}
+@keyframes parallax-drift-slow {
+  from {
+    transform: translateY(60px);
+  }
+  to {
+    transform: translateY(-60px);
+  }
+}
+
 /* Contact loud 見出し（極大・中央から破断・§4.1/§5） */
 .contact-heading {
   font-size: clamp(3.4rem, 11vw, 7rem);

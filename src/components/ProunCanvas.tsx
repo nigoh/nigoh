@@ -272,6 +272,26 @@ export default function ProunCanvas() {
       };
       const D28 = d(28);
       const DN6 = d(-6);
+
+      // ポインタ・パララックス（§17.3）: (pointer: fine) and (hover: hover) かつ PRM 無効時のみ。
+      // マウス位置（-1..1）に線形比例して group を ±5° 傾ける。既存 rAF に統合し多重ループを作らない。
+      // タッチ・粗ポインタ・PRM では無効（listener を張らない＝操作を阻害しない）。
+      const TILT = d(5);
+      const allowPointer =
+        window.matchMedia('(pointer: fine) and (hover: hover)').matches &&
+        !prefersReducedMotion();
+      let ptrTargetX = 0; // 目標（正規化）
+      let ptrTargetY = 0;
+      let ptrX = 0; // 追従値（単極 lerp・オーバーシュートしない機械的追従）
+      let ptrY = 0;
+      const onPointerMove = (e: PointerEvent) => {
+        ptrTargetX = (e.clientX / window.innerWidth) * 2 - 1;
+        ptrTargetY = (e.clientY / window.innerHeight) * 2 - 1;
+      };
+      if (allowPointer) {
+        window.addEventListener('pointermove', onPointerMove, { passive: true });
+      }
+
       let last = 0;
       let elapsed = 0;
       let running = true;
@@ -291,9 +311,14 @@ export default function ProunCanvas() {
         // ドリー: p∈[0.6,1] で軽く寄る（主役正方形が画面を占有していく）
         const dolly = Math.min(1, Math.max(0, (p - 0.6) / 0.4));
         group.scale.setScalar(baseScale * (1 + 0.18 * dolly));
-        // 軸測回転（等角の範囲を保つ）
-        group.rotation.y = p * D28;
-        group.rotation.x = p * DN6;
+        // ポインタ追従（単極 lerp・係数 0.18・オーバーシュートなし）。無効時は 0 のまま。
+        if (allowPointer) {
+          ptrX += (ptrTargetX - ptrX) * 0.18;
+          ptrY += (ptrTargetY - ptrY) * 0.18;
+        }
+        // 軸測回転（等角の範囲を保つ）＋ ポインタ微傾き（±5° を線形加算・§17.3）
+        group.rotation.y = p * D28 + ptrX * TILT;
+        group.rotation.x = p * DN6 + ptrY * TILT;
 
         for (const { mesh, spec, home } of meshes) {
           const bob = spec.bob ? Math.sin(elapsed * 0.4 + home[1] * 1.7) * spec.bob : 0;
@@ -327,6 +352,7 @@ export default function ProunCanvas() {
         ro.disconnect();
         io.disconnect();
         document.removeEventListener('visibilitychange', onVis);
+        if (allowPointer) window.removeEventListener('pointermove', onPointerMove);
         for (const g of geoms) g.dispose();
         for (const m of mats) m.dispose();
         renderer.dispose();
