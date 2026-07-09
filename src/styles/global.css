@@ -2,10 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+/* フォントは BaseLayout.astro の <head>（preconnect + link, display=swap）で読み込む
+   — trends-2026-refresh.spec F-5（render-blocking @import の廃止） */
 
 html {
   scroll-behavior: smooth;
+}
+
+/* T2 — 見出しの折返し均衡（Baseline 済み・ゲート不要）と本文の progressive な折返し改善 */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {
@@ -37,37 +50,144 @@ html {
   }
 }
 
-/* ロシア構成主義的アニメーション */
-@keyframes slide-in {
-  from { opacity: 0; transform: translateX(-24px) rotate(-2deg); }
-  to { opacity: 1; transform: translateX(0) rotate(0deg); }
+/* 旧 slide-in / wedge-in / proun-float keyframes と .animate-* ユーティリティは
+   未使用のため削除済み — trends-2026-refresh.spec F-3 */
+
+/* ═══ T3 — 版ずれ（misregistration）ホバー ═══
+   2 色刷りの刷り位置ズレ。トランジション 0s（即時）・blur ゼロのシャープな複製のみ。
+   文字色は変えない（小テキストの red 化を除去 — a11y.spec と整合）。 */
+@layer components {
+  /* テキストの赤版ずれ（自身の hover / focus-visible） */
+  .misprint-text:hover,
+  .misprint-text:focus-visible {
+    text-shadow: 2px 2px 0 theme('colors.constructivist.red');
+  }
+
+  /* テキストの赤版ずれ（親 .group の hover / focus-visible 連動） */
+  .group:hover .misprint-text-in-group,
+  .group:focus-visible .misprint-text-in-group {
+    text-shadow: 2px 2px 0 theme('colors.constructivist.red');
+  }
+
+  /* 面の赤版ずれ（カード）— translate しない・ズレるだけ */
+  .misprint-box-red:hover,
+  .misprint-box-red:focus-visible {
+    box-shadow: 4px 4px 0 0 theme('colors.constructivist.red');
+  }
+
+  /* 面の黒版ずれ（red 面の CTA） */
+  .misprint-box-black:hover,
+  .misprint-box-black:focus-visible {
+    box-shadow: 4px 4px 0 0 theme('colors.constructivist.black');
+  }
+
+  /* ═══ T4 — 紙の grain オーバーレイ（cream 面のみ・静止画） ═══
+     1920 年代リトグラフの紙肌。feTurbulence（baseFrequency 0.9 / numOctaves 2 / 160px タイル）。
+     opacity は 0.05（上限 0.06）— cream 地の全テキストペアの AA を維持する。 */
+  .grain-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
 }
 
-/* 楔形ウェッジイン */
-@keyframes wedge-in {
-  from { opacity: 0; transform: translateX(-60px) scaleX(0.2); }
-  to { opacity: 1; transform: translateX(0) scaleX(1); }
+/* ═══ T6a — スクロール進捗バー（ビューポート最上端 3px・Header より上） ═══
+   既定は display:none。scroll() タイムライン対応かつ PRM no-preference のときだけ出現する
+   — 非対応・reduce 環境に中途半端な固定赤バーを残さない。 */
+.scroll-progress {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: theme('colors.constructivist.red');
+  transform-origin: left;
+  z-index: 60;
+  pointer-events: none;
 }
 
-/* Proun的浮饒 */
-@keyframes proun-float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(3deg); }
+/* ═══ T6c — ナビ現在地（aria-current）═══
+   2px の赤下線（非テキスト 3:1 OK）。文字色は cream のまま・出現は即時（版ずれと同じ即物性）。 */
+.nav-link[aria-current='true'] {
+  box-shadow: inset 0 -2px 0 theme('colors.constructivist.red');
 }
 
-.animate-slide-in {
-  animation: slide-in 0.5s ease-out both;
+/* ═══ T1 / T6a / T7 — スクロール駆動・マーキーのモーション宣言 ═══
+   global の reduced-motion ガード（duration 潰し）は scroll-driven animation に効かないため、
+   これらは必ず PRM no-preference の内側に置く（trends-2026-refresh.spec §10）。
+   初期隠蔽（opacity 0 / scaleX 0）は @supports ゲートの内側のみ — Firefox では静的に完全表示。 */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* T1 見出しグループ: 左下 → 定位置（Hero の対角力線と同じ向き）・linear */
+    .reveal-heading {
+      animation: reveal-heading-slide 1s linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+
+    /* T1 赤罫線: 「罫線が引かれる」scaleX 0 → 1・origin left */
+    .reveal-rule {
+      animation: reveal-rule-draw 1s linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+      transform-origin: left;
+    }
+  }
+
+  @supports (animation-timeline: scroll()) {
+    /* T6a 進捗バー: ページ全体のスクロール量に等速追従 */
+    .scroll-progress {
+      display: block;
+      animation: scroll-progress-grow 1s linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+
+  /* T7 マーキー: 等速 ≈50px/s（トラック半幅 ≈2200px ÷ 45s）。reduce 時は静止帯として残る */
+  .marquee-track {
+    animation: marquee-scroll 45s linear infinite;
+  }
 }
 
-.animate-wedge-in {
-  animation: wedge-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+@keyframes reveal-heading-slide {
+  from {
+    opacity: 0;
+    transform: translate(-24px, 12px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
 }
 
-.animate-proun {
-  animation: proun-float 6s ease-in-out infinite;
+@keyframes reveal-rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
-.animate-delay-100 { animation-delay: 0.1s; }
-.animate-delay-200 { animation-delay: 0.2s; }
-.animate-delay-300 { animation-delay: 0.3s; }
-.animate-delay-400 { animation-delay: 0.4s; }
+@keyframes scroll-progress-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

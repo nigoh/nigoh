@@ -24,7 +24,7 @@ const sections = [
         <li>
           <a
             href={item.href}
-            class="px-3 py-2 text-sm font-sans tracking-wider text-constructivist-cream hover:text-constructivist-red transition-colors"
+            class="misprint-text nav-link block px-3 py-2 text-sm font-sans tracking-wider text-constructivist-cream"
           >
             {item.label}
           </a>
@@ -52,7 +52,7 @@ const sections = [
         <li>
           <a
             href={item.href}
-            class="block px-3 py-3 font-sans text-sm tracking-wider text-constructivist-cream hover:text-constructivist-red hover:bg-constructivist-darkgray transition-colors"
+            class="misprint-text nav-link block px-3 py-3 font-sans text-sm tracking-wider text-constructivist-cream hover:bg-constructivist-darkgray"
           >
             {item.label}
           </a>
@@ -74,4 +74,31 @@ const sections = [
       document.getElementById('mobile-menu').classList.add('hidden');
     });
   });
+
+  // T6c ナビ現在地 — 可視セクションに対応するリンクへ aria-current="true" を付与
+  // （装飾ではなく情報なので aria で公開する — trends-2026-refresh.spec §7c）
+  (function() {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.nav-link'));
+    var byId = {};
+    links.forEach(function(link) {
+      var href = link.getAttribute('href') || '';
+      if (href.charAt(0) !== '#') return;
+      var id = href.slice(1);
+      (byId[id] = byId[id] || []).push(link);
+    });
+    var targets = Object.keys(byId)
+      .map(function(id) { return document.getElementById(id); })
+      .filter(Boolean);
+    if (!('IntersectionObserver' in window) || targets.length === 0) return;
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        links.forEach(function(link) { link.removeAttribute('aria-current'); });
+        byId[entry.target.id].forEach(function(link) {
+          link.setAttribute('aria-current', 'true');
+        });
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    targets.forEach(function(target) { observer.observe(target); });
+  })();
 </script>

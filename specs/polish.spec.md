@@ -10,7 +10,8 @@
 
 点検の結果、**大半の観点は既に一貫しており是正不要**。下記は「現状で十分」と明記する:
 
-- **h2 セクション見出し**: 全 7 セクション `font-sans text-5xl sm:text-6xl tracking-tight`。サイズ・字間・フォントは完全一致。**変更不要**。
+- **h2 セクション見出し**: 全セクション `font-sans text-heading-fluid tracking-tight` で完全一致
+  （旧 `text-5xl sm:text-6xl` は trends-2026-refresh.spec T5 で流体トークンに置換。「全セクション同一」原則は維持）。
 - **セクション縦リズム**: 全セクション `py-20`（Hero のみ `min-h-[90vh]`）。サブブロック上マージンも `mt-16` で統一（Skills GitHub / AI Focus / Portfolio Zenn）。**変更不要**。
 - **明暗交替**: hero(dark) → about(light) → skills(dark) → ai(light) → career(dark) → portfolio(light) → contact(dark)。完全な交互。**変更不要**。
 - **eyebrow ラベル**（`text-xs font-bold uppercase tracking-widest font-body`）: About dt / Skills GitHub / AI Focus / Portfolio Zenn で完全一致。**変更不要**。

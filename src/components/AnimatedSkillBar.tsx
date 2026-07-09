@@ -58,7 +58,7 @@ function SkillBar({ skill, delay, index }: { skill: Skill; delay: number; index:
     <div ref={ref} className="relative">
       {/* 背景の薄い番号 */}
       <div
-        className="absolute right-0 top-1/2 -translate-y-1/2 font-sans text-[4.5rem] text-constructivist-red leading-none select-none pointer-events-none"
+        className="absolute right-0 top-1/2 -translate-y-1/2 font-sans text-7xl text-constructivist-red leading-none select-none pointer-events-none"
         style={{ opacity: 0.05 }}
         aria-hidden="true"
       >
@@ -82,7 +82,8 @@ function SkillBar({ skill, delay, index }: { skill: Skill; delay: number; index:
         </div>
         {/* パーセント — 大きく表示 */}
         <div className="flex items-baseline gap-0.5">
-          <animated.span className="font-sans text-2xl text-constructivist-red">
+          {/* データ数値は mono（trends-2026-refresh.spec F-4。24px red は大テキスト 3:1 OK） */}
+          <animated.span className="font-mono text-2xl text-constructivist-red">
             {numberSpring.val.to((v) => `${Math.floor(v)}`)}
           </animated.span>
           <span className="text-sm text-constructivist-gray font-body">%</span>
