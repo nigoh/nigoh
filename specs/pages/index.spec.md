@@ -27,8 +27,9 @@
 
 ### 3. Skills セクション（`#skills`）
 - 背景 `bg-constructivist-black`、`ConstructivistCanvas section="skills"`
-- カテゴリ別グループ（`AnimatedSkillBar`）: LANGUAGES / FRAMEWORKS・PLATFORMS / OS / DATABASE /
-  TOOLS & INFRASTRUCTURE / AI TOOLS。各スキルに赤系プログレスバー＋パーセント
+- カテゴリ別グループ（`AnimatedSkillBar`）は 4 カテゴリに集約: LANGUAGES / PLATFORMS /
+  DEV & INFRA / AI-DRIVEN DEV（各 2〜4 項目・計 13 項目程度）。各スキルに赤系プログレスバー＋パーセント
+- 近い技術は 1 項目にまとめる（例: TypeScript / JavaScript、Git / GitLab、RDB (PostgreSQL / Oracle)）
 - GitHub Activity: コントリビューションカレンダー・Stars/Followers バッジ・
   言語分布グラフ（ビルド時に GitHub API から取得、失敗時はバッジへフォールバック）
 
@@ -41,10 +42,15 @@
 ### 5. Career セクション（`#career`）
 - 背景 `bg-constructivist-black`、赤い縦軸＋ダイヤモンドマーカーのタイムライン
 - 7 エントリ（2026 組み込み Android 〜 2016 初期）。年・期間・業種・担当工程・技術スタックを記載
-- クライアント名・案件番号・具体的な期間は非掲載（業種・技術領域のみ）
+- クライアント名・案件番号・具体的な機器名/製品名・詳細な期間は非掲載。
+  業務案件は「社会インフラ機器」「専用端末」のような一般化した表現のみ使う（CLAUDE.md 規約）
 
 ### 6. Portfolio セクション（`#portfolio`）
-- `projects` をカードグリッドで描画（リンク・ホバー・タグバッジ）＋右端の赤い縦帯
+- カードはビルド時に GitHub API（公開リポジトリ）から自動生成し、push 日時の新しい順に最大 8 件を
+  カードグリッドで描画（リンク・ホバー・タグバッジ＝主要言語）＋右端の赤い縦帯
+  - 除外: fork・アーカイブ・業務関連リポジトリ（`excludedRepos` パターン: faj / do_hug 系）
+  - 直近 90 日以内に push があるカードは赤地の「IN PROGRESS」バッジを表示（現在製作中の反映）
+  - API 取得失敗時は代表的な公開リポジトリの静的フォールバックカードを表示
 - Blog (Zenn): ビルド時に Zenn API から最新記事を取得、失敗時はフォールバックカード
 
 ### 7. Contact セクション（`#contact`）
@@ -62,11 +68,15 @@
 ## 受入条件
 - [ ] Hero に 3D Proun 装飾と H.NIGO の一行自己紹介・GitHub リンクが表示される
 - [ ] About が 2 カラムで表示され、現在の Android（Java）開発に言及している
-- [ ] Skills がカテゴリ別にプログレスバーで表示され、Android SDK を含む
+- [ ] Skills が 4 カテゴリ（LANGUAGES / PLATFORMS / DEV & INFRA / AI-DRIVEN DEV）の
+      プログレスバーで表示され、Android SDK を含む
 - [ ] GitHub Activity（カレンダー・バッジ・言語分布）が表示される
 - [ ] AI-Powered Dev に Claude Code を含む各カードが表示される
 - [ ] Career が 7 エントリのタイムラインで表示され、最新が 2026 の組み込み Android である
-- [ ] Portfolio カードと Zenn 記事一覧が表示される
+- [ ] Portfolio カードが表示される（GitHub API 成功時は自動生成、失敗時はフォールバック。
+      いずれも faj / do_hug 系リポジトリを含まない）
+- [ ] Career・Portfolio に業務案件の具体的な機器名・製品名が含まれない
+- [ ] Zenn 記事一覧が表示される
 - [ ] Contact に GitHub リンクボタンが表示される
 - [ ] 全セクションがモバイルで正しく表示される
 - [ ] `npx astro check` が 0 エラー、`npm run build` が成功する

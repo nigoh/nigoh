@@ -30,7 +30,33 @@ try {
   // 取得失敗時はフォールバック表示
 }
 
-// ビルド時に GitHub API からリポジトリ言語分布を取得
+// ビルド時に GitHub API から公開リポジトリ一覧を取得（言語分布と Portfolio の両方で使用）
+interface GitHubRepo {
+  name: string;
+  description: string | null;
+  html_url: string;
+  language: string | null;
+  pushed_at: string;
+  fork: boolean;
+  archived: boolean;
+}
+
+// Portfolio に載せないリポジトリ（業務関連）。CLAUDE.md「規約」参照
+const excludedRepos = /faj|do.?hug/i;
+
+let githubRepos: GitHubRepo[] = [];
+try {
+  const reposRes = await fetch(
+    'https://api.github.com/users/nigoh/repos?per_page=100&type=owner',
+    { headers: { Accept: 'application/vnd.github+json' } }
+  );
+  if (reposRes.ok) {
+    githubRepos = await reposRes.json();
+  }
+} catch {
+  // 取得失敗時は言語分布・Portfolio ともフォールバック表示
+}
+
 interface GitHubLang {
   name: string;
   percent: number;
@@ -52,31 +78,19 @@ const langColors: Record<string, string> = {
   Shell: '#89E051',
 };
 
-let topLangs: GitHubLang[] = [];
-try {
-  const reposRes = await fetch(
-    'https://api.github.com/users/nigoh/repos?per_page=100&type=owner',
-    { headers: { Accept: 'application/vnd.github+json' } }
-  );
-  if (reposRes.ok) {
-    const repos: Array<{ language: string | null }> = await reposRes.json();
-    const counts: Record<string, number> = {};
-    for (const r of repos) {
-      if (r.language) counts[r.language] = (counts[r.language] ?? 0) + 1;
-    }
-    const total = Object.values(counts).reduce((a, b) => a + b, 0);
-    topLangs = Object.entries(counts)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 6)
-      .map(([name, count]) => ({
-        name,
-        percent: Math.round((count / total) * 100),
-        color: langColors[name] ?? '#64748b',
-      }));
-  }
-} catch {
-  // フォールバック: 空のまま
+const langCounts: Record<string, number> = {};
+for (const r of githubRepos) {
+  if (r.language) langCounts[r.language] = (langCounts[r.language] ?? 0) + 1;
 }
+const langTotal = Object.values(langCounts).reduce((a, b) => a + b, 0);
+const topLangs: GitHubLang[] = Object.entries(langCounts)
+  .sort(([, a], [, b]) => b - a)
+  .slice(0, 6)
+  .map(([name, count]) => ({
+    name,
+    percent: Math.round((count / langTotal) * 100),
+    color: langColors[name] ?? '#64748b',
+  }));
 
 // T7 マーキーの語 — 既存キーワードの反復のみ（新情報を載せない — trends-2026-refresh.spec §8）
 const marqueeWords = [
@@ -89,59 +103,39 @@ const marqueeWords = [
   'SAPPORO, JAPAN',
 ];
 
+// 4 カテゴリ・各 2〜4 項目に集約（index.spec.md §3）
 const skills = [
   {
     category: 'LANGUAGES',
     items: [
       { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発（8年以上）' },
+      { name: 'Java', level: 70, description: '組み込み Android アプリ（実務・2026〜）／オブジェクト指向設計' },
+      { name: 'TypeScript / JavaScript', level: 70, description: '個人開発中心 — Web アプリ・型安全な実装' },
       { name: 'Python', level: 65, description: 'スクリプティング・データ処理・自動化（約2年）' },
-      { name: 'Java', level: 70, description: '組み込み Android アプリ開発（実務・2026〜）／オブジェクト指向設計・バックエンド' },
-      { name: 'TypeScript', level: 70, description: '個人開発中心 — Webアプリ・型安全な実装' },
-      { name: 'JavaScript', level: 50, description: 'フロントエンド・プロトタイピング（約1年）' },
     ],
   },
   {
-    category: 'FRAMEWORKS / PLATFORMS',
+    category: 'PLATFORMS',
     items: [
+      { name: 'Windows / MFC', level: 80, description: 'デスクトップアプリ・組み込みシステム開発（8年以上）' },
+      { name: 'Linux (Ubuntu / Yocto)', level: 65, description: 'サーバー・組み込み Linux（約2年）' },
       { name: 'Android SDK', level: 55, description: '専用端末向けネイティブアプリの Java 開発（実務・2026〜）' },
-      { name: 'MFC — Windows GUI', level: 70, description: 'Windows デスクトップアプリケーション開発（約3年）' },
-      { name: 'React', level: 65, description: '個人開発中心 — UI 構築・Zustand 連携' },
-      { name: 'Astro', level: 60, description: '個人開発中心 — 静的サイトジェネレーター' },
+      { name: 'React / Astro', level: 65, description: '個人開発中心 — UI 構築・静的サイト' },
     ],
   },
   {
-    category: 'OS',
+    category: 'DEV & INFRA',
     items: [
-      { name: 'Windows', level: 90, description: 'デスクトップ・組み込みシステム開発（8年以上）' },
-      { name: 'Linux / Ubuntu / Yocto', level: 65, description: 'サーバー・組み込み Linux（約2年）' },
-    ],
-  },
-  {
-    category: 'DATABASE',
-    items: [
-      { name: 'PostgreSQL', level: 70, description: 'RDB 設計・クエリ最適化（約3年）' },
-      { name: 'Oracle', level: 60, description: 'エンタープライズ DB（約2年）' },
-      { name: 'MongoDB', level: 40, description: 'ドキュメント指向 DB（約6ヶ月）' },
-    ],
-  },
-  {
-    category: 'TOOLS & INFRASTRUCTURE',
-    items: [
-      { name: 'Git', level: 85, description: 'バージョン管理・ブランチ戦略・チーム開発（約6年）' },
-      { name: 'Android Studio / Gradle', level: 55, description: 'Android 開発環境・ビルドツール（実務・2026〜）' },
-      { name: 'GitLab', level: 80, description: 'CI/CD・MR フロー整備（約5年）' },
-      { name: 'VS Code', level: 75, description: 'メインエディタ・拡張機能活用（約4年）' },
+      { name: 'Git / GitLab', level: 85, description: 'バージョン管理・CI/CD・チーム開発フロー整備（約6年）' },
       { name: 'Docker', level: 75, description: 'コンテナ化・開発環境標準化（約4年）' },
-      { name: 'AWS S3 / Kinesis', level: 50, description: 'クラウドストレージ・ストリームデータ処理（約1年）' },
+      { name: 'RDB (PostgreSQL / Oracle)', level: 70, description: 'DB 設計・クエリ最適化（約3年）' },
     ],
   },
   {
-    category: 'AI TOOLS — 個人開発',
+    category: 'AI-DRIVEN DEV',
     items: [
-      { name: 'Claude Code', level: 85, description: 'サブエージェント・フック・SDD でこのサイトを自律開発' },
-      { name: 'GitHub Copilot', level: 90, description: 'AI ペアプログラミング・SWE Agent による Issue → PR 自動化' },
-      { name: 'MCP', level: 80, description: 'GitHub / Playwright / Tailwind 等の MCP サーバーでエージェント能力を拡張' },
-      { name: 'AI Agent 構築', level: 75, description: 'AGENTS.md / .kiro / .instructions.md でプロジェクト別 AI 挙動をカスタマイズ' },
+      { name: 'AI コーディングエージェント', level: 85, description: 'Claude Code / GitHub Copilot / Codex — サブエージェント・フック・SWE Agent による自律開発' },
+      { name: 'MCP / エージェント設計', level: 80, description: 'MCP サーバーと AGENTS.md / CLAUDE.md / .kiro でエージェントの能力・挙動を拡張' },
     ],
   },
 ];
@@ -157,14 +151,14 @@ const career = [
   {
     year: '2025',
     period: '2025（約1年）',
-    industry: '組み込み制御（改札機コアシステム）',
+    industry: '組み込み制御（社会インフラ機器・コアシステム）',
     phase: '詳細設計・実装・試験',
     techs: ['C', 'Linux (Yocto)', 'Make'],
   },
   {
     year: '2022',
     period: '2022、2025（約3年）',
-    industry: '組み込み制御（改札機制御システム）',
+    industry: '組み込み制御（社会インフラ機器・制御システム）',
     phase: '要件定義〜マネジメント（サブリーダー）',
     techs: ['C++', 'MFC', 'Git', 'Docker'],
   },
@@ -198,32 +192,64 @@ const career = [
   },
 ];
 
-const projects = [
+// Portfolio — GitHub の公開リポジトリからビルド時に自動生成（fork・アーカイブ・除外パターンを除く）。
+// 直近 90 日以内に push があるものは「製作中」バッジを表示する。
+interface ProjectCard {
+  name: string;
+  description: string;
+  url: string;
+  tags: string[];
+  wip: boolean;
+}
+
+const WIP_WINDOW_MS = 90 * 24 * 60 * 60 * 1000;
+const buildTime = Date.now();
+
+const githubProjects: ProjectCard[] = githubRepos
+  .filter((r) => !r.fork && !r.archived && !excludedRepos.test(r.name))
+  .sort((a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime())
+  .slice(0, 8)
+  .map((r) => ({
+    name: r.name.replace(/[-_]+/g, ' ').trim().toUpperCase(),
+    description: r.description ?? '自己開発プロジェクト。詳細は GitHub リポジトリを参照。',
+    url: r.html_url,
+    tags: r.language ? [r.language] : [],
+    wip: buildTime - new Date(r.pushed_at).getTime() < WIP_WINDOW_MS,
+  }));
+
+// API 取得失敗時のフォールバック（代表的な公開リポジトリのみ）
+const fallbackProjects: ProjectCard[] = [
   {
-    name: 'FOCUSO',
-    description: 'フォーカスタイマーアプリ。React + Zustand で構築。Copilot SWE Agent & .kiro で AI 駆動開発。',
-    url: 'https://github.com/nigoh/Timer',
-    tags: ['TypeScript', 'React', 'Zustand', 'AI: Copilot SWE Agent'],
+    name: 'NIGOH',
+    description: 'このサイトのソースコード。Astro + Tailwind CSS で構築した個人紹介サイト。',
+    url: 'https://github.com/nigoh/nigoh',
+    tags: ['Astro', 'TypeScript'],
+    wip: true,
+  },
+  {
+    name: 'JUML',
+    description: '開発中の自己開発プロジェクト。詳細は GitHub リポジトリを参照。',
+    url: 'https://github.com/nigoh/Juml',
+    tags: [],
+    wip: true,
   },
   {
     name: 'QR GENERATOR WEB',
     description: 'QRコード生成Webアプリ。Copilot + Serena による AI ペアプログラミングで開発。',
     url: 'https://github.com/nigoh/qr-generator-web',
-    tags: ['TypeScript', 'React', 'Vite', 'AI: Copilot + Serena'],
+    tags: ['TypeScript', 'React'],
+    wip: false,
   },
   {
     name: 'STOCKO',
     description: '株価情報取得ツール。OpenAI Codex & AGENTS.md を活用した AI エージェント開発。',
     url: 'https://github.com/nigoh/stocko',
-    tags: ['JavaScript', 'HTML/CSS', 'AI: Codex + AGENTS.md'],
-  },
-  {
-    name: 'NIGOH',
-    description: 'このサイトのソースコード。Astro + Tailwind CSS で構築した個人紹介サイト。',
-    url: 'https://github.com/nigoh/nigoh',
-    tags: ['Astro', 'Tailwind CSS', 'TypeScript'],
+    tags: ['JavaScript', 'AI: Codex + AGENTS.md'],
+    wip: false,
   },
 ];
+
+const projects = githubProjects.length > 0 ? githubProjects : fallbackProjects;
 
 // AI 駆動開発のツール・実践（各 icon は Heroicons outline の path）
 interface AiTool {
@@ -584,7 +610,7 @@ const aiTools: AiTool[] = [
           <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-6" aria-hidden="true"></div>
           <p class="text-constructivist-gray mb-12 font-body text-sm">
             <span class="inline-block w-2 h-2 bg-constructivist-red rotate-45 mr-1.5" aria-hidden="true"></span>
-            注: クライアント名・案件番号・具体的な期間は非掲載。業種・技術領域のみ記載。
+            注: クライアント名・案件番号・具体的な機器名/製品名・詳細な期間は非掲載。業種・技術領域のみ一般化して記載。
           </p>
         </div>
 
@@ -639,7 +665,11 @@ const aiTools: AiTool[] = [
           <p class="font-mono text-xs tracking-widest text-[var(--c-ink-muted)] mb-2" aria-hidden="true">06 / 07</p>
           {/* mid: 見出し bleed。カード本文・タグは各カード内で整列（§4.1） */}
           <h2 class="bleed-heading font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">PORTFOLIO</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-12" aria-hidden="true"></div>
+          <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-6" aria-hidden="true"></div>
+          <p class="text-[var(--c-ink-muted)] mb-12 font-body text-sm">
+            <span class="inline-block w-2 h-2 bg-constructivist-red rotate-45 mr-1.5" aria-hidden="true"></span>
+            自己開発プロジェクト — GitHub の公開リポジトリからビルド時に自動生成。IN PROGRESS は現在製作中。
+          </p>
         </div>
 
         <FadeIn client:visible direction="up" delay={200}>
@@ -661,6 +691,11 @@ const aiTools: AiTool[] = [
               </h3>
               <p class="text-[var(--c-ink-muted)] group-hover:text-constructivist-cream text-sm mb-4 font-body">{project.description}</p>
               <div class="flex flex-wrap gap-2">
+                {project.wip && (
+                  <span class="text-xs font-bold text-constructivist-cream bg-constructivist-red group-hover:bg-constructivist-cream group-hover:text-constructivist-red px-2 py-0.5 font-body tracking-wide">
+                    IN PROGRESS
+                  </span>
+                )}
                 {project.tags.map((tag) => (
                   <span class="text-xs font-bold text-[var(--c-ink)] group-hover:text-constructivist-cream border border-[var(--c-line)] group-hover:border-constructivist-cream px-2 py-0.5 font-body tracking-wide">
                     {tag}

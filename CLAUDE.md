@@ -54,6 +54,10 @@ specs/                 SDD 仕様書
 - TypeScript: `any` 禁止、未使用 import/変数を残さない。`import.meta.env.BASE_URL` で base 参照。
 - Astro: Props は `interface Props`、セマンティック HTML、Tailwind ユーティリティ優先。
 - コメント・仕様書は日本語、コミットメッセージは英語。
+- 掲載コンテンツ（職務経歴）: 業務案件の具体的な機器名・製品名（例: 改札機）・クライアント名・
+  案件番号は書かない。「社会インフラ機器」「専用端末」のような一般化した表現に置き換える。
+- Portfolio: GitHub の公開リポジトリからビルド時に自動生成する。faj / do_hug 系の業務関連
+  リポジトリは掲載しない（`src/pages/index.astro` の除外パターン `excludedRepos` を維持・更新する）。
 - エージェントは **push しない**（コミットまでは可、push は人間/メインが担当）。
   hook は force-push と master への直 push を遮断する（PreToolUse はメイン/サブを区別できないため、
   全面禁止ではなく「危険な push」に限定）。
