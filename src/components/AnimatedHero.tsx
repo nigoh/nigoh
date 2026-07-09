@@ -72,13 +72,13 @@ export default function AnimatedHero({
           <animated.div style={trail[1]} className="relative">
             {/* 背景の薄い番号（Lissitzky的装飾） */}
             <div
-              className="absolute -left-2 -top-6 font-sans text-[9rem] text-constructivist-red leading-none select-none pointer-events-none"
+              className="absolute -left-2 -top-6 font-sans text-display-fluid text-constructivist-red select-none pointer-events-none"
               style={{ opacity: 0.05 }}
               aria-hidden="true"
             >
               01
             </div>
-            <h1 className="font-sans text-[5.5rem] sm:text-[8rem] lg:text-[10rem] text-constructivist-cream tracking-tighter leading-none relative z-10">
+            <h1 className="font-sans text-display-fluid text-constructivist-cream tracking-tighter relative z-10">
               {name}
             </h1>
           </animated.div>
@@ -127,7 +127,7 @@ export default function AnimatedHero({
               className="group inline-flex items-center gap-0 min-h-11"
             >
               <div
-                className="shrink-0 group-hover:opacity-70 transition-opacity"
+                className="shrink-0"
                 style={{
                   width: 0,
                   height: 0,
@@ -137,7 +137,8 @@ export default function AnimatedHero({
                 }}
                 aria-hidden="true"
               />
-              <span className="font-sans text-base text-constructivist-cream tracking-widest pl-3 group-hover:text-constructivist-red transition-colors">
+              {/* T3 版ずれ: red 化ホバーを廃止し、cream 文字＋赤の複製ズレ（即時）に置換 */}
+              <span className="misprint-text-in-group font-sans text-base text-constructivist-cream tracking-widest pl-3">
                 GITHUB.COM/NIGOH
               </span>
             </a>
