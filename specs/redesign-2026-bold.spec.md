@@ -159,6 +159,9 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
   7 セクションを **12 列グリッド上に非対称配置した大プレート**で置く（破壊的グリッドの縮図）。
   各プレート = `番号(mono)` ＋ `セクション名(Bebas 極大)` ＋ 幾何グリフ（赤四角/円/斜線）。
   現在地プレートは赤で塗り、他は枠のみ。プレート hover で版ずれ（T3）。
+  > **frontend 実装メモ（a11y）**: 現在地プレート（赤塗り）は cream on red のため、AA を満たす**大テキストの
+  > セクション名のみ**を残し、**小さな番号(mono)は非表示**にする（cream on red 小 4.42 は AA 未達）。番号は番号列が担う。
+  > INDEX / CLOSE ボタンの hover は赤ベタ塗りではなく misprint（赤の box-shadow 版ずれ）にして、cream on red 小の発生を避ける。
 - レイアウト数値（デスクトップ 12 列）: プレートは 3–5 列幅、行をまたいで**意図的にオフセット**
   （例 01=col1–4/row1、02=col7–11/row1、03=col2–6/row2 … 各行で開始列を ±2 ずらす）。
   モバイルは 2 列の千鳥（各行で左右交互にインデント `1rem`）。
@@ -457,18 +460,28 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
 ## 15. 受入条件
 
 ### カラー / ダークモード
-- [ ] 5 色以外の hex がコード全体でゼロ（可変フォント・新色の追加なし）。
-- [ ] `html[data-theme]` でライト↔ダークが**セマンティック変数の反転のみ**で切り替わる（hex 定義は不変）。
-- [ ] OS 追従（`prefers-color-scheme`）＋手動トグル（`localStorage`）＋FOUC 防止インラインスクリプトが動く。
-- [ ] **ダークの全テキスト/地ペアが §2.4 の再検証表どおり AA**（darkgray 地の gray 小テキストが存在しない・
+- [x] 5 色以外の hex がコード全体でゼロ（可変フォント・新色の追加なし）。
+      ― デザイン色は `constructivist.*` の 5 hex のみ。`global.css` のセマンティック変数は theme() 参照。
+      （既存の GitHub 言語分布バー `langColors` は本 spec 以前からのデータ可視化色で design 色ではない・追加なし）
+- [x] `html[data-theme]` でライト↔ダークが**セマンティック変数の反転のみ**で切り替わる（hex 定義は不変）。
+      ― 実機で computed 値を確認: light page=cream/ink=black/block=black、dark page=darkgray/ink=cream/block=cream（すべて 5 hex 内）。
+- [x] OS 追従（`prefers-color-scheme`）＋手動トグル（`localStorage`）＋FOUC 防止インラインスクリプトが動く。
+      ― `<head>` インライン初期化＋Header の幾何スイッチ（steps(1)）＋OS 変化監視（未上書き時のみ追従）を実機確認。
+- [x] **ダークの全テキスト/地ペアが §2.4 の再検証表どおり AA**（darkgray 地の gray 小テキストが存在しない・
       red 小テキストが存在しない・gray on red が存在しない）。
-- [ ] grain はライト明側のみ、ダークで無効。マーキー/CTA の cream on red は両モードで大テキスト扱い。
+      ― 明側副テキストは `--c-ink-muted`（ライト darkgray9.98 / ダーク cream9.98）へ寄せた。地図現在プレートの小番号は非表示（cream on red 小 4.42 回避）。
+- [x] grain はライト明側のみ、ダークで無効。マーキー/CTA の cream on red は両モードで大テキスト扱い。
+      ― `html[data-theme='dark'] .grain-overlay{display:none}`。マーキー text-3xl・CTA text-xl は大テキスト。
 
 ### 実験的ナビ（地図/索引）
-- [ ] 常設の番号列 01–07 が固定表示され、現在地が赤四角＋`aria-current="page"` で示される（両モード視認）。
-- [ ] `INDEX` で `role="dialog" aria-modal` のフル画面地図が開き、フォーカストラップ・Esc・復帰が動く。
-- [ ] 開閉は clip-path `steps` シャッター、**PRM では即時表示**。地図プレートはキーボード到達可・装飾は aria-hidden。
-- [ ] 上部の旧・水平リンク列が撤去され、モバイルは `INDEX` が同じ地図を開く。
+- [x] 常設の番号列 01–07 が固定表示され、現在地が赤四角＋`aria-current="page"` で示される（両モード視認）。
+      ― 右端固定 rail（半透明 field パネル）。IntersectionObserver で現在地連動を実機確認（hero→…→contact）。
+- [x] `INDEX` で `role="dialog" aria-modal` のフル画面地図が開き、フォーカストラップ・Esc・復帰が動く。
+      ― 開くと CLOSE にフォーカス、Tab 巡回、Esc で閉じて INDEX ボタンへ復帰。背景は `inert`＋body スクロールロック。
+- [x] 開閉は clip-path `steps` シャッター、**PRM では即時表示**。地図プレートはキーボード到達可・装飾は aria-hidden。
+      ― PRM で 60ms 後に visibility:visible・全開を確認。プレートは実リンク、glyph は aria-hidden。
+- [x] 上部の旧・水平リンク列が撤去され、モバイルは `INDEX` が同じ地図を開く。
+      ― Header の 6 リンク列＋ハンバーガーを撤去。375px でも INDEX が同一地図を開くことを確認。
 
 ### 破壊的グリッド
 - [ ] §4.1 の強弱表どおり loud/mid/calm が実装され、**データ表示（スキルバー・年表・凡例）は崩れず整列**。
@@ -493,8 +506,11 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
 - [ ] イントロ中フォーカストラップ・`inert`、退場後の焦点/スクロール位置が破綻しない。
 
 ### 装飾一本化
-- [ ] Phaser `ConstructivistCanvas` の各セクション設置が撤去され、初期 JS が明確に減る（Phaser チャンク未ロード）。
-- [ ] 他セクション装飾が CSS/SVG（＋少数の軽量 3D 脇役）で構成主義語彙を保つ。
+- [x] Phaser `ConstructivistCanvas` の各セクション設置が撤去され、初期 JS が明確に減る（Phaser チャンク未ロード）。
+      ― 7 セクションの `ConstructivistCanvas` を撤去。`ConstructivistCanvas.tsx`・`src/components/phaser/*` を削除、
+      `package.json` から phaser 依存を除去。build のチャンク一覧に phaser（旧 ≈343kB gzip）が現れないことを確認。
+- [x] 他セクション装飾が CSS/SVG（＋少数の軽量 3D 脇役）で構成主義語彙を保つ。
+      ― 赤縦バー・大円・回転赤块・ダイヤモンドマーカー等の CSS 幾何は維持。軽量 3D 脇役 `SectionAccent`（three.js・遅延）を各セクションに残置。
 
 ### 署名インタラクション
 - [ ] AI セクションで「OPEN AN ISSUE」→ 幾何が `steps` で組み上がり、`ISSUE #n` が進む（見せ場として成立）。
@@ -507,9 +523,10 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
 - [ ] 慣性スクロールライブラリ非導入。全モーションが `linear/steps`。
 
 ### 横断
-- [ ] 角丸（矩形）・ソフトシャドウ・glassmorphism・バウンス easing の導入ゼロ。新規の重い依存ゼロ
+- [x] 角丸（矩形）・ソフトシャドウ・glassmorphism・バウンス easing の導入ゼロ。新規の重い依存ゼロ
       （可変フォント無し・Phaser 退役で正味減）。
-- [ ] `npx astro check` 0 エラー、`npm run build` 成功。
+      ― フェーズ 1 で追加したモーションはトグル steps(1)／地図シャッター steps(4)・linear のみ。角丸・影・glass 無し。phaser 依存を除去し正味減。
+- [x] `npx astro check` 0 エラー、`npm run build` 成功。
 - [ ] Lighthouse A11y 95+ を維持（デプロイ後計測）。Performance は 3D/モーション込みで現実的に最適化。
 - [ ] 全新規モーションが PRM で静的フォールバックを持つ（本 spec 各章の定義どおり）。
 
