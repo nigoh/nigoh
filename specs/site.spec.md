@@ -17,7 +17,9 @@ H.Nigo（Hironobu Nigo）の個人自己紹介・履歴書・スキル表サイ�
 
 ## デザイン方針
 - **テーマ**: ロシア構成主義（エル・リシツキー「About Two Squares」1922 年にインスパイア）
-- **カラーモード**: シングルモード（ダーク/ライト切替なし）
+- **カラーモード**: ライト既定 ＋ ダークモード（「反転ポスター」）。OS 追従（`prefers-color-scheme`）＋
+  手動トグル（`localStorage`）。**5 色は不変で、役割 → hex の対応をセマンティック CSS 変数で反転**する
+  （新色ゼロ）。詳細・コントラスト再検証は `specs/redesign-2026-bold.spec.md` §2 が正典
 - **カラーパレット**:
   - Red: `#D62828`（アクセント・幾何学図形）
   - Black: `#1A1A1A`（ヘッダー・セクション背景）
@@ -31,7 +33,9 @@ H.Nigo（Hironobu Nigo）の個人自己紹介・履歴書・スキル表サイ�
 - **アニメーション**: entrance は react-spring（`FadeIn` 等・reduced-motion 対応）、
   スクロール駆動リビール・進捗バー・マーキー等の 2026 リフレッシュは
   `specs/components/trends-2026-refresh.spec.md` が正典（easing は linear/steps に限定。
-  旧 `slide-in` 系 CSS keyframes は未使用のため削除対象）
+  旧 `slide-in` 系 CSS keyframes は未使用のため削除対象）。
+  没入 3D ヒーロー・破壊的グリッド・キネティックタイポ・地図ナビ・イントロ・カスタムカーソル・
+  署名インタラクション等の大胆刷新は `specs/redesign-2026-bold.spec.md` が正典
 - **フォント読み込み**: `<head>` の preconnect + `<link>`（`display=swap`）。CSS `@import` は使わない
   （trends-2026-refresh.spec F-5）
 
@@ -59,3 +63,4 @@ H.Nigo（Hironobu Nigo）の個人自己紹介・履歴書・スキル表サイ�
 - [ ] Lighthouse スコアが目標値を満たす
 - [ ] GitHub Pages にデプロイできる
 - [x] `astro check` でエラーがない
+</content>

@@ -1,0 +1,86 @@
+---
+// 署名インタラクション — THE FORGE / COMPOSE AN ISSUE（redesign-2026-bold.spec §9）
+// AI セクションの見せ場。OPEN AN ISSUE でカウンタが進み、幾何が steps で組み上がる
+// （現行 Phaser の「Issue 起票 → 実装」の精神を CSS/DOM で再発明）。
+// ・ボタンは実 <button>（キーボード操作可）／状態は aria-live で通知
+// ・生成される幾何（forge-stage）は純装飾（aria-hidden）
+// ・触らなくても AI セクションの情報は完全に読める（進行の必須要素ではない）
+---
+<div class="forge">
+  <h3 class="forge-title font-sans">THE FORGE — COMPOSE AN ISSUE</h3>
+  <p class="forge-sub font-mono">
+    ボタンを押すと Issue が起票され、幾何が組み上がって「実装」される（構成主義の署名モーメント）。
+  </p>
+  <button
+    id="issue-btn"
+    type="button"
+    class="issue-btn font-sans"
+    aria-label="Issue を起票して構成を組み立てる"
+  >
+    OPEN AN ISSUE ▸
+  </button>
+  <p class="forge-counter font-mono" id="issue-counter">ISSUES IMPLEMENTED — #00</p>
+  {/* 生成される幾何コンポジション（純装飾） */}
+  <div class="forge-stage" id="forge-stage" aria-hidden="true"></div>
+  {/* 視覚非表示の状態通知（例: Issue #3 を実装しました） */}
+  <p class="sr-live" id="issue-live" aria-live="polite"></p>
+</div>
+
+<script>
+  // 署名インタラクションの制御（§9.2）。PRM 時は飛来アニメなしで最終配置を即時反映。
+  const stage = document.getElementById('forge-stage');
+  const btn = document.getElementById('issue-btn');
+  const counter = document.getElementById('issue-counter');
+  const live = document.getElementById('issue-live');
+
+  if (stage && btn && counter && live) {
+    const prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // 5 種の幾何（構成主義の一次語彙）— 色・形状は 5 色パレット内
+    const kinds = ['gp-red', 'gp-black', 'gp-circ', 'gp-diag', 'gp-sq'];
+    // 目標位置（stage サイズに対する比率・非対称配置）
+    const targetX = [0.12, 0.55, 0.3, 0.2, 0.7];
+    const targetY = [0.18, 0.3, 0.45, 0.55, 0.15];
+    const baseRot = [0, 0, 0, -32, 0];
+    let issues = 0;
+
+    const compose = () => {
+      issues += 1;
+      // 既存構成を「リファクタ」して組み替える（無限に増やさない）
+      stage.replaceChildren();
+      const sw = stage.clientWidth;
+      const sh = stage.clientHeight;
+
+      kinds.forEach((cls, i) => {
+        const el = document.createElement('div');
+        el.className = `gp ${cls}`;
+        el.style.left = `${sw * targetX[i]}px`;
+        el.style.top = `${sh * targetY[i]}px`;
+        // 起票ごとに微回転でリファクタ（装飾块のみ・±12° 相当）
+        const rot = baseRot[i] + (issues % 2 ? 0 : i * 7 - 14);
+
+        if (prm) {
+          // reduced-motion: 飛来なし・最終配置を即時反映
+          el.style.transform = `rotate(${rot}deg)`;
+          el.classList.add('placed');
+          stage.appendChild(el);
+        } else {
+          // 飛来（画面外）→ steps で定位置へスナップ配置
+          el.style.transform = `translate(${i % 2 ? -260 : 260}px, ${i * 40 - 80}px) rotate(${rot}deg)`;
+          stage.appendChild(el);
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              el.classList.add('placed');
+              el.style.transform = `translate(0, 0) rotate(${rot}deg)`;
+            });
+          });
+        }
+      });
+
+      const label = issues < 10 ? `0${issues}` : `${issues}`;
+      counter.textContent = `ISSUES IMPLEMENTED — #${label}`;
+      live.textContent = `Issue #${issues} を実装しました`;
+    };
+
+    btn.addEventListener('click', compose);
+  }
+</script>
