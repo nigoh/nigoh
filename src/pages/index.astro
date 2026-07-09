@@ -7,7 +7,6 @@ import AnimatedSkillBar from '../components/AnimatedSkillBar';
 import FadeIn from '../components/FadeIn';
 import ProunCanvas from '../components/ProunCanvas';
 import SectionAccent from '../components/SectionAccent';
-import IssueForge from '../components/IssueForge.astro';
 
 interface ZennArticle {
   id: number;
@@ -494,13 +493,8 @@ const aiTools: AiTool[] = [
           </p>
         </div>
 
-        {/* 署名インタラクション（§9・見せ場）— Issue 起票で幾何が組み上がる工房 */}
-        <FadeIn client:visible direction="up" delay={100}>
-          <IssueForge />
-        </FadeIn>
-
         <FadeIn client:visible direction="up" delay={200}>
-        <div class="grid gap-0 sm:grid-cols-2 mt-16">
+        <div class="grid gap-0 sm:grid-cols-2">
           {aiTools.map((tool, i) => (
             <div
               class:list={[

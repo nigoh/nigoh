@@ -54,10 +54,9 @@
       const t = e.target instanceof Element ? e.target.closest('a, button') : null;
       cursor.classList.remove('on-link', 'on-big');
       if (!t) return;
-      // 大ターゲット（地図プレート・INDEX・OPEN AN ISSUE・CTA）は照準拡大
+      // 大ターゲット（地図プレート・INDEX・CTA）は照準拡大
       if (
         t.classList.contains('plate') ||
-        t.classList.contains('issue-btn') ||
         t.classList.contains('idx-btn') ||
         t.hasAttribute('data-cursor-big')
       ) {

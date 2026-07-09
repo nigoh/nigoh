@@ -327,7 +327,11 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
 
 ---
 
-## 9. 署名インタラクション — 「COMPOSE AN ISSUE」（AI セクション＝見せ場）
+## 9. 署名インタラクション — 「COMPOSE AN ISSUE」（**撤回・不採用**）
+
+> **ステータス: 撤回（ユーザー判断で削除）**。一度実装（`IssueForge.astro`）したが、履歴書サイトには過剰との判断で
+> **除去**した。AI セクションの見せ場は「ツール説明カード＋INTEREST & FOCUS」で十分成立する。
+> 以下は経緯の記録として残す（実装は存在しない）。Hero（フル3D・§6）が引き続き第一の見せ場を担う。
 
 ### 9.1 見せ場（署名）セクションの選定 — **AI-POWERED DEV**
 
@@ -531,15 +535,10 @@ AA: 通常 4.5:1 / 大（24px+ または 18.66px+ bold）3:1 / 非テキスト�
 - [x] 他セクション装飾が CSS/SVG（＋少数の軽量 3D 脇役）で構成主義語彙を保つ。
       ― 赤縦バー・大円・回転赤块・ダイヤモンドマーカー等の CSS 幾何は維持。軽量 3D 脇役 `SectionAccent`（three.js・遅延）を各セクションに残置。
 
-### 署名インタラクション
-- [x] AI セクションで「OPEN AN ISSUE」→ 幾何が `steps` で組み上がり、`ISSUE #n` が進む（見せ場として成立）。
-      ― `IssueForge.astro`。5 種の幾何（赤块/黒块縁取り/赤円/赤斜梁/クリーム方形）が画面外から `steps(4)` で飛来しスナップ配置。
-      各起票でカウンタ `ISSUES IMPLEMENTED — #0n` が進み、既存構成を `replaceChildren` でリファクタ（微回転）して組み替える。
-- [x] `<button>`・キーボード操作可・`aria-live` 通知・生成幾何は `aria-hidden`。触らなくても情報は完全。
-      ― 実 `<button aria-label="Issue を起票して構成を組み立てる">`。`.forge-stage` は `aria-hidden`、`.sr-live`（`aria-live="polite"`）で
-      「Issue #n を実装しました」を通知。AI セクションの説明・ツールカードは FORGE と独立に完全に読める。
-- [x] **PRM で飛来アニメなし・最終配置を即時反映**。
-      ― `matchMedia('(prefers-reduced-motion: reduce)')` 判定で飛来 translate を経ず `placed`＋最終 rotate を即時付与。
+### 署名インタラクション — **撤回（不採用）**
+- [—] 署名インタラクション「COMPOSE AN ISSUE」は一度実装したが、ユーザー判断で**削除**（§9 参照）。
+      ― `IssueForge.astro`・`.forge*`/`.issue-btn`/`.gp*` スタイル・`index.astro` の使用箇所・`CustomCursor` の `issue-btn` 参照を除去。
+      AI セクションの見せ場は「ツール説明カード＋INTEREST & FOCUS」で成立。Hero（フル3D・§6）が第一の見せ場。
 
 ### カーソル / スクロール
 - [x] `pointer:fine` のみカスタムカーソル（十字→塗り四角→照準の 3 状態）。粗ポインタは既定カーソル。
