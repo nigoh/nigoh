@@ -36,6 +36,13 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
     <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    {/* フォント読み込み — render-blocking @import を廃し preconnect + link に移設（trends-2026-refresh.spec F-5） */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+    />
     <title>{title}</title>
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
@@ -60,6 +67,8 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
     })} />
   </head>
   <body class="min-h-screen bg-constructivist-cream text-constructivist-black font-body antialiased">
+    {/* T6a スクロール進捗バー（純装飾 — scroll() タイムライン対応ブラウザのみ表示） */}
+    <div class="scroll-progress" aria-hidden="true"></div>
     <slot />
   </body>
 </html>
