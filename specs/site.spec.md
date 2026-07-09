@@ -28,7 +28,12 @@ H.Nigo（Hironobu Nigo）の個人自己紹介・履歴書・スキル表サイ�
 - **アプローチ**: モバイルファースト、レスポンシブデザイン
 - **スタイル**: 幾何学的・アシンメトリック構成、シャープなエッジ（角丸なし）、ボールドタイポグラフィ、大文字使い
 - **装飾**: 赤い正方形・円・斜線などの幾何学図形をセクション背景に配置
-- **アニメーション**: 構成主義的スライドイン（`slide-in`）
+- **アニメーション**: entrance は react-spring（`FadeIn` 等・reduced-motion 対応）、
+  スクロール駆動リビール・進捗バー・マーキー等の 2026 リフレッシュは
+  `specs/components/trends-2026-refresh.spec.md` が正典（easing は linear/steps に限定。
+  旧 `slide-in` 系 CSS keyframes は未使用のため削除対象）
+- **フォント読み込み**: `<head>` の preconnect + `<link>`（`display=swap`）。CSS `@import` は使わない
+  （trends-2026-refresh.spec F-5）
 
 ## レスポンシブブレークポイント
 - Mobile: < 640px（ハンバーガーメニュー）

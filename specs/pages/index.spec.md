@@ -56,6 +56,8 @@
 - 背景は cream / black の交互。装飾は純装飾で `aria-hidden`
 - カードは角丸なし・`border-2`／`border-l-4` のシャープエッジ、隣接セルは枠線を共有
 - 配色は `constructivist.*` のみを使用（新色を足さない）
+- 2026 トレンド取り込み（流体タイポ・スクロール駆動リビール・進捗バー・セクション番号・
+  版ずれホバー・grain・Skills/AI 境界のマーキー帯）は `specs/components/trends-2026-refresh.spec.md` に従う
 
 ## 受入条件
 - [ ] Hero に 3D Proun 装飾と H.NIGO の一行自己紹介・GitHub リンクが表示される
