@@ -109,20 +109,29 @@ function SkillBar({ skill, delay, index }: { skill: Skill; delay: number; index:
 }
 
 export default function AnimatedSkillBar({ groups }: AnimatedSkillBarProps) {
+  // カテゴリ帯は三原色を巡回。黄帯は暗字（cream on yellow は AA 不可のため）。
+  const bands = [
+    { bg: 'bg-bauhaus-red', ink: 'text-constructivist-cream', accent: 'bg-bauhaus-red', num: 'text-bauhaus-red' },
+    { bg: 'bg-bauhaus-blue', ink: 'text-constructivist-cream', accent: 'bg-bauhaus-blue', num: 'text-bauhaus-blue' },
+    { bg: 'bg-bauhaus-yellow', ink: 'text-constructivist-black', accent: 'bg-bauhaus-yellow', num: 'text-bauhaus-yellow' },
+  ];
+
   return (
     <div className="space-y-16">
-      {groups.map((group, gi) => (
+      {groups.map((group, gi) => {
+        const band = bands[gi % bands.length];
+        return (
         <div key={group.category}>
-          {/* カテゴリーヘッダー — 赤帯 + 番号 */}
+          {/* カテゴリーヘッダー — 原色帯 + 罫線 + 番号 */}
           <div className="flex items-center gap-0 mb-8">
-            <div className="bg-constructivist-red px-4 py-1.5">
-              <h3 className="font-sans text-sm text-constructivist-cream tracking-[0.25em]">
+            <div className={`${band.bg} px-4 py-1.5`}>
+              <h3 className={`font-sans text-sm ${band.ink} tracking-[0.25em]`}>
                 {group.category}
               </h3>
             </div>
-            <div className="h-px flex-1 bg-constructivist-red" style={{ opacity: 0.3 }} />
+            <div className={`h-px flex-1 ${band.accent}`} style={{ opacity: 0.3 }} />
             <span
-              className="font-sans text-3xl text-constructivist-red ml-4"
+              className={`font-sans text-3xl ${band.num} ml-4`}
               style={{ opacity: 0.3 }}
               aria-hidden="true"
             >
@@ -136,7 +145,8 @@ export default function AnimatedSkillBar({ groups }: AnimatedSkillBarProps) {
             ))}
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

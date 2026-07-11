@@ -3,16 +3,21 @@ import { useEffect, useRef, useState, type ReactElement } from 'react';
 // Hero `ProunCanvas` と同チャンクなので追加ダウンロードは発生しない。
 import type * as THREE_NS from 'three';
 
-// 設計: specs/components/section-3d.spec.md
+// 設計: specs/bauhaus-2026.spec.md（旧 section-3d.spec.md）
 // 各セクションの隅に置く「小さく控えめな 3D アクセント（脇役）」。
 // Hero showpiece（ProunCanvas）と格を分ける: 1〜3 個・1 隅の小矩形・低不透明度・更に緩慢。
+// 三原色をセクションごとに配分（明地=青/赤が映える・暗地=黄/赤が映える。細い要素で低コントラスト色を避ける）。
 
 const RED = 0xd62828;
+const BLUE = 0x1e4fa8;
+const YELLOW = 0xf1c12e;
 const BLACK = 0x1a1a1a;
 const CREAM = 0xf5f0eb;
 
-// パレットの 16進文字列（フォールバック SVG 用）。色は constructivist のみ。
+// パレットの 16進文字列（フォールバック SVG 用）。Bauhaus 三原色 ＋ black/cream。
 const RED_HEX = '#D62828';
+const BLUE_HEX = '#1E4FA8';
+const YELLOW_HEX = '#F1C12E';
 const BLACK_HEX = '#1A1A1A';
 const CREAM_HEX = '#F5F0EB';
 
@@ -103,21 +108,21 @@ const CONFIGS: Record<Section, SectionConfig> = {
         bob: 0.08,
       },
       {
-        id: 'a2-dot',
-        geom: (T) => new T.BoxGeometry(0.7, 0.1, 0.7),
-        color: RED,
+        id: 'a2-disc',
+        geom: (T) => new T.CylinderGeometry(0.5, 0.5, 0.1, 32),
+        color: BLUE,
         opacity: 1,
         pos: [0.9, 0.4, 0.4],
-        rot: [d(18), d(34), d(10)],
+        rot: [d(58), d(20), d(10)],
         spin: [0.022, 0.022, 0],
         bob: 0.1,
-        // モバイルでも残す: 明背景で確実に読める solid red の点（薄い黒スラブ a1 だけだと
+        // モバイルでも残す: 明背景で確実に読める solid blue の円（薄い黒スラブ a1 だけだと
         // 小サイズ・エッジオンで実機ではほぼ見えないため、視認できる塊を 1 つ保証する）。
       },
       {
         id: 'a3-bar',
         geom: (T) => new T.BoxGeometry(2.4, 0.09, 0.09),
-        color: BLACK,
+        color: RED,
         opacity: 1,
         pos: [0, 0.1, -0.4],
         rot: [d(0), d(16), d(-40)],
@@ -128,9 +133,9 @@ const CONFIGS: Record<Section, SectionConfig> = {
     ],
     fallback: () => (
       <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
-        <polygon points="14,86 18,84 86,40 82,42" fill={BLACK_HEX} />
+        <polygon points="14,86 18,84 86,40 82,42" fill={RED_HEX} />
         <polygon points="30,58 66,48 74,68 38,78" fill={BLACK_HEX} />
-        <polygon points="58,42 76,37 80,49 62,54" fill={RED_HEX} />
+        <ellipse cx="66" cy="46" rx="12" ry="7" fill={BLUE_HEX} transform="rotate(-20 66 46)" />
       </svg>
     ),
   },
@@ -160,13 +165,13 @@ const CONFIGS: Record<Section, SectionConfig> = {
       {
         id: 's2-ring',
         geom: (T) => new T.TorusGeometry(1.0, 0.05, 10, 36),
-        color: RED,
+        color: YELLOW,
         opacity: 1,
         pos: [-0.2, -0.6, 0.3],
         rot: [d(64), d(12), d(0)],
         spin: [0.026, 0, 0.024],
         bob: 0.1,
-        // モバイルで残す主役（赤円環は暗背景でも視認できる）。
+        // モバイルで残す主役（黄円環は暗背景でも高コントラストで視認できる）。
       },
       {
         id: 's3-bar',
@@ -195,7 +200,7 @@ const CONFIGS: Record<Section, SectionConfig> = {
           rx="16"
           ry="8"
           fill="none"
-          stroke={RED_HEX}
+          stroke={YELLOW_HEX}
           strokeWidth="2.4"
           transform="rotate(-14 60 64)"
         />
@@ -203,7 +208,7 @@ const CONFIGS: Record<Section, SectionConfig> = {
     ),
   },
 
-  // AI（明背景・右上隅・向き合う 2 楔＋黒棒）
+  // AI（明背景・右上隅・向き合う 2 楔＝赤と青の三角＋黒棒）
   ai: {
     corner: 'top-right',
     dark: false,
@@ -224,7 +229,7 @@ const CONFIGS: Record<Section, SectionConfig> = {
       {
         id: 'ai2-wedge',
         geom: (T) => new T.CylinderGeometry(0.7, 0.7, 0.3, 3),
-        color: RED,
+        color: BLUE,
         opacity: 1,
         pos: [-0.6, -0.5, 0.2],
         rot: [d(90), d(8), d(-150)],
@@ -247,12 +252,12 @@ const CONFIGS: Record<Section, SectionConfig> = {
       <svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">
         <polygon points="26,64 30,62 76,40 72,42" fill={BLACK_HEX} />
         <polygon points="70,26 88,34 66,44" fill={RED_HEX} />
-        <polygon points="40,68 22,60 44,50" fill={RED_HEX} />
+        <polygon points="40,68 22,60 44,50" fill={BLUE_HEX} />
       </svg>
     ),
   },
 
-  // CAREER（暗背景・右中段・縦の赤棒＋ダイヤ＋黒板）
+  // CAREER（暗背景・右中段・縦の赤棒＋黄ダイヤ＋黒板）
   career: {
     corner: 'right-center',
     dark: true,
@@ -273,7 +278,7 @@ const CONFIGS: Record<Section, SectionConfig> = {
       {
         id: 'c2-diamond',
         geom: (T) => new T.BoxGeometry(0.5, 0.1, 0.5),
-        color: RED,
+        color: YELLOW,
         opacity: 1,
         pos: [0.1, 1.0, 0.3],
         rot: [d(0), d(0), d(45)],
@@ -303,12 +308,12 @@ const CONFIGS: Record<Section, SectionConfig> = {
           strokeWidth="1.2"
         />
         <polygon points="34,8 40,6 44,92 38,94" fill={RED_HEX} />
-        <polygon points="38,24 44,28 40,34 34,30" fill={RED_HEX} />
+        <polygon points="38,24 44,28 40,34 34,30" fill={YELLOW_HEX} />
       </svg>
     ),
   },
 
-  // PORTFOLIO（明背景・左下隅・中空枠 2 つ＋赤点）
+  // PORTFOLIO（明背景・左下隅・中空枠 2 つ＋青点）
   portfolio: {
     corner: 'bottom-left',
     dark: false,
@@ -331,13 +336,13 @@ const CONFIGS: Record<Section, SectionConfig> = {
       {
         id: 'p2-dot',
         geom: (T) => new T.BoxGeometry(0.6, 0.1, 0.6),
-        color: RED,
+        color: BLUE,
         opacity: 1,
         pos: [-0.2, -0.2, 0.2],
         rot: [d(18), d(30), d(8)],
         spin: [0.02, 0.02, 0],
         bob: 0.1,
-        // モバイルでも残す: 明背景の黒中空枠（p1）は線が極薄なので、枠内に solid red の
+        // モバイルでも残す: 明背景の黒中空枠（p1）は線が極薄なので、枠内に solid blue の
         // 点を残して視認性を担保する。
       },
       {
@@ -362,7 +367,7 @@ const CONFIGS: Record<Section, SectionConfig> = {
           stroke={BLACK_HEX}
           strokeWidth="3"
         />
-        <polygon points="38,60 50,56 54,64 42,68" fill={RED_HEX} />
+        <polygon points="38,60 50,56 54,64 42,68" fill={BLUE_HEX} />
         <polygon
           points="58,36 78,30 84,44 64,50"
           fill="none"
@@ -394,7 +399,7 @@ const CONFIGS: Record<Section, SectionConfig> = {
       {
         id: 'ct2-dot',
         geom: (T) => new T.BoxGeometry(0.5, 0.1, 0.5),
-        color: RED,
+        color: YELLOW,
         opacity: 1,
         pos: [1.0, 0.2, 0.2],
         rot: [d(20), d(30), d(12)],
@@ -415,7 +420,7 @@ const CONFIGS: Record<Section, SectionConfig> = {
           strokeWidth="2.6"
           transform="rotate(-18 50 50)"
         />
-        <polygon points="74,40 84,36 88,44 78,48" fill={RED_HEX} />
+        <polygon points="74,40 84,36 88,44 78,48" fill={YELLOW_HEX} />
       </svg>
     ),
   },

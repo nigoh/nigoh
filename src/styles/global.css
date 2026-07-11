@@ -6,15 +6,18 @@
    — trends-2026-refresh.spec F-5（render-blocking @import の廃止） */
 
 /* ═══════════════════════════════════════════════════════════════
-   5 色トークン（唯一の出典は tailwind.config.mjs。ここは theme() で参照するだけ）
-   — redesign-2026-bold.spec §2.1（新色ゼロ・hex は不変）
+   Bauhaus パレットトークン（唯一の出典は tailwind.config.mjs。ここは theme() で参照するだけ）
+   — specs/bauhaus-2026.spec.md（三原色 red/blue/yellow を核とする幾何構成）
+   core 5 色の hex は不変（a11y コントラスト契約を保つ）。blue/yellow を装飾原色として追加。
    ═══════════════════════════════════════════════════════════════ */
 :root {
-  --red: theme('colors.constructivist.red');
-  --black: theme('colors.constructivist.black');
-  --cream: theme('colors.constructivist.cream');
-  --gray: theme('colors.constructivist.gray');
-  --darkgray: theme('colors.constructivist.darkgray');
+  --red: theme('colors.bauhaus.red');
+  --blue: theme('colors.bauhaus.blue');
+  --yellow: theme('colors.bauhaus.yellow');
+  --black: theme('colors.bauhaus.black');
+  --cream: theme('colors.bauhaus.cream');
+  --gray: theme('colors.bauhaus.gray');
+  --darkgray: theme('colors.bauhaus.darkgray');
 }
 
 /* ═══ セマンティックトークン（役割 → hex）— redesign-2026-bold.spec §2.3 ═══
@@ -97,7 +100,7 @@ p {
   z-index: 90;
   background: var(--red);
   color: var(--cream);
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Archivo Black', sans-serif;
   letter-spacing: 0.12em;
   padding: 8px 16px;
   transform: translateY(-120%);
@@ -191,7 +194,7 @@ html[data-theme='dark'] .grain-overlay {
 
   /* INDEX / CLOSE ボタン（border 赤・hover は misprint 版ずれで AA を侵さない） */
   .idx-btn {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Archivo Black', sans-serif;
     font-size: 18px;
     letter-spacing: 0.18em;
     color: var(--c-field-ink);
@@ -329,18 +332,28 @@ html[data-theme='dark'] .grain-overlay {
     color: var(--c-field-muted);
   }
   .plate .p-name {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: 'Archivo Black', sans-serif;
     font-size: clamp(1.8rem, 4vw, 3rem);
     letter-spacing: 0.02em;
     line-height: 0.85;
   }
+  /* 索引プレートのグリフ = Bauhaus の実心円。プレートごとに三原色を巡回させる（純装飾）。 */
   .plate .glyph {
     position: absolute;
     top: 14px;
     right: 14px;
     width: 16px;
     height: 16px;
+    border-radius: 50%;
     background: var(--red);
+  }
+  .plate.p2 .glyph,
+  .plate.p5 .glyph {
+    background: var(--blue);
+  }
+  .plate.p3 .glyph,
+  .plate.p6 .glyph {
+    background: var(--yellow);
   }
   /* 現在地プレートは赤で塗る（§3.2）。cream on red は大テキスト（p-name）のみ許容し、
      小さな p-num は非表示にして AA を侵さない（cream on red 小 4.42 は NG のため）。 */
@@ -582,7 +595,7 @@ html[data-theme='dark'] .grain-overlay {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.25em;
-  color: var(--c-field-muted);
+  color: var(--c-ink-muted);
 }
 
 /* PRM: sticky の長尺を畳んで単一 100vh の静的ポスターとして成立させる（§6.2） */
@@ -610,35 +623,131 @@ html[data-theme='dark'] .grain-overlay {
   overflow: hidden;
   pointer-events: none;
 }
-/* 薄い巨大 01（背景テクスチャ・aria-hidden・red on black は非テキスト図形で AA 対象外） */
+/* 薄い巨大 01（背景ゴースト・aria-hidden・インクの淡色でライト/ダーク両対応） */
 .hero-bg-01 {
   position: absolute;
   right: 2vw;
   top: 50%;
   transform: translateY(-50%);
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(20rem, 52vw, 60rem);
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(18rem, 46vw, 54rem);
   line-height: 0.8;
-  color: var(--red);
-  opacity: 0.05;
+  color: var(--c-ink);
+  opacity: 0.04;
   user-select: none;
 }
-/* cream の斜め力線（Lissitzky 的な背景の一本） */
+/* インクの斜め力線（背景の一本） */
 .hero-bg-line {
   position: absolute;
   left: -8%;
-  bottom: 24%;
-  width: 60%;
-  height: 2px;
-  background: var(--cream);
-  opacity: 0.08;
+  bottom: 22%;
+  width: 62%;
+  height: 3px;
+  background: var(--c-ink);
+  opacity: 0.12;
   transform: rotate(-24deg);
 }
-.hero-proun-layer {
+
+/* ── Bauhaus 平面ポスター図形（specs/bauhaus-2026.spec.md）— 右半分に三原色の幾何を組む純装飾 ── */
+.hero-poster {
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
   pointer-events: none;
+}
+.hero-poster > * {
+  position: absolute;
+}
+/* 黄の大円（主円） */
+.hp-circle {
+  right: 9vw;
+  top: 50%;
+  width: min(50vh, 430px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: var(--yellow);
+  transform: translateY(-50%);
+}
+/* 青の三角（円へ切り込む鋭角・頂点を円へ向ける） */
+.hp-triangle {
+  right: calc(8vw + min(40vh, 350px));
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-top: min(17vh, 150px) solid transparent;
+  border-bottom: min(17vh, 150px) solid transparent;
+  border-left: min(22vh, 200px) solid var(--blue);
+  transform: translateY(-50%);
+}
+/* 赤の帯（対角の力線） */
+.hp-bar {
+  right: 1vw;
+  top: 30%;
+  width: min(46vh, 420px);
+  height: clamp(14px, 2.6vh, 24px);
+  background: var(--red);
+  transform-origin: right center;
+  transform: rotate(-40deg);
+}
+/* 黒（ダーク=cream）の中空正方枠（右上・奥行き） */
+.hp-square {
+  right: 5vw;
+  top: 10%;
+  width: min(16vh, 140px);
+  aspect-ratio: 1 / 1;
+  border: 4px solid var(--c-ink);
+  transform: rotate(11deg);
+}
+/* 赤の円環（運動） */
+.hp-ring {
+  right: 4vw;
+  top: 66%;
+  width: min(15vh, 130px);
+  aspect-ratio: 1 / 1;
+  border: 4px solid var(--red);
+  border-radius: 50%;
+}
+/* 青の細い対角線（右下） */
+.hp-line {
+  right: 3vw;
+  bottom: 8%;
+  width: min(30vh, 260px);
+  height: 4px;
+  background: var(--blue);
+  transform-origin: right center;
+  transform: rotate(56deg);
+}
+/* モバイル: 主円＋帯だけ残し上部へ寄せ、本文の可読性を確保（暗字 on 黄は高コントラスト） */
+@media (max-width: 767px) {
+  .hp-circle {
+    right: -6vw;
+    top: 25%;
+    width: min(38vh, 270px);
+  }
+  .hp-bar {
+    right: -2vw;
+    top: 14%;
+    width: min(34vh, 240px);
+  }
+  .hp-triangle,
+  .hp-square,
+  .hp-ring,
+  .hp-line {
+    display: none;
+  }
+}
+
+/* 名前の刷り分け（ライト = 赤/青 / ダーク = cream で可読性優先） */
+.hero-name-a {
+  color: var(--red);
+}
+.hero-name-b {
+  color: var(--blue);
+}
+html[data-theme='dark'] .hero-name-a,
+html[data-theme='dark'] .hero-name-b {
+  color: var(--cream);
 }
 .hero-parallax-fg {
   position: relative;
@@ -648,8 +757,18 @@ html[data-theme='dark'] .grain-overlay {
   .hero-parallax-bg {
     transform: translateY(calc(64px * var(--hero-p, 0)));
   }
-  .hero-proun-layer {
-    transform: translateY(calc(22px * var(--hero-p, 0)));
+  /* ポスター図形は緩慢にドリフト。三角/帯/円環/点は個別に回転して kinetic 感を出す（既定 p=0 は完成姿勢） */
+  .hero-poster {
+    transform: translateY(calc(20px * var(--hero-p, 0)));
+  }
+  .hp-triangle {
+    transform: translateY(-50%) rotate(calc(var(--hero-p, 0) * 42deg));
+  }
+  .hp-bar {
+    transform: rotate(calc(-40deg + var(--hero-p, 0) * 12deg));
+  }
+  .hp-ring {
+    transform: rotate(calc(var(--hero-p, 0) * 140deg));
   }
   .hero-parallax-fg {
     transform: translateY(calc(-14px * var(--hero-p, 0)));
@@ -827,14 +946,14 @@ body.fine .cursor {
     transform: translateX(0);
   }
 }
-/* クリーム帯が上から落ちる */
+/* 青い帯が上から落ちる（Bauhaus 原色の垂直エレメント） */
 .intro .ibar {
   position: absolute;
   top: 0;
   left: 34%;
   width: 14px;
   height: 60%;
-  background: var(--cream);
+  background: var(--blue);
 }
 .intro.run .ibar {
   animation: intro-bar 0.3s steps(3) both;
@@ -852,7 +971,7 @@ body.fine .cursor {
   position: absolute;
   top: 44%;
   left: 20%;
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Archivo Black', sans-serif;
   font-size: clamp(3rem, 12vw, 9rem);
   color: var(--cream);
   letter-spacing: 0.02em;
@@ -870,7 +989,7 @@ body.fine .cursor {
     opacity: 1;
   }
 }
-/* 円・斜線が定位置へ集合（＝ポスター完成） */
+/* 円・斜線が定位置へ集合（＝ポスター完成）。黄の実心円＝Bauhaus 原色の主円 */
 .intro .icirc {
   position: absolute;
   bottom: 16%;
@@ -878,7 +997,7 @@ body.fine .cursor {
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  border: 6px solid var(--cream);
+  background: var(--yellow);
   opacity: 0;
 }
 .intro.run .icirc {

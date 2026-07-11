@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 // 型のみ import（実体は遅延 import するので three は初期バンドルに載らない）
 import type * as THREE_NS from 'three';
 
-// 設計: specs/components/proun-3d.spec.md
-// El Lissitzky / Proun を 3D（軸測投影）で。Hero 背面の showpiece 装飾。
+// 設計: specs/bauhaus-2026.spec.md（旧 proun-3d.spec.md）
+// Bauhaus の幾何コンポジションを 3D（軸測投影）で。Hero 背面の showpiece 装飾。
+// 三原色（円=黄 / 三角=青 / 棒=赤）＋黒スラブでコントラストを取り、スクロールで組み上がる。
 
 const RED = 0xd62828;
+const BLUE = 0x1e4fa8;
+const YELLOW = 0xf1c12e;
 const BLACK = 0x1a1a1a;
 const CREAM = 0xf5f0eb;
 
@@ -48,42 +51,42 @@ const d = (deg: number) => (deg * Math.PI) / 180;
 
 function buildSpecs(THREE: typeof THREE_NS): ObjSpec[] {
   return [
-    // A: 薄いスラブ（cream 面）— 平面と空間の緊張の核。傾けて「机の天板」読みを避ける
+    // A: 黄の実心円盤（薄いシリンダ）— Bauhaus の主円。構図の核。傾けて軸測で見せる
     {
-      id: 'A-slab',
-      geom: () => new THREE.BoxGeometry(2.7, 0.09, 1.7),
-      color: CREAM,
-      opacity: 0.9,
+      id: 'A-disc',
+      geom: () => new THREE.CylinderGeometry(1.45, 1.45, 0.12, 48),
+      color: YELLOW,
+      opacity: 1,
       pos: [1.3, 1.0, 0.2],
       rot: [d(40), d(20), d(-24)],
       spin: [0.006, 0.026, 0.006],
       bob: 0.12,
-      edge: 0x3d3a37,
+      edge: BLACK,
     },
-    // B: 赤い楔（三角柱）— 「赤い楔で白を撃て」。構図の主役の動勢
+    // B: 青の三角柱（プリズム）— 円に切り込む鋭角。構図の主役の動勢
     {
-      id: 'B-wedge',
-      geom: () => new THREE.CylinderGeometry(1.05, 1.05, 0.4, 3),
-      color: RED,
+      id: 'B-triangle',
+      geom: () => new THREE.CylinderGeometry(1.15, 1.15, 0.4, 3),
+      color: BLUE,
       opacity: 1,
       pos: [0.1, 1.5, 0.7],
       rot: [d(90), d(6), d(36)],
       spin: [0.0, 0.05, 0.0],
       bob: 0.14,
     },
-    // C: 細長い棒（cream）— 構図を貫く一本の急な対角の力線
+    // C: 赤い長い棒 — 構図を貫く一本の急な対角の力線（三原色の直線エレメント）
     {
       id: 'C-bar',
-      geom: () => new THREE.BoxGeometry(5.4, 0.14, 0.14),
-      color: CREAM,
-      opacity: 0.62,
+      geom: () => new THREE.BoxGeometry(5.4, 0.16, 0.16),
+      color: RED,
+      opacity: 0.95,
       pos: [0.7, 0.8, -0.3],
       rot: [d(8), d(18), d(-48)],
       spin: [0.0, 0.022, 0.01],
       bob: 0.1,
       mobileDrop: true,
     },
-    // D: 黒い正方板（赤の対）— A とは別角度で独立して浮遊（"画面"読みを避ける）。cream 稜線で見せる
+    // D: 黒い正方板 — 円の対。別角度で独立して浮遊（コントラストと奥行き）。cream 稜線で見せる
     {
       id: 'D-square',
       geom: () => new THREE.BoxGeometry(1.5, 0.1, 1.5),
@@ -95,7 +98,7 @@ function buildSpecs(THREE: typeof THREE_NS): ObjSpec[] {
       bob: 0.14,
       edge: CREAM,
     },
-    // E: 薄い円盤（red 輪郭）— 運動。中央やや下に浮く
+    // E: 赤い円環（torus）— 運動。中央やや下に浮く
     {
       id: 'E-ring',
       geom: () => new THREE.TorusGeometry(1.0, 0.05, 10, 36),
@@ -106,11 +109,11 @@ function buildSpecs(THREE: typeof THREE_NS): ObjSpec[] {
       spin: [0.028, 0.0, 0.03],
       bob: 0.12,
     },
-    // F: 小さな赤い実心正方板（左下のリズムの点景・楔と呼応）
+    // F: 小さな黄の実心正方板（左下のリズムの点景・円と呼応）
     {
       id: 'F-dot',
       geom: () => new THREE.BoxGeometry(0.66, 0.1, 0.66),
-      color: RED,
+      color: YELLOW,
       opacity: 1,
       pos: [-1.5, -1.4, 0.8],
       rot: [d(22), d(35), d(12)],
@@ -118,12 +121,12 @@ function buildSpecs(THREE: typeof THREE_NS): ObjSpec[] {
       bob: 0.1,
       mobileDrop: true,
     },
-    // G: 赤い極細の対角線（右下の運動の点景・楔と呼応）。縦の"柱"読みを避け斜めに
+    // G: 青の極細の対角線（右下の運動の点景・三角と呼応）。斜めに走らせ縦の"柱"読みを避ける
     {
       id: 'G-line',
       geom: () => new THREE.BoxGeometry(2.6, 0.07, 0.07),
-      color: RED,
-      opacity: 0.9,
+      color: BLUE,
+      opacity: 0.95,
       pos: [3.0, -0.9, 0.2],
       rot: [d(0), d(20), d(-58)],
       spin: [0.0, 0.018, 0.012],
@@ -383,8 +386,8 @@ export default function ProunCanvas() {
 }
 
 /**
- * reduced-motion / WebGL 非対応時の静的 SVG 軸測 Proun。
- * 3D の初期姿勢（赤い楔が cream スラブへ対角に切り込む / 右上の黒板 / 対角の力線）を等角で再現。
+ * reduced-motion / WebGL 非対応時の静的 SVG 軸測コンポジション。
+ * 3D の初期姿勢（黄の円に青い三角が切り込む / 赤い対角の力線 / 右上の黒板）を等角で再現。
  * 3D と同じく **中央右に収め**、本文（左の H1・説明）に被せない（slice で全面に拡大しない）。
  */
 function ProunFallback() {
@@ -395,20 +398,20 @@ function ProunFallback() {
       preserveAspectRatio="xMidYMid meet"
       role="presentation"
     >
-      {/* C: 左下→右上の cream の力線 */}
-      <polygon points="8,86 13,82 104,20 99,24" fill="#F5F0EB" opacity="0.4" />
-      {/* A: cream スラブ（軸測の平行四辺形） */}
-      <polygon points="30,44 78,31 87,55 39,68" fill="#F5F0EB" opacity="0.6" />
-      {/* B: 赤い楔がスラブへ対角に切り込む（構図の核） */}
-      <polygon points="13,41 41,54 12,62" fill="#D62828" opacity="0.92" />
+      {/* C: 左下→右上の赤い力線 */}
+      <polygon points="8,86 13,82 104,20 99,24" fill="#D62828" opacity="0.85" />
+      {/* A: 黄の実心円（軸測で楕円に見える主円） */}
+      <ellipse cx="52" cy="52" rx="26" ry="14" fill="#F1C12E" transform="rotate(-18 52 52)" stroke="#1A1A1A" strokeWidth="0.6" />
+      {/* B: 青い三角が円へ対角に切り込む（構図の核） */}
+      <polygon points="13,41 41,54 12,62" fill="#1E4FA8" />
       {/* D: 黒い正方板（右上）＋ cream 稜線 */}
       <polygon points="74,12 98,7 104,29 80,34" fill="#1A1A1A" stroke="#F5F0EB" strokeWidth="0.8" />
       {/* E: 赤い円環（運動） */}
-      <ellipse cx="72" cy="52" rx="15" ry="7.5" fill="none" stroke="#D62828" strokeWidth="1.6" transform="rotate(-16 72 52)" opacity="0.9" />
-      {/* F: 左下の赤い小板 */}
-      <polygon points="20,71 30,67 33,77 23,81" fill="#D62828" opacity="0.9" />
-      {/* G: 右下の赤い対角線 */}
-      <polygon points="86,60 88,59 105,84 103,85" fill="#D62828" opacity="0.85" />
+      <ellipse cx="80" cy="46" rx="12" ry="6" fill="none" stroke="#D62828" strokeWidth="1.6" transform="rotate(-16 80 46)" opacity="0.9" />
+      {/* F: 左下の黄の小板 */}
+      <polygon points="20,71 30,67 33,77 23,81" fill="#F1C12E" />
+      {/* G: 右下の青い対角線 */}
+      <polygon points="86,60 88,59 105,84 103,85" fill="#1E4FA8" opacity="0.9" />
     </svg>
   );
 }
