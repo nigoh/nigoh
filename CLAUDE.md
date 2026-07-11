@@ -28,12 +28,18 @@ assets/tiled/          Tiled ソース（ビルド非対象）
 specs/                 SDD 仕様書
 ```
 
-## デザイン言語（ロシア構成主義 / エル・リシツキー）
+## デザイン言語（バウハウス / 幾何・原色・キネティック）
 
-- パレット（`tailwind.config.mjs` の `constructivist.*` が**唯一の出典**。色を勝手に増やさない）
-  - red `#D62828` / black `#1A1A1A` / cream `#F5F0EB` / gray `#8B8680` / darkgray `#3D3A37`
+2026 リデザインでロシア構成主義（エル・リシツキー）→ **バウハウス**へ刷新（`specs/bauhaus-2026.spec.md`）。
+- パレット（`tailwind.config.mjs` の `bauhaus.*` が**唯一の出典**。ここ以外で色を足さない）
+  - 三原色: red `#D62828` / blue `#1E4FA8` / yellow `#F1C12E`
+  - 地・インク・副次: black `#1A1A1A` / cream `#F5F0EB` / gray `#8B8680` / darkgray `#3D3A37`
+  - `constructivist.*` は後方互換エイリアス（同値）。既存クラスは壊さず、新規は `bauhaus-*` を使う。
+  - core 5 色（red/black/cream/gray/darkgray）の hex は不変（a11y コントラスト契約を保つ）。
+  - 三原色の配分は地に依存: 明地=青/赤・暗地=黄/赤（細い要素で低コントラスト色を避ける）。
+  - セクション別リズム（索引順）: 02 青・03 黄・04 赤・05 黄・06 青・07 三原色。`--c-accent = red` は共通アクション色。
 - フォント: Bebas Neue（見出し）/ Inter・Noto Sans JP（本文）/ JetBrains Mono（数値）
-- 原則: 幾何学的・アシンメトリック・シャープエッジ（角丸なし）・ボールドタイポ・大文字
+- 原則: 幾何学的（円・三角・帯）・アシンメトリック・シャープエッジ（角丸なし）・ボールドタイポ・大文字
 - 装飾は純装飾（`aria-hidden`）。詳細は `specs/components/decoration.spec.md`
 
 ## SDD ワークフロー

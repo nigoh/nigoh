@@ -48,8 +48,8 @@ export default function AnimatedHero({
       <animated.div style={trail[1]} className="relative">
         {/* 背景の薄い番号（Lissitzky 的装飾） */}
         <div
-          className="absolute -left-2 -top-6 font-sans text-display-fluid text-constructivist-red select-none pointer-events-none"
-          style={{ opacity: 0.05 }}
+          className="absolute -left-2 -top-6 font-sans text-display-fluid text-bauhaus-yellow select-none pointer-events-none"
+          style={{ opacity: 0.07 }}
           aria-hidden="true"
         >
           01

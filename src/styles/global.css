@@ -6,15 +6,18 @@
    — trends-2026-refresh.spec F-5（render-blocking @import の廃止） */
 
 /* ═══════════════════════════════════════════════════════════════
-   5 色トークン（唯一の出典は tailwind.config.mjs。ここは theme() で参照するだけ）
-   — redesign-2026-bold.spec §2.1（新色ゼロ・hex は不変）
+   Bauhaus パレットトークン（唯一の出典は tailwind.config.mjs。ここは theme() で参照するだけ）
+   — specs/bauhaus-2026.spec.md（三原色 red/blue/yellow を核とする幾何構成）
+   core 5 色の hex は不変（a11y コントラスト契約を保つ）。blue/yellow を装飾原色として追加。
    ═══════════════════════════════════════════════════════════════ */
 :root {
-  --red: theme('colors.constructivist.red');
-  --black: theme('colors.constructivist.black');
-  --cream: theme('colors.constructivist.cream');
-  --gray: theme('colors.constructivist.gray');
-  --darkgray: theme('colors.constructivist.darkgray');
+  --red: theme('colors.bauhaus.red');
+  --blue: theme('colors.bauhaus.blue');
+  --yellow: theme('colors.bauhaus.yellow');
+  --black: theme('colors.bauhaus.black');
+  --cream: theme('colors.bauhaus.cream');
+  --gray: theme('colors.bauhaus.gray');
+  --darkgray: theme('colors.bauhaus.darkgray');
 }
 
 /* ═══ セマンティックトークン（役割 → hex）— redesign-2026-bold.spec §2.3 ═══
@@ -334,13 +337,23 @@ html[data-theme='dark'] .grain-overlay {
     letter-spacing: 0.02em;
     line-height: 0.85;
   }
+  /* 索引プレートのグリフ = Bauhaus の実心円。プレートごとに三原色を巡回させる（純装飾）。 */
   .plate .glyph {
     position: absolute;
     top: 14px;
     right: 14px;
     width: 16px;
     height: 16px;
+    border-radius: 50%;
     background: var(--red);
+  }
+  .plate.p2 .glyph,
+  .plate.p5 .glyph {
+    background: var(--blue);
+  }
+  .plate.p3 .glyph,
+  .plate.p6 .glyph {
+    background: var(--yellow);
   }
   /* 現在地プレートは赤で塗る（§3.2）。cream on red は大テキスト（p-name）のみ許容し、
      小さな p-num は非表示にして AA を侵さない（cream on red 小 4.42 は NG のため）。 */
@@ -827,14 +840,14 @@ body.fine .cursor {
     transform: translateX(0);
   }
 }
-/* クリーム帯が上から落ちる */
+/* 青い帯が上から落ちる（Bauhaus 原色の垂直エレメント） */
 .intro .ibar {
   position: absolute;
   top: 0;
   left: 34%;
   width: 14px;
   height: 60%;
-  background: var(--cream);
+  background: var(--blue);
 }
 .intro.run .ibar {
   animation: intro-bar 0.3s steps(3) both;
@@ -870,7 +883,7 @@ body.fine .cursor {
     opacity: 1;
   }
 }
-/* 円・斜線が定位置へ集合（＝ポスター完成） */
+/* 円・斜線が定位置へ集合（＝ポスター完成）。黄の実心円＝Bauhaus 原色の主円 */
 .intro .icirc {
   position: absolute;
   bottom: 16%;
@@ -878,7 +891,7 @@ body.fine .cursor {
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  border: 6px solid var(--cream);
+  background: var(--yellow);
   opacity: 0;
 }
 .intro.run .icirc {

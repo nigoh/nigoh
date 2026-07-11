@@ -340,9 +340,9 @@ const aiTools: AiTool[] = [
       <div class="parallax-layer p-subtle" aria-hidden="true">
         <SectionAccent client:visible section="about" />
       </div>
-      {/* 赤い縦バー — 本文と異なる速度でドリフト（§17.4） */}
+      {/* 青い縦バー（ABOUT の原色）— 本文と異なる速度でドリフト（§17.4） */}
       <div class="parallax-layer" aria-hidden="true">
-        <div class="absolute top-0 left-0 w-2 h-full bg-constructivist-red pointer-events-none"></div>
+        <div class="absolute top-0 left-0 w-2 h-full bg-bauhaus-blue pointer-events-none"></div>
       </div>
       {/* 紙の grain（リトグラフの紙肌・静止画。ライトの明側のみ。装飾より上・本文 z-10 より下） */}
       <div class="grain-overlay" aria-hidden="true"></div>
@@ -353,7 +353,7 @@ const aiTools: AiTool[] = [
           <p class="font-mono text-xs tracking-widest text-[var(--c-ink-muted)] mb-2" aria-hidden="true">02 / 07</p>
           {/* calm: 見出しのみ左へ bleed。本文・dl は 12 列内で整列（§4.1） */}
           <h2 class="bleed-heading font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">ABOUT</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-6" aria-hidden="true"></div>
+          <div class="reveal-rule h-1 w-24 sm:w-32 bg-bauhaus-blue mb-6" aria-hidden="true"></div>
           <p class="text-[var(--c-ink-muted)] mb-12 font-body max-w-[68ch]">あるものを大切にしながら、変化にも柔軟に対応できるエンジニアを目指しています。</p>
         </div>
 
@@ -421,13 +421,13 @@ const aiTools: AiTool[] = [
           {/* calm: 見出しのみ bleed・番号だけ回転（§4.1）。スキルバー等のデータは厳密整列 */}
           <p class="font-mono text-xs tracking-widest text-constructivist-gray mb-2 inline-block origin-left" style="transform: rotate(-6deg);" aria-hidden="true">03 / 07</p>
           <h2 class="bleed-heading font-sans text-heading-fluid text-constructivist-cream tracking-tight mb-3">SKILLS</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-12" aria-hidden="true"></div>
+          <div class="reveal-rule h-1 w-24 sm:w-32 bg-bauhaus-yellow mb-12" aria-hidden="true"></div>
         </div>
 
         <AnimatedSkillBar client:visible groups={skills} />
 
         {/* GitHub Activity */}
-        <div class="mt-16 border-l-4 border-constructivist-red pl-6">
+        <div class="mt-16 border-l-4 border-bauhaus-yellow pl-6">
           <div class="flex items-center justify-between mb-6">
             <h3 class="text-xs font-bold text-constructivist-cream uppercase tracking-widest font-body">GITHUB ACTIVITY — 個人開発</h3>
             <a
@@ -497,7 +497,7 @@ const aiTools: AiTool[] = [
 
     {/* ═══════════════════ T7 アジプロ・マーキー（Skills/AI 境界・サイトで 1 本限定） ═══════════════════
         既存キーワードの反復のみの純装飾（aria-hidden）。トラックを 2 連複製し -50% で無限ループ。 */}
-    <div class="bg-constructivist-red py-3 overflow-hidden" aria-hidden="true">
+    <div class="bg-bauhaus-blue py-3 overflow-hidden" aria-hidden="true">
       <div class="marquee-track flex w-max">
         {[0, 1].map(() => (
           <div class="flex items-center gap-6 pr-6 shrink-0">
@@ -544,7 +544,14 @@ const aiTools: AiTool[] = [
 
         <FadeIn client:visible direction="up" delay={200}>
         <div class="grid gap-0 sm:grid-cols-2">
-          {aiTools.map((tool, i) => (
+          {aiTools.map((tool, i) => {
+            // アイコンチップは三原色を巡回。黄は暗字・赤/青は cream 字でコントラスト確保
+            const chip = [
+              { bg: 'bg-bauhaus-red', ink: 'text-constructivist-cream' },
+              { bg: 'bg-bauhaus-blue', ink: 'text-constructivist-cream' },
+              { bg: 'bg-bauhaus-yellow', ink: 'text-constructivist-black' },
+            ][i % 3];
+            return (
             <div
               class:list={[
                 "border-2 border-[var(--c-line)] p-6 hover:bg-[var(--c-block)] hover:text-[var(--c-block-ink)] transition-colors group",
@@ -554,8 +561,8 @@ const aiTools: AiTool[] = [
               ]}
             >
               <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 bg-constructivist-red flex items-center justify-center shrink-0">
-                  <svg class="w-5 h-5 text-constructivist-cream" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <div class:list={["w-10 h-10 flex items-center justify-center shrink-0", chip.bg]}>
+                  <svg class:list={["w-5 h-5", chip.ink]} fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                     {tool.icon.map((d) => (
                       <path stroke-linecap="round" stroke-linejoin="round" d={d} />
                     ))}
@@ -567,7 +574,8 @@ const aiTools: AiTool[] = [
                 {tool.body}
               </p>
             </div>
-          ))}
+            );
+          })}
         </div>
         </FadeIn>
 
@@ -607,9 +615,9 @@ const aiTools: AiTool[] = [
           <p class="font-mono text-xs tracking-widest text-constructivist-gray mb-2" aria-hidden="true">05 / 07</p>
           {/* calm: 見出しのみ bleed。年表データ（縦ライン・マーカー・技術タグ）は厳密整列（§4.1） */}
           <h2 class="bleed-heading font-sans text-heading-fluid text-constructivist-cream tracking-tight mb-3">CAREER</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-6" aria-hidden="true"></div>
+          <div class="reveal-rule h-1 w-24 sm:w-32 bg-bauhaus-yellow mb-6" aria-hidden="true"></div>
           <p class="text-constructivist-gray mb-12 font-body text-sm">
-            <span class="inline-block w-2 h-2 bg-constructivist-red rotate-45 mr-1.5" aria-hidden="true"></span>
+            <span class="inline-block w-2 h-2 bg-bauhaus-yellow rotate-45 mr-1.5" aria-hidden="true"></span>
             注: クライアント名・案件番号・具体的な機器名/製品名・詳細な期間は非掲載。業種・技術領域のみ一般化して記載。
           </p>
         </div>
@@ -619,10 +627,16 @@ const aiTools: AiTool[] = [
             {/* 縦ライン */}
             <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-constructivist-red" aria-hidden="true" />
             <div class="space-y-10">
-              {career.map((item) => (
+              {career.map((item, i) => (
                 <div class="relative pl-14">
-                  {/* ダイヤモンドマーカー */}
-                  <div class="absolute left-[15px] top-[10px] w-3 h-3 bg-constructivist-red rotate-45" aria-hidden="true" />
+                  {/* ダイヤモンドマーカー — 暗地で映える赤/黄を交互に（Bauhaus のリズム） */}
+                  <div
+                    class:list={[
+                      "absolute left-[15px] top-[10px] w-3 h-3 rotate-45",
+                      i % 2 === 0 ? "bg-bauhaus-red" : "bg-bauhaus-yellow",
+                    ]}
+                    aria-hidden="true"
+                  />
                   <span class="font-sans text-2xl text-constructivist-red leading-none block mb-1">{item.year}</span>
                   <p class="text-xs text-constructivist-gray font-mono mb-1">{item.period}</p>
                   <h3 class="font-sans text-lg text-constructivist-cream tracking-wide mb-1">{item.industry}</h3>
@@ -646,16 +660,16 @@ const aiTools: AiTool[] = [
       <div class="parallax-layer p-subtle" aria-hidden="true">
         <SectionAccent client:visible section="portfolio" />
       </div>
-      {/* 赤い縦バー — 本文と異なる速度でドリフト（§17.4） */}
+      {/* 青い縦バー（PORTFOLIO の原色）— 本文と異なる速度でドリフト（§17.4） */}
       <div class="parallax-layer" aria-hidden="true">
-        <div class="absolute top-0 right-0 w-2 h-full bg-constructivist-red pointer-events-none"></div>
+        <div class="absolute top-0 right-0 w-2 h-full bg-bauhaus-blue pointer-events-none"></div>
       </div>
       {/* 紙の grain（ライトの明側のみ・静止＝視差なし） */}
       <div class="grain-overlay" aria-hidden="true"></div>
       {/* mid: 見出し右の空きに回転した赤块（テキストに被せない・z-10 より下・§4.1/§4.2）。大装飾块は p-slow */}
       <div class="parallax-layer p-slow" aria-hidden="true">
         <div class="destructive-block" style="right: 11%; top: 92px;">
-          <div class="w-16 h-16 sm:w-24 sm:h-24 bg-constructivist-red" style="transform: rotate(-12deg);"></div>
+          <div class="w-16 h-16 sm:w-24 sm:h-24 bg-bauhaus-blue" style="transform: rotate(-12deg);"></div>
         </div>
       </div>
 
@@ -665,9 +679,9 @@ const aiTools: AiTool[] = [
           <p class="font-mono text-xs tracking-widest text-[var(--c-ink-muted)] mb-2" aria-hidden="true">06 / 07</p>
           {/* mid: 見出し bleed。カード本文・タグは各カード内で整列（§4.1） */}
           <h2 class="bleed-heading font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">PORTFOLIO</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-6" aria-hidden="true"></div>
+          <div class="reveal-rule h-1 w-24 sm:w-32 bg-bauhaus-blue mb-6" aria-hidden="true"></div>
           <p class="text-[var(--c-ink-muted)] mb-12 font-body text-sm">
-            <span class="inline-block w-2 h-2 bg-constructivist-red rotate-45 mr-1.5" aria-hidden="true"></span>
+            <span class="inline-block w-2 h-2 bg-bauhaus-blue rotate-45 mr-1.5" aria-hidden="true"></span>
             自己開発プロジェクト — GitHub の公開リポジトリからビルド時に自動生成。IN PROGRESS は現在製作中。
           </p>
         </div>
@@ -784,9 +798,10 @@ const aiTools: AiTool[] = [
         <SectionAccent client:visible section="contact" />
       </div>
       {/* 装飾的幾何学（大円・回転赤块）— 大装飾块は p-slow でドリフト（内側の中央寄せ/回転 transform は保持） */}
+      {/* 装飾的幾何学（三原色の締め）— 黄の大円環＋青の回転块＋赤の CTA で締める */}
       <div class="parallax-layer p-slow" aria-hidden="true">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border-4 border-constructivist-red opacity-10 pointer-events-none"></div>
-        <div class="absolute top-10 left-10 w-20 h-20 bg-constructivist-red transform rotate-12 opacity-20"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border-4 border-bauhaus-yellow opacity-20 pointer-events-none"></div>
+        <div class="absolute top-10 left-10 w-20 h-20 bg-bauhaus-blue transform rotate-12 opacity-30"></div>
       </div>
 
       <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
