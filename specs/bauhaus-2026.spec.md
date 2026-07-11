@@ -33,7 +33,10 @@
 ## デザイン指針
 
 - **幾何ボキャブラリ**: 円（disc/torus）・三角（三角柱）・帯（bar）を基本エレメントとする。
-  角丸なし・シャープエッジ・アシンメトリック・大文字ボールドタイポ（Bebas Neue 見出し）。
+  角丸なし・シャープエッジ・アシンメトリック・大文字ボールドタイポ（**Archivo Black** = 極太ブロック体・見出し）。
+- **ヒーロー**: 3D プロウンを撤去し、cream 地（トークン連動でダークは反転ポスター）の**平面ポスター**に作り替える。
+  三原色の平面図形（黄円・青三角・赤帯・黒枠・赤円環・青斜線）を右半分に組み、名前は極大ブロック体で
+  「H.」=赤 / 「NIGO」=青（ダークは cream で可読性優先）。`--hero-p` で図形が緩慢に回転/ドリフト（kinetic）。
 - **三原色の配分（コントラスト前提）**: 細い要素・小マーカーで低コントラスト色を避ける。
   - 明地（cream）では **青・赤** が映える（黄の細線は不可）。
   - 暗地（black）では **黄・赤** が映える（青の細線は不可）。
@@ -55,20 +58,24 @@
 
 ## 実装対象
 
-- `tailwind.config.mjs` — `bauhaus` パレット追加（blue/yellow）＋ `constructivist` エイリアス。
-- `src/styles/global.css` — `--blue/--yellow` トークン、PosterIntro 組み上げ（青帯＋黄円＋赤块/斜線）、
-  索引プレートのグリフ（三原色を巡回する実心円）。
-- `src/components/ProunCanvas.tsx` — Hero 主役。円=黄／三角=青／帯=赤 に再配色・再形状。フォールバック SVG も対応。
+- `tailwind.config.mjs` — `bauhaus` パレット追加（blue/yellow）＋ `constructivist` エイリアス。見出しフォントを **Archivo Black** に。
+- `src/layouts/BaseLayout.astro` — Google Fonts を Archivo Black に差し替え。
+- `src/styles/global.css` — `--blue/--yellow` トークン、`'Archivo Black'` 参照、ヒーロー平面ポスター図形
+  （`.hero-poster` / `.hp-*` ＋ `--hero-p` キネティック）、名前刷り分け（`.hero-name-*`）、
+  PosterIntro 組み上げ（青帯＋黄円＋赤块/斜線）、索引プレートのグリフ（三原色を巡回する実心円）。
+- `src/pages/index.astro` — ヒーローを平面ポスターに再構築（`ProunCanvas` を撤去）。
+  見出し罫線・縦バー・装飾块・マーキー・AI チップ・Career マーカーを原色配分。
+- `src/components/AnimatedHero.tsx` — 極大ブロック体・名前の赤/青刷り分け・黒インクチップ・キーワード列・トークン連動配色。
 - `src/components/SectionAccent.tsx` — 6 セクションの脇役 3D を上表の原色で配分。フォールバック SVG も対応。
-- `src/pages/index.astro` — 見出し罫線・縦バー・装飾块・マーキー・AI チップ・Career マーカーを原色配分。
 - `src/components/AnimatedSkillBar.tsx` — カテゴリ帯を三原色巡回（黄帯は暗字）。バー本体は暗地可読性のため赤を維持。
-- `src/components/AnimatedHero.tsx` — 背景の巨大数字 01 を黄のゴースト化。
+- `src/components/ProunCanvas.tsx` — ヒーローでは不使用（撤去）。Bauhaus 再配色済みだが現状インポートなし。
 
 ## 受入条件
 
 - [x] `npx astro check` が 0 エラー（既存の JSON-LD hint 1 件のみ）。
 - [x] `npm run build` が成功し、`bg-bauhaus-blue / bg-bauhaus-yellow / text-bauhaus-*` 等が生成 CSS に出力される。
-- [x] Hero が三原色の幾何コンポジション（黄円・青三角・赤帯/円環）として表示される。
+- [x] Hero が cream 地の平面ポスター（黄円・青三角・赤帯・黒枠・赤円環・青斜線）＋極大ブロック体の名前として表示される。
+- [x] Hero の名前がライトで赤/青、ダークで cream として可読に表示される。見出しが Archivo Black で表示される。
 - [x] 各セクションの原色リズム（02 青・03 黄・04 赤・05 黄・06 青・07 三原色）がライト/ダーク両方で成立する。
 - [x] AI アイコンチップが三原色を巡回し、黄チップは暗字でコントラストを確保する。
 - [x] core 5 色の hex を変更していない（a11y コントラスト契約を保持）。`--c-accent = red` を維持。

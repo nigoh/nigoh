@@ -5,7 +5,6 @@ import Footer from '../components/Footer.astro';
 import AnimatedHero from '../components/AnimatedHero';
 import AnimatedSkillBar from '../components/AnimatedSkillBar';
 import FadeIn from '../components/FadeIn';
-import ProunCanvas from '../components/ProunCanvas';
 import SectionAccent from '../components/SectionAccent';
 
 interface ZennArticle {
@@ -301,22 +300,26 @@ const aiTools: AiTool[] = [
   {/* 各セクションの id アンカーは固定バー（56px）の下に着地させる（scroll-mt-14） */}
   <main id="main-content" class="pt-14 [&_section]:scroll-mt-14">
 
-    {/* ═══════════════════ Hero — 没入 3D・スクロール駆動主役（索引 01・250vh sticky・§6） ═══════════════════
-        ラッパー 250vh を通過する進捗 p=0→1 で Proun が軸測回転・組み上げ、H1 が letter-spacing 伸縮＋scale ピン。
-        進捗は下部のモジュールスクリプトが --hero-p として #hero に設定（PRM 非実行）。
-        PRM/WebGL 非対応は ProunCanvas が静的 SVG（完成姿勢）にフォールバックし、CSS が尺を 100vh に畳む。 */}
-    <section id="hero" class="hero-wrap relative bg-constructivist-black">
-      <div class="hero-stick sticky top-0 h-screen overflow-hidden flex items-center bg-constructivist-black">
-        {/* 背景層（最も遅い・§17.2）— 薄い巨大 01 と cream の斜め力線。--hero-p に対し +64px ドリフト */}
+    {/* ═══════════════════ Hero — Bauhaus フラットポスター（索引 01・250vh sticky・bauhaus-2026.spec） ═══════════════════
+        cream 地（トークン連動でダークは反転ポスター）に三原色の平面図形（円=黄／三角=青／帯=赤）を組む。
+        250vh を通過する進捗 p=0→1（--hero-p）で図形が緩慢にドリフト/回転（kinetic）。H1 は letter-spacing 伸縮。
+        PRM/JS 無効は p=0＝完成ポスターの静止表示にフォールバックし、CSS が尺を 100vh に畳む。 */}
+    <section id="hero" class="hero-wrap relative bg-[var(--c-page)]">
+      <div class="hero-stick sticky top-0 h-screen overflow-hidden flex items-center bg-[var(--c-page)]">
+        {/* 背景層（最も遅い・§17.2）— 薄い巨大 01 とインクの斜め力線。--hero-p に対し +64px ドリフト */}
         <div class="hero-parallax-bg" aria-hidden="true">
           <span class="hero-bg-01">01</span>
           <span class="hero-bg-line"></span>
         </div>
 
-        {/* 中間層（§17.2）— El Lissitzky 3D Proun（軸測投影・スクロールで組み上がる主役＋ポインタ微傾き）。
-            ホストを +22px ドリフトさせ、3D 自身の回転・組み上げに視差を加える */}
-        <div class="hero-proun-layer" aria-hidden="true">
-          <ProunCanvas client:visible />
+        {/* 中間層 — Bauhaus 平面ポスター図形（純装飾）。--hero-p で緩慢に回転/ドリフト */}
+        <div class="hero-poster" aria-hidden="true">
+          <div class="hp-square"></div>
+          <div class="hp-circle"></div>
+          <div class="hp-triangle"></div>
+          <div class="hp-ring"></div>
+          <div class="hp-bar"></div>
+          <div class="hp-line"></div>
         </div>
 
         {/* 前景層（content 速度・§17.2）— 実テキスト。可読性最優先で -14px の微小ドリフトのみ */}
@@ -324,13 +327,14 @@ const aiTools: AiTool[] = [
           <AnimatedHero
             client:load
             name="H.NIGO"
-            role="SOFTWARE ENGINEER"
+            role="SOFTWARE ENGINEER · SAPPORO"
             description="低レイヤーからアプリケーションまで。C/C++, Java, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。"
+            keywords={['C/C++', 'JAVA', 'TYPESCRIPT', 'PYTHON']}
             githubUrl="https://github.com/nigoh"
           />
         </div>
 
-        <p class="scroll-hint" aria-hidden="true">SCROLL ▾ ASSEMBLE THE PROUN</p>
+        <p class="scroll-hint" aria-hidden="true">SCROLL ▾</p>
       </div>
     </section>
 

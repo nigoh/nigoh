@@ -26,7 +26,8 @@ export default {
         constructivist: bauhaus,
       },
       fontFamily: {
-        sans: ['"Bebas Neue"', '"Noto Sans JP"', 'system-ui', 'sans-serif'],
+        // 見出しは Bauhaus らしい極太ブロック体（Archivo Black）。幾何的・大文字・ズングリ。
+        sans: ['"Archivo Black"', '"Noto Sans JP"', 'system-ui', 'sans-serif'],
         body: ['Inter', '"Noto Sans JP"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
