@@ -272,7 +272,12 @@ export function createPlugBoard(o: PlugBoardOptions): PlugBoard | null {
       home = i;
       return;
     }
-    if (plugged === i && !drag && !fly) return;
+    if (drag) {
+      // つまんでいる間（戻るボタンなどで段が変わった）：飛ばさず、離したときに戻る先だけ変える
+      home = i;
+      return;
+    }
+    if (plugged === i && !fly) return;
     if (fly && fly.to === i) return;
     const from = pin() ?? { x: pts[N].x, y: pts[N].y };
     plugged = null;
@@ -331,11 +336,13 @@ export function createPlugBoard(o: PlugBoardOptions): PlugBoard | null {
     handle.classList.remove('is-grabbing');
     if (best !== null) {
       drag = null;
+      fly = null;
       seat(best);
     } else if (drop === 'return' && home !== null) {
-      // もとの行き先へ飛んで戻る（drag を残したまま select して、いまの位置から飛ばす）
-      const back = home;
-      select(back);
+      // もとの行き先へ、いまの位置から飛んで戻る
+      plugged = null;
+      segTarget = lengthFor(pinOf(home)) / N;
+      fly = { from: at, to: home, t0: performance.now(), dur: motion.reduce ? 0 : 380 };
       drag = null;
     } else {
       drag = null;

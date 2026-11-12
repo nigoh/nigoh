@@ -20,7 +20,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
     {/* 配色の初期化 — 描画前に <head> で決める（FOUC 防止）。
         手動の選択（localStorage.theme）があればそれを data-theme に入れる。無ければ何も入れず、
         CSS の prefers-color-scheme に任せる（JS 無しでも OS の設定どおりに出る）。
-        動きを減らす設定でなければ js-anim を付け、プラグが差さる前の形から始める（specs/plug-2026.spec.md「動き」）。 */}
+        js クラスは「JS がある」印（段の切り替え・物理の出し分けに CSS が使う）。 */}
     <script is:inline>
       (function () {
         var root = document.documentElement;
@@ -29,7 +29,6 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
           var stored = localStorage.getItem('theme');
           if (stored === 'dark' || stored === 'light') root.setAttribute('data-theme', stored);
         } catch (e) {}
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('js-anim');
       })();
     </script>
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />

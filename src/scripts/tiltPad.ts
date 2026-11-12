@@ -10,7 +10,7 @@ export function initTiltPad(): void {
   root.hidden = false;
 
   const place = (): void => {
-    const r = pad.clientWidth / 2 - 16;
+    const r = Math.max(0, pad.clientWidth / 2 - 16);
     knob.style.transform = `translate(${G.x * r}px, ${G.y * r}px)`;
     const m = Math.hypot(G.x, G.y);
     const a = (Math.atan2(G.y, G.x) * 180) / Math.PI;
@@ -55,5 +55,7 @@ export function initTiltPad(): void {
   });
 
   onGravity(place);
+  // スマホ幅では隠れている。見えるようになったら（幅が変わったら）置き直す
+  new ResizeObserver(place).observe(pad);
   place();
 }

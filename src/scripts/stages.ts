@@ -28,16 +28,15 @@ export function initStages(): void {
 
   // タブとして扱う
   list.setAttribute('role', 'tablist');
+  list.setAttribute('aria-label', '流れ');
   const orient = (): void => list.setAttribute('aria-orientation', wide.matches ? 'vertical' : 'horizontal');
   orient();
   tabs.forEach((t, i) => {
     t.setAttribute('role', 'tab');
     t.setAttribute('aria-controls', ids[i]);
   });
-  panes.forEach((p, i) => {
-    p?.setAttribute('role', 'tabpanel');
-    p?.setAttribute('aria-labelledby', tabs[i].id);
-  });
+  // 出力の面の名前は、段の見出し（aria-labelledby は StagePane が付けたまま）
+  panes.forEach((p) => p?.setAttribute('role', 'tabpanel'));
 
   // PC：出力の面から出たケーブルのプラグ。どこにも差さずに離したら、もとの段へ戻る
   const canvas = rail.querySelector<HTMLCanvasElement>('.stage-rope');
@@ -96,8 +95,11 @@ export function initStages(): void {
     render(i);
   }
 
-  // 戻る・進む、ほかの #id のリンク（ロゴなど）
-  const fromHash = (): number => ids.indexOf(location.hash.slice(1));
+  // 戻る・進む、ほかの #id のリンク（ロゴなど）。#id が無いアドレス（最初の履歴）は、はじめの段
+  const fromHash = (): number => {
+    const id = location.hash.slice(1);
+    return id === '' ? 0 : ids.indexOf(id);
+  };
   window.addEventListener('hashchange', () => {
     const i = fromHash();
     if (i >= 0 && i !== current) render(i);
@@ -148,6 +150,6 @@ export function initStages(): void {
     plug?.refresh();
   });
 
-  const start = fromHash();
-  render(start >= 0 ? start : current, true);
+  // 最初の段：index.astro のインラインの初期化が #id から .is-active を付けてある（current がそれ）
+  render(current, true);
 }
