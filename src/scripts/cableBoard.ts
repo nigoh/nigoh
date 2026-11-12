@@ -31,6 +31,7 @@ export function initCableBoard(): void {
   const details = Array.from(board.querySelectorAll<HTMLElement>('[data-detail]'));
   const title = board.querySelector<HTMLElement>('[data-monitor-title]');
   const empty = board.querySelector<HTMLElement>('[data-empty]');
+  const status = board.querySelector<HTMLElement>('[data-board-status]');
   if (!buttons.length) return;
   board.classList.add('is-live');
 
@@ -85,12 +86,18 @@ export function initCableBoard(): void {
     if (title) title.textContent = i === null ? '—' : (buttons[i].querySelector('.font-mono')?.textContent ?? '');
   }
 
+  const label = (i: number): string =>
+    `${buttons[i].querySelector('.font-mono')?.textContent ?? ''} ${buttons[i].querySelector('.font-bold')?.textContent ?? ''}`.trim();
+
   function seat(i: number): void {
     plugged = i;
     segTarget = lengthFor(pinOf(i)) / N;
     rings.push({ x: sockets[i].x, y: sockets[i].y, t: performance.now() });
     show(i);
+    if (status) status.textContent = `${label(i)} を表示しています`;
   }
+  /** どのコンセントにも届く長さ（つまんでいる間はここまで伸ばし、それより遠くへは引けない） */
+  const reach = (): number => Math.max(...sockets.map((_, i) => lengthFor(pinOf(i))));
 
   function pin(): XY | null {
     if (drag) return drag;
@@ -257,7 +264,16 @@ export function initCableBoard(): void {
   // つまんで抜く・離して差す
   const local = (e: PointerEvent): XY => {
     const r = board.getBoundingClientRect();
-    return { x: Math.min(W - 4, Math.max(4, e.clientX - r.left)), y: Math.min(H - 4, Math.max(4, e.clientY - r.top)) };
+    let x = Math.min(W - 4, Math.max(4, e.clientX - r.left));
+    let y = Math.min(H - 4, Math.max(4, e.clientY - r.top));
+    // ひもの長さより遠くへは引けない
+    const max = reach() * 0.97;
+    const d = Math.hypot(x - anchor.x, y - anchor.y);
+    if (d > max) {
+      x = anchor.x + ((x - anchor.x) * max) / d;
+      y = anchor.y + ((y - anchor.y) * max) / d;
+    }
+    return { x, y };
   };
   handle.addEventListener('pointerdown', (e) => {
     e.preventDefault();
@@ -265,7 +281,9 @@ export function initCableBoard(): void {
     drag = local(e);
     fly = null;
     plugged = null;
+    segTarget = reach() / N;
     show(null);
+    if (status) status.textContent = 'プラグを抜きました';
     handle.classList.add('is-grabbing');
     poke();
   });
@@ -289,6 +307,7 @@ export function initCableBoard(): void {
     drag = null;
     handle.classList.remove('is-grabbing');
     if (best !== null) seat(best);
+    else if (status) status.textContent = 'プラグはどこにも差さっていません';
     if (motion.reduce) settle();
     poke();
   };
@@ -304,12 +323,16 @@ export function initCableBoard(): void {
   let lastH = H;
   new ResizeObserver(() => {
     const r = board.getBoundingClientRect();
-    if (Math.abs(r.width - lastW) < 2 && Math.abs(r.height - lastH) < 2) return;
+    const widthChanged = Math.abs(r.width - lastW) >= 2;
+    if (!widthChanged && Math.abs(r.height - lastH) < 2) return;
     lastW = r.width;
     lastH = r.height;
     measure();
-    resetRope();
-    settle();
+    // 幅が変わったとき（向き・窓の大きさ）だけ作り直す。高さだけ（詳細の切り替え）なら揺れを残す
+    if (widthChanged) {
+      resetRope();
+      settle();
+    } else draw();
   }).observe(board);
 
   register({

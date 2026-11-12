@@ -121,6 +121,7 @@ export function initSandLogo(): void {
     gyroBtn.addEventListener('click', async () => {
       const ok = await enableGyro();
       gyroBtn.hidden = ok;
+      if (ok) reformBtn?.focus();
       if (hint) hint.textContent = ok ? '傾けると砂が流れます' : '傾きを読めませんでした。なぞる・押すで遊べます';
     });
   }

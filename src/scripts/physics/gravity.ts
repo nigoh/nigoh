@@ -15,6 +15,8 @@ export function setGravity(x: number, y: number): void {
     x /= m;
     y /= m;
   }
+  // ジャイロは止まっていても届き続けるので、ほとんど変わらないときは起こさない（休めるように）
+  if (Math.abs(x - G.x) < 0.02 && Math.abs(y - G.y) < 0.02) return;
   G.x = x;
   G.y = y;
   listeners.forEach((f) => f());

@@ -6,10 +6,10 @@
 <div class="tilt" data-tilt hidden>
   <div class="mb-2 flex items-baseline justify-between px-2.5 text-sm">
     <span class="font-bold text-ui-muted">傾き</span>
-    <span class="text-ui-muted" data-tilt-dir aria-live="polite">下向き</span>
+    <span class="text-ui-muted" id="tilt-dir" data-tilt-dir>下向き</span>
   </div>
   <div class="tilt-pad" data-tilt-pad>
-    <button type="button" class="tilt-knob" data-tilt-knob aria-label="砂とケーブルを傾ける（矢印キーで向きを変える）"></button>
+    <button type="button" class="tilt-knob" data-tilt-knob aria-label="砂とケーブルを傾ける（矢印キーで向きを変える）" aria-describedby="tilt-dir"></button>
   </div>
   <p class="mt-2 px-2.5 text-sm text-ui-muted">引くと、砂とケーブルと札が傾く</p>
 </div>

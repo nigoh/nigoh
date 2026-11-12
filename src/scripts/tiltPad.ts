@@ -32,9 +32,12 @@ export function initTiltPad(): void {
   pad.addEventListener('pointermove', (e) => {
     if (dragging) fromPointer(e);
   });
-  pad.addEventListener('pointerup', () => {
+  const stop = (): void => {
     dragging = false;
-  });
+  };
+  pad.addEventListener('pointerup', stop);
+  pad.addEventListener('pointercancel', stop);
+  pad.addEventListener('lostpointercapture', stop);
   pad.addEventListener('dblclick', () => setGravity(0, 1));
   knob.addEventListener('keydown', (e) => {
     const s = 0.15;

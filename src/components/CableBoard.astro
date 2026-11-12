@@ -31,7 +31,7 @@ const { jobs } = Astro.props;
     }
   </ol>
 
-  <div class="board-monitor" id="board-monitor" aria-live="polite">
+  <div class="board-monitor" id="board-monitor">
     <span class="board-anchor" aria-hidden="true"></span>
     <p class="monitor-head font-mono text-sm">出力：<span data-monitor-title>{jobs[0]?.period}</span></p>
     <ol class="m-0 list-none space-y-8 p-0">
@@ -69,6 +69,7 @@ const { jobs } = Astro.props;
     </p>
   </div>
 
+  <p class="sr-only" aria-live="polite" data-board-status></p>
   <canvas class="board-rope" aria-hidden="true"></canvas>
   <span class="plug-handle" data-plug-handle aria-hidden="true"></span>
 </div>
