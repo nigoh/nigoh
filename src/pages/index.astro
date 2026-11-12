@@ -4,7 +4,11 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FlowNode from '../components/FlowNode.astro';
 import FlowRail from '../components/FlowRail.astro';
-import Logo from '../components/Logo.astro';
+import SandLogo from '../components/SandLogo.astro';
+import SandMeters from '../components/SandMeters.astro';
+import CableBoard from '../components/CableBoard.astro';
+import ToolBox from '../components/ToolBox.astro';
+import type { BoardJob } from '../components/board';
 import Icon from '../components/Icon.astro';
 import type { IconName } from '../components/icons';
 import CareerGantt from '../components/CareerGantt.astro';
@@ -100,37 +104,37 @@ const skills = [
     label: '言語',
     en: 'languages',
     items: [
-      { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発（8年以上）' },
-      { name: 'Java', level: 70, description: '組み込み Android アプリ（実務・2026〜）／オブジェクト指向設計' },
-      { name: 'TypeScript / JavaScript', level: 70, description: '個人開発中心 — Web アプリ・型安全な実装' },
-      { name: 'Python', level: 65, description: 'スクリプティング・データ処理・自動化（約2年）' },
+      { name: 'C / C++', short: 'C/C++', level: 90, description: 'システムプログラミング・組み込み開発（8年以上）' },
+      { name: 'Java', short: 'Java', level: 70, description: '組み込み Android アプリ（実務・2026〜）／オブジェクト指向設計' },
+      { name: 'TypeScript / JavaScript', short: 'TS/JS', level: 70, description: '個人開発中心 — Web アプリ・型安全な実装' },
+      { name: 'Python', short: 'Python', level: 65, description: 'スクリプティング・データ処理・自動化（約2年）' },
     ],
   },
   {
     label: 'プラットフォーム',
     en: 'platforms',
     items: [
-      { name: 'Windows / MFC', level: 80, description: 'デスクトップアプリ・組み込みシステム開発（8年以上）' },
-      { name: 'Linux (Ubuntu / Yocto)', level: 65, description: 'サーバー・組み込み Linux（約2年）' },
-      { name: 'Android SDK', level: 55, description: '専用端末向けネイティブアプリの Java 開発（実務・2026〜）' },
-      { name: 'React / Astro', level: 65, description: '個人開発中心 — UI 構築・静的サイト' },
+      { name: 'Windows / MFC', short: 'MFC', level: 80, description: 'デスクトップアプリ・組み込みシステム開発（8年以上）' },
+      { name: 'Linux (Ubuntu / Yocto)', short: 'Linux', level: 65, description: 'サーバー・組み込み Linux（約2年）' },
+      { name: 'Android SDK', short: 'Android', level: 55, description: '専用端末向けネイティブアプリの Java 開発（実務・2026〜）' },
+      { name: 'React / Astro', short: 'React', level: 65, description: '個人開発中心 — UI 構築・静的サイト' },
     ],
   },
   {
     label: '開発と基盤',
     en: 'dev & infra',
     items: [
-      { name: 'Git / GitLab', level: 85, description: 'バージョン管理・CI/CD・チーム開発フロー整備（約6年）' },
-      { name: 'Docker', level: 75, description: 'コンテナ化・開発環境標準化（約4年）' },
-      { name: 'RDB (PostgreSQL / Oracle)', level: 70, description: 'DB 設計・クエリ最適化（約3年）' },
+      { name: 'Git / GitLab', short: 'Git', level: 85, description: 'バージョン管理・CI/CD・チーム開発フロー整備（約6年）' },
+      { name: 'Docker', short: 'Docker', level: 75, description: 'コンテナ化・開発環境標準化（約4年）' },
+      { name: 'RDB (PostgreSQL / Oracle)', short: 'RDB', level: 70, description: 'DB 設計・クエリ最適化（約3年）' },
     ],
   },
   {
     label: 'AI 駆動開発',
     en: 'ai-driven dev',
     items: [
-      { name: 'AI コーディングエージェント', level: 85, description: 'Claude Code / GitHub Copilot / Codex — サブエージェント・フック・SWE Agent による自律開発' },
-      { name: 'MCP / エージェント設計', level: 80, description: 'MCP サーバーと AGENTS.md / CLAUDE.md / .kiro でエージェントの能力・挙動を拡張' },
+      { name: 'AI コーディングエージェント', short: 'AI エージェント', level: 85, description: 'Claude Code / GitHub Copilot / Codex — サブエージェント・フック・SWE Agent による自律開発' },
+      { name: 'MCP / エージェント設計', short: 'MCP', level: 80, description: 'MCP サーバーと AGENTS.md / CLAUDE.md / .kiro でエージェントの能力・挙動を拡張' },
     ],
   },
 ];
@@ -195,6 +199,16 @@ const career: CareerItem[] = [
     gantt: { label: '自動運転用 3D 地図・試作', start: 2016.5, end: 2018, note: '約1年半' },
   },
 ];
+
+// 経歴のケーブルボード（C）：プラグを差した仕事をモニターに出す
+const boardJobs: BoardJob[] = career.map((c) => ({
+  period: c.period,
+  short: c.gantt.label,
+  industry: c.industry,
+  phase: c.phase,
+  techs: c.techs,
+  ongoing: c.gantt.end === null,
+}));
 
 // 帯グラフの目盛り（2016〜2027）と、ビルドした日（進行中の帯の終わり）
 const ganttFrom = 2016;
@@ -337,10 +351,9 @@ const githubMark =
       {/* ═══ 01 はじめ（start）═══ */}
       <FlowNode id="hero" n="01" title="はじめ" en="start" hideTitle>
         <div class="flex flex-col gap-5">
-          <h1 id="hero-title" class="m-0">
-            <span class="sr-only">H.Nigo（nigoh）</span>
-            <Logo id="hero" class="block h-auto w-full max-w-[440px]" />
-          </h1>
+          <h1 id="hero-title" class="sr-only">H.Nigo（nigoh）</h1>
+          {/* A 砂のロゴ（physics-2026.spec）。JS 無しではベクターのロゴ */}
+          <SandLogo />
           <p class="font-mono text-sm tracking-wider text-ui-muted">H.NIGO · SOFTWARE ENGINEER · SAPPORO</p>
           <p class="text-[clamp(1.75rem,1.1rem+2.6vw,2.75rem)] font-black leading-[1.25]">
             <span class="inline-block">低レイヤーから、</span><span class="inline-block">アプリまで<span class="text-ui-coral">.</span></span>
@@ -411,20 +424,14 @@ const githubMark =
                   {group.label}
                   <span class="font-mono text-sm font-normal text-ui-muted">{group.en}</span>
                 </h3>
-                <ul class="mt-4 space-y-4">
+                {/* B 砂のメーター（physics-2026.spec）。数は管の下、読み上げは下の一覧 */}
+                <SandMeters items={group.items.map((it) => ({ short: it.short, level: it.level }))} />
+                <ul class="mt-4 space-y-2.5">
                   {group.items.map((item) => (
                     <li>
-                      <div class="flex items-baseline justify-between gap-3">
-                        <span class="font-bold">{item.name}</span>
-                        <span class="font-mono text-sm tabular-nums text-ui-muted">
-                          <span class="sr-only">習熟度 </span>
-                          {item.level}
-                        </span>
-                      </div>
-                      <div class="meter mt-1.5" aria-hidden="true">
-                        <i style={`width: ${item.level}%;`} />
-                      </div>
-                      <p class="mt-1.5 text-sm text-ui-muted">{item.description}</p>
+                      <span class="font-bold">{item.name}</span>
+                      <span class="sr-only">（習熟度 {item.level}）</span>
+                      <p class="text-sm text-ui-muted">{item.description}</p>
                     </li>
                   ))}
                 </ul>
@@ -483,6 +490,8 @@ const githubMark =
           Claude Code・GitHub Copilot・OpenAI Codex・MCP を活用し、個人開発のすべての工程を AI と協働しています。
           Issue 起票から実装・PR・レビューまで AI ドリブンで回すワークフローを実践中。
         </p>
+        {/* D 道具箱（physics-2026.spec）。飾り。同じ内容は下のカード */}
+        <ToolBox />
         <ul class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {
             aiTools.map((tool) => (
@@ -522,31 +531,13 @@ const githubMark =
         </p>
         <CareerGantt items={ganttItems} from={ganttFrom} to={ganttTo} now={nowYear} />
 
-        <ol class="relative m-0 mt-8 list-none space-y-6 p-0 before:absolute before:bottom-3 before:left-[11px] before:top-3 before:border-l-2 before:border-ui-line">
-          {
-            career.map((item) => {
-              const ongoing = item.gantt.end === null;
-              return (
-                <li class="relative grid grid-cols-[24px_minmax(0,1fr)] gap-4">
-                  <span class="relative z-[1] mt-0.5 grid h-6 w-6 place-items-center rounded-full bg-ui-panel">
-                    {ongoing ? <Icon name="refresh-cw" class="text-ui-teal" /> : <Icon name="circle-check" class="text-ui-ok" />}
-                  </span>
-                  <div class="min-w-0">
-                    <p class="flex flex-wrap items-center gap-2">
-                      <span class="font-mono text-sm text-ui-muted">{item.period}</span>
-                      {ongoing ? <span class="chip chip-teal">進行中</span> : <span class="sr-only">（一区切り）</span>}
-                    </p>
-                    <h3 class="mt-0.5 text-lg font-bold">{item.industry}</h3>
-                    <p class="text-ui-muted">{item.phase}</p>
-                    <ul class="mt-2 flex flex-wrap gap-2" aria-label="使った技術">
-                      {item.techs.map((t) => <li class="tag">{t}</li>)}
-                    </ul>
-                  </div>
-                </li>
-              );
-            })
-          }
-        </ol>
+        {/* C 差すと見えるケーブル（physics-2026.spec）。プラグを差した仕事をモニターに出す */}
+        <h3 class="mb-3 mt-10 flex items-center gap-2 text-lg font-bold">
+          <Icon name="plug" class="text-ui-muted" />
+          差して見る
+          <span class="font-mono text-sm font-normal text-ui-muted">プラグをつまんで、仕事のコンセントへ</span>
+        </h3>
+        <CableBoard jobs={boardJobs} />
       </FlowNode>
 
       {/* ═══ 06 作品（案 C の作品ボード ＋ Zenn）═══ */}

@@ -24,6 +24,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
     <script is:inline>
       (function () {
         var root = document.documentElement;
+        root.classList.add('js');
         try {
           var stored = localStorage.getItem('theme');
           if (stored === 'dark' || stored === 'light') root.setAttribute('data-theme', stored);

@@ -1,9 +1,18 @@
 ---
-// nigoh のロゴ（specs/plug-2026.spec.md「ロゴ（案 D）」）。
-// pipe-in のロゴの兄弟：i の点の位置がティールのコンセント（穴 2 つ）で、h の右上のコーラルの点から
-// ケーブルが「go」の上を越え、コーラルのプラグがコンセントの手前まで来ている。
-// 文字は Outfit（SIL Open Font License 1.1）600 の字形をアウトライン化したもの（n・ı・g・o・h）。
+// nigoh のロゴ（specs/plug-2026.spec.md「ロゴ（案 D）」）。形は logoShape.ts。
 // 色は --c-logo-teal / --c-logo-coral（明るい/暗いで値が替わる）。穴は mask で抜く（地が透ける）。
+import {
+  LOGO_VIEWBOX,
+  GLYPHS_D,
+  OUTLET,
+  OUTLET_TRANSFORM,
+  SLOTS,
+  CABLE_D,
+  ORIGIN,
+  PLUG_TRANSFORM,
+  PLUG_PARTS,
+} from './logoShape';
+
 interface Props {
   /** mask の id を呼び出しごとに分けるための名前（同じページで 2 回使う） */
   id: string;
@@ -19,7 +28,7 @@ const maskId = `logo-outlet-${id}`;
 <svg
   class={className}
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="20 -990 2650 1220"
+  viewBox={LOGO_VIEWBOX}
   role={label ? 'img' : undefined}
   aria-label={label}
   aria-hidden={label ? undefined : 'true'}
@@ -28,23 +37,20 @@ const maskId = `logo-outlet-${id}`;
   <defs>
     <mask id={maskId} maskUnits="userSpaceOnUse" x="20" y="-990" width="2650" height="1220">
       <rect x="20" y="-990" width="2650" height="1220" fill="#fff"></rect>
-      <g transform="translate(685.5 -635.5) rotate(148.3)" fill="#000">
-        <rect x="-26.5" y="26.15" width="53" height="29" rx="6"></rect>
-        <rect x="-26.5" y="-55.15" width="53" height="29" rx="6"></rect>
+      <g transform={OUTLET_TRANSFORM} fill="#000">
+        {SLOTS.map((r) => <rect x={r.x} y={r.y} width={r.width} height={r.height} rx={r.rx}></rect>)}
       </g>
     </mask>
   </defs>
   <g style="fill: var(--c-logo-teal)">
-    <path d="M383 0V-277Q383 -320 356 -347Q329 -374 286 -374Q258 -374 236 -362Q214 -350 201.5 -328Q189 -306 189 -277L138 -303Q138 -360 162.5 -402.5Q187 -445 230.5 -469Q274 -493 329 -493Q382 -493 424 -466.5Q466 -440 490 -397.5Q514 -355 514 -306V0ZM58 0V-483H189V0Z M620 0V-483H751V0Z M1069 214Q992 214 933 186.5Q874 159 839 109L922 26Q950 59 984.5 76.5Q1019 94 1068 94Q1129 94 1164.5 63Q1200 32 1200 -23V-144L1222 -250L1201 -356V-483H1331V-25Q1331 47 1297.5 100.5Q1264 154 1205 184Q1146 214 1069 214ZM1063 -13Q998 -13 946 -44.5Q894 -76 864.5 -131Q835 -186 835 -254Q835 -322 864.5 -376Q894 -430 946 -461.5Q998 -493 1063 -493Q1117 -493 1158.5 -472Q1200 -451 1224 -414.5Q1248 -378 1250 -329V-177Q1248 -129 1223.5 -91.5Q1199 -54 1157.5 -33.5Q1116 -13 1063 -13ZM1089 -132Q1125 -132 1151.5 -147.5Q1178 -163 1193 -190.5Q1208 -218 1208 -253Q1208 -289 1193 -316Q1178 -343 1151.5 -358.5Q1125 -374 1089 -374Q1053 -374 1026 -358.5Q999 -343 984 -315.5Q969 -288 969 -253Q969 -219 984 -191.5Q999 -164 1026 -148Q1053 -132 1089 -132Z M1673 10Q1600 10 1541.5 -23.5Q1483 -57 1448.5 -114.5Q1414 -172 1414 -243Q1414 -314 1448 -370.5Q1482 -427 1541 -460.5Q1600 -494 1672 -494Q1746 -494 1804.5 -460.5Q1863 -427 1897 -370.5Q1931 -314 1931 -243Q1931 -172 1897 -114.5Q1863 -57 1804.5 -23.5Q1746 10 1673 10ZM1672 -112Q1709 -112 1737.5 -128.5Q1766 -145 1781.5 -174.5Q1797 -204 1797 -242Q1797 -280 1781 -309Q1765 -338 1737 -354.5Q1709 -371 1672 -371Q1636 -371 1608 -354.5Q1580 -338 1564 -309Q1548 -280 1548 -242Q1548 -204 1564 -174.5Q1580 -145 1608 -128.5Q1636 -112 1672 -112Z M2340 0V-277Q2340 -320 2313 -347Q2286 -374 2243 -374Q2215 -374 2193 -362Q2171 -350 2158.5 -328Q2146 -306 2146 -277L2095 -303Q2095 -360 2119 -402.5Q2143 -445 2185.5 -469Q2228 -493 2283 -493Q2338 -493 2380.5 -469Q2423 -445 2447 -403Q2471 -361 2471 -306V0ZM2015 0V-723H2146V0Z"></path>
-    <circle cx="685.5" cy="-635.5" r="73.8" mask={`url(#${maskId})`}></circle>
+    <path d={GLYPHS_D}></path>
+    <circle cx={OUTLET.cx} cy={OUTLET.cy} r={OUTLET.r} mask={`url(#${maskId})`}></circle>
   </g>
   <g style="fill: var(--c-logo-coral)">
-    <path d="M2590 -635.5C2390 -635.5 2330 -935 2000 -935C1500 -935 1122.9 -905.6 952.7 -800.6" style="fill: none; stroke: var(--c-logo-coral)" stroke-width="50" stroke-linecap="round"></path>
-    <circle cx="2590" cy="-635.5" r="39.2"></circle>
-    <g transform="translate(791.1 -700.7) rotate(148.3)">
-      <rect x="-87" y="25.15" width="87" height="31" rx="6"></rect>
-      <rect x="-87" y="-56.15" width="87" height="31" rx="6"></rect>
-      <rect x="-190" y="-83.6" width="103.4" height="167.2" rx="22"></rect>
+    <path d={CABLE_D} style="fill: none; stroke: var(--c-logo-coral)" stroke-width="50" stroke-linecap="round"></path>
+    <circle cx={ORIGIN.cx} cy={ORIGIN.cy} r={ORIGIN.r}></circle>
+    <g transform={PLUG_TRANSFORM}>
+      {PLUG_PARTS.map((r) => <rect x={r.x} y={r.y} width={r.width} height={r.height} rx={r.rx}></rect>)}
     </g>
   </g>
 </svg>

@@ -14,13 +14,14 @@ npx astro check   # 型・診断チェック（CI ゲート相当）
 ## スタック
 
 - Astro 5（SSG） / Tailwind CSS 3 / TypeScript strict（`@astrojs/react` は設定に残るが、今の画面は React island を使わない）
-- 装飾: SVG と CSS だけ（ケーブル・プラグ・コンセント・点の方眼）。外部の描画ライブラリは使わない
+- 装飾: SVG・CSS（ケーブル・プラグ・コンセント・点の方眼）と canvas の物理（砂のセル・オートマトン、ベルレのひも）。剛体だけ matter.js（道具箱が近づいてから読み込む別チャンク）
 - デプロイ: GitHub Pages `https://nigoh.github.io/nigoh/`（`base: /nigoh/`）
 
 ## ディレクトリ
 
 ```
-src/components/        Astro コンポーネント（Logo・Icon・Header・FlowRail・FlowNode・CareerGantt・Footer）
+src/components/        Astro コンポーネント（Logo・Icon・Header・FlowRail・FlowNode・CareerGantt・Footer・SandLogo・SandMeters・CableBoard・ToolBox・TiltPad）
+src/scripts/physics/   物理の共通（gravity・loop・colors・sand）。各部品のスクリプトは src/scripts/*.ts
 src/layouts/ src/pages/ src/styles/
 public/                静的・public/tilemaps/ は Tiled 出力（生成物）
 assets/tiled/          Tiled ソース（ビルド非対象）
@@ -42,6 +43,9 @@ specs/                 SDD 仕様書
   ブロックの左の縁のコンセントにコーラルのプラグが差さる。目次＝「流れ」（`FlowRail.astro`。lg 以上は右に固定、未満はダイアログ）。
 - アイコン: Lucide（ISC）を `Icon.astro` に写す。外から読み込まない。
 - 動き: ブロックが画面に入るとプラグが差さる（1 回だけ・`transform`/`opacity` だけ）。`prefers-reduced-motion` と JS 無しは差さった形で静止。
+- 物理の遊び（`specs/physics-2026.spec.md`）: A 砂のロゴ（ヒーロー）・B 砂のメーター（スキル）・C 差すと見えるケーブル（経歴）・D 道具箱（AI）。
+  重力 `G` は 1 つ（スマホはジャイロ。iPhone はボタンで許可、Android は自動。PC は「流れ」の下のつまみ）。
+  見えている物理だけ動かし、10 秒さわらなければ休む。動きを減らす設定・JS 無しでは止まった形／今までの見た目で全部読める。
 - 装飾は純装飾（`aria-hidden`）。旧仕様（`bauhaus-2026`・`redesign-2026-bold`・`components/*`）の見た目の決まりは履歴。
 
 ## SDD ワークフロー

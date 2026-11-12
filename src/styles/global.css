@@ -112,6 +112,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* hidden 属性は部品の display（.btn など）より強くする */
+[hidden] {
+  display: none !important;
+}
+
 h1,
 h2,
 h3,
@@ -636,6 +641,351 @@ p {
     height: 12px;
     border-radius: 3px;
     background: var(--c-teal);
+  }
+
+  /* ═══ 物理の遊び（specs/physics-2026.spec.md）═══ */
+  /* 受け皿・箱の上の小さな操作と案内 */
+  .tray-tools {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 1;
+    display: flex;
+    gap: 6px;
+  }
+  .tray-btn {
+    min-height: 44px;
+    padding: 6px 14px;
+    font-size: 0.9375rem;
+  }
+  .tray-hint.is-top {
+    top: 18px;
+    bottom: auto;
+  }
+  .tray-hint {
+    position: absolute;
+    left: 12px;
+    bottom: 8px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--c-col) 82%, transparent);
+    color: var(--c-muted);
+    font-size: 0.875rem;
+    pointer-events: none;
+  }
+
+  /* A 砂のロゴ */
+  .sand-tray {
+    position: relative;
+    height: clamp(220px, 38vw, 340px);
+    overflow: hidden;
+  }
+  .sand-fallback {
+    position: absolute;
+    left: 9%;
+    top: 7%;
+    width: 82%;
+    height: auto;
+    max-height: 62%;
+  }
+  .sand-canvas {
+    position: absolute;
+    inset: 0;
+    display: none;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    touch-action: pan-y;
+  }
+  .sand-tray.is-sand .sand-canvas {
+    display: block;
+  }
+  .sand-tray.is-sand .sand-fallback {
+    visibility: hidden;
+  }
+
+  /* B 砂のメーター（JS 無しでは CSS の塗りで高さを出す） */
+  .tubes {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .tube {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+  }
+  .glass {
+    position: relative;
+    width: 100%;
+    max-width: 56px;
+    aspect-ratio: 12 / 44;
+    overflow: hidden;
+    border-radius: 10px 10px 18px 18px;
+    background: linear-gradient(to top, var(--c-teal) var(--lv), transparent var(--lv)), var(--c-panel);
+    box-shadow: inset 0 0 0 2px var(--c-line);
+  }
+  .glass.is-sand {
+    background: var(--c-panel);
+  }
+  .glass canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  /* 10% ごとの目盛り（左の 1/4 だけ） */
+  .glass::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to top,
+      transparent 0,
+      transparent calc(10% - 1px),
+      color-mix(in srgb, var(--c-edge) 50%, transparent) calc(10% - 1px),
+      color-mix(in srgb, var(--c-edge) 50%, transparent) 10%
+    );
+    -webkit-mask: linear-gradient(to right, #000 0, #000 25%, transparent 25%);
+    mask: linear-gradient(to right, #000 0, #000 25%, transparent 25%);
+  }
+  .tube-name {
+    display: flex;
+    align-items: center;
+    min-height: 2.7em;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: center;
+  }
+  .tube-lv {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  /* C 差すと見えるケーブル（JS 無しでは一覧のボタンを隠し、全部の仕事を縦に並べる） */
+  .board-jobs,
+  .board-anchor,
+  .board-rope,
+  .plug-handle,
+  .monitor-head {
+    display: none;
+  }
+  .board-monitor {
+    position: relative;
+    border-radius: 14px;
+    background: var(--c-col);
+    padding: 20px 22px;
+  }
+  .board.is-live {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    column-gap: 76px;
+    align-items: start;
+  }
+  .board.is-live .board-jobs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .board.is-live .monitor-head {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--c-muted);
+  }
+  .board.is-live .job-detail:not(.is-on) {
+    display: none;
+  }
+  .board.is-live .board-anchor {
+    display: block;
+    position: absolute;
+    left: -12px;
+    top: 26px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--c-teal);
+  }
+  .board.is-live .board-rope {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .board.is-live .plug-handle {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    border-radius: 50%;
+    cursor: grab;
+    touch-action: none;
+  }
+  .plug-handle.is-grabbing {
+    cursor: grabbing;
+  }
+  @media (max-width: 639px) {
+    .board.is-live {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 48px;
+      padding-right: 30px;
+    }
+    .board.is-live .board-anchor {
+      left: auto;
+      right: -12px;
+      top: -12px;
+    }
+  }
+  .job-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 24px 8px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--c-edge);
+    background: var(--c-panel);
+    color: var(--c-fg);
+    text-align: left;
+    line-height: 1.5;
+  }
+  .job-btn:hover {
+    border-color: var(--c-teal);
+  }
+  .job-btn[aria-pressed='true'] {
+    border-color: var(--c-teal);
+    background: var(--c-teal-tint);
+    color: var(--c-teal-ink);
+  }
+  .job-btn[aria-pressed='true'] .text-ui-muted {
+    color: var(--c-teal-ink);
+  }
+  .job-sock {
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    width: 24px;
+    height: 24px;
+    margin-top: -12px;
+    border-radius: 50%;
+    background: var(--c-teal);
+  }
+  .job-sock i {
+    position: absolute;
+    left: 7px;
+    width: 10px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--c-canvas);
+  }
+  .job-sock i:first-child {
+    top: 7px;
+  }
+  .job-sock i:last-child {
+    top: 14px;
+  }
+  /* 差さっているコンセントは穴が隠れる */
+  .job-btn[aria-pressed='true'] .job-sock i {
+    display: none;
+  }
+
+  /* D 道具箱 */
+  .toolbox {
+    position: relative;
+    height: 300px;
+    margin-top: 24px;
+    overflow: hidden;
+  }
+  .toolbox:not(.is-live) {
+    display: none;
+  }
+  .toolbox canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: pan-y;
+  }
+  @media (max-width: 639px) {
+    .toolbox {
+      height: 260px;
+    }
+  }
+
+  /* 傾きのつまみ（PC・右の流れの下） */
+  .tilt {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--c-line);
+  }
+  .tilt-pad {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: var(--c-col);
+    box-shadow: inset 0 0 0 2px var(--c-line);
+    cursor: grab;
+    touch-action: none;
+  }
+  .tilt-pad::before,
+  .tilt-pad::after {
+    content: '';
+    position: absolute;
+    background: var(--c-line);
+  }
+  .tilt-pad::before {
+    left: 50%;
+    top: 12px;
+    bottom: 12px;
+    width: 1px;
+  }
+  .tilt-pad::after {
+    top: 50%;
+    left: 12px;
+    right: 12px;
+    height: 1px;
+  }
+  .tilt-knob {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: grab;
+  }
+  .tilt-knob::before {
+    content: '';
+    position: absolute;
+    inset: 9px;
+    border-radius: 50%;
+    background: var(--c-teal);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--c-teal) 25%, transparent);
   }
 }
 
