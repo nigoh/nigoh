@@ -13,36 +13,36 @@ npx astro check   # 型・診断チェック（CI ゲート相当）
 
 ## スタック
 
-- Astro 5（SSG） / Tailwind CSS 3 / TypeScript strict / React island（`@astrojs/react`）
-- 装飾: Tiled + Phaser（構成主義タイル）。`@react-spring/web` も一部で使用
+- Astro 5（SSG） / Tailwind CSS 3 / TypeScript strict（`@astrojs/react` は設定に残るが、今の画面は React island を使わない）
+- 装飾: SVG と CSS だけ（ケーブル・プラグ・コンセント・点の方眼）。外部の描画ライブラリは使わない
 - デプロイ: GitHub Pages `https://nigoh.github.io/nigoh/`（`base: /nigoh/`）
 
 ## ディレクトリ
 
 ```
-src/components/        Astro / React コンポーネント
-src/components/phaser/ Phaser 装飾（game/scene/agent/grid/tiles/sections）
+src/components/        Astro コンポーネント（Logo・Icon・Header・FlowRail・FlowNode・CareerGantt・Footer）
 src/layouts/ src/pages/ src/styles/
 public/                静的・public/tilemaps/ は Tiled 出力（生成物）
 assets/tiled/          Tiled ソース（ビルド非対象）
 specs/                 SDD 仕様書
 ```
 
-## デザイン言語（バウハウス / 幾何・原色・キネティック）
+## デザイン言語（pipe-in の「プラグ」 / 作業台）
 
-2026 リデザインでロシア構成主義（エル・リシツキー）→ **バウハウス**へ刷新（`specs/bauhaus-2026.spec.md`）。
-- パレット（`tailwind.config.mjs` の `bauhaus.*` が**唯一の出典**。ここ以外で色を足さない）
-  - 三原色: red `#D62828` / blue `#1E4FA8` / yellow `#F1C12E`
-  - 地・インク・副次: black `#1A1A1A` / cream `#F5F0EB` / gray `#8B8680` / darkgray `#3D3A37`
-  - `constructivist.*` は後方互換エイリアス（同値）。既存クラスは壊さず、新規は `bauhaus-*` を使う。
-  - core 5 色（red/black/cream/gray/darkgray）の hex は不変（a11y コントラスト契約を保つ）。
-  - 三原色の配分は地に依存: 明地=青/赤・暗地=黄/赤（細い要素で低コントラスト色を避ける）。
-  - セクション別リズム（索引順）: 02 青・03 黄・04 赤・05 黄・06 青・07 三原色。`--c-accent = red` は共通アクション色。
-- フォント: Archivo Black（見出し＝極太ブロック体）/ Inter・Noto Sans JP（本文）/ JetBrains Mono（数値）
-- ヒーロー: cream 地（トークン連動でダークは反転）の**平面ポスター** — 三原色の円/三角/帯を組み、
-  `--hero-p`（スクロール進捗）で緩慢に回転/ドリフト（kinetic）。3D プロウンは撤去（`ProunCanvas` 不使用）。
-- 原則: 幾何学的（円・三角・帯）・アシンメトリック・シャープエッジ（角丸なし）・ボールドタイポ・大文字
-- 装飾は純装飾（`aria-hidden`）。詳細は `specs/components/decoration.spec.md`
+2026-11 にバウハウス → **pipe-in の「プラグ」**へ刷新（`specs/plug-2026.spec.md`。出典は `nigoh/pipe-in` の `docs/design/README.md`）。
+- パレット（`tailwind.config.mjs` の `plug.light` / `plug.dark` が**唯一の出典**。ここ以外で色を足さない）
+  - 役の名前で呼ぶ: bg / canvas / panel / col / line / edge / fg / muted / coral(-tint/-ink, on-coral) / teal(-tint/-ink) / ok(-tint/-ink) / logo-teal / logo-coral
+  - CSS は `--c-*`（`global.css` が `theme()` で作る）、Tailwind は `ui-*`（`bg-ui-panel` など）。明るい/暗いで値だけ入れ替える。
+  - **コーラル＝人が押す所**（GitHub・Zenn・連絡・プラグ）。**ティール＝流れ・いま**（読んでいる所・製作中・ケーブル）。
+  - 状態は色だけで伝えない（✓ の丸・回る矢印・点線の丸のアイコンと言葉を添える）。teal は canvas の上の小さな文字に使わない（teal-ink）。
+- フォント: Zen Kaku Gothic New（見出し 900・本文 400/500）/ JetBrains Mono（年・数）。ロゴだけ Outfit 600 のアウトライン（`Logo.astro`）。
+- 文字の大きさ: 本文と操作 16px 以上・注と札 14px 以上。押せる所の枠は `edge`（3:1 以上）、44px 以上の高さ。
+- 角と影（やわらか）: 札 6・ボタン 8・カード 14・面 20・チップ 999。明るい画面は影、暗い画面は 1px の輪。
+- 構図: ページ＝作業台（canvas + 点の方眼）。セクション＝ブロック（`FlowNode.astro`）を左のティールのケーブルでつなぎ、
+  ブロックの左の縁のコンセントにコーラルのプラグが差さる。目次＝「流れ」（`FlowRail.astro`。lg 以上は右に固定、未満はダイアログ）。
+- アイコン: Lucide（ISC）を `Icon.astro` に写す。外から読み込まない。
+- 動き: ブロックが画面に入るとプラグが差さる（1 回だけ・`transform`/`opacity` だけ）。`prefers-reduced-motion` と JS 無しは差さった形で静止。
+- 装飾は純装飾（`aria-hidden`）。旧仕様（`bauhaus-2026`・`redesign-2026-bold`・`components/*`）の見た目の決まりは履歴。
 
 ## SDD ワークフロー
 

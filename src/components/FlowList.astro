@@ -1,0 +1,25 @@
+---
+// 流れ（目次）の一覧。右の固定の目次（FlowRail）とスマホのシート（Header のダイアログ）で同じものを使う。
+// 状態（完了・いまここ・まだ）は Header のスクリプトが data-state と aria-current で入れ替える。
+// JS 無しでは全部「まだ」の点線の丸のまま（リンクとしては使える）。
+import Icon from './Icon.astro';
+import { flowSections } from './flowSections';
+---
+
+<ol class="flow-list">
+  {
+    flowSections.map((s) => (
+      <li>
+        <a href={`#${s.id}`} data-flow-link={s.id} data-state="todo">
+          <span class="flow-st" aria-hidden="true">
+            <Icon name="circle-check" class="is-done" />
+            <Icon name="refresh-cw" class="is-current" />
+            <Icon name="circle-dashed" class="is-todo" />
+          </span>
+          <span class="font-mono text-sm text-ui-muted">{s.n}</span>
+          <span>{s.label}</span>
+        </a>
+      </li>
+    ))
+  }
+</ol>

@@ -1,5 +1,7 @@
 # セクション 3D アクセント装飾（Three.js / 軸測・脇役）コンポーネント仕様
 
+> **2026-11 置き換え**: 見た目（色・文字・構図・装飾・動き）は [`plug-2026.spec.md`](../plug-2026.spec.md)（pipe-in のプラグ）に置き換えた。ここに書いた見た目の決まりは履歴として残す（掲載内容・セクション構成・a11y の考え方は引き続き有効）。
+
 > ステータス: **設計合意（未実装）** — frontend が `src/components/` に React island で実装する。
 >
 > 本書は「各セクション（about/skills/ai/career/portfolio/contact）に置く、Hero showpiece とは別格の
