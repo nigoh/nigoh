@@ -20,8 +20,9 @@ npx astro check   # 型・診断チェック（CI ゲート相当）
 ## ディレクトリ
 
 ```
-src/components/        Astro コンポーネント（Logo・Icon・Header・FlowRail・FlowNode・CareerGantt・Footer・SandLogo・SandMeters・CableBoard・ToolBox・TiltPad）
-src/scripts/physics/   物理の共通（gravity・loop・colors・sand）。各部品のスクリプトは src/scripts/*.ts
+src/components/        Astro コンポーネント（Logo・Icon・Header・StageRail・StagePane・Footer・SandLogo・SandMeters・CableBoard・ToolBox・TiltPad）
+src/scripts/           段の切り替え（stages・switcher）と、各部品のスクリプト
+src/scripts/physics/   物理の共通（gravity・loop・colors・sand・plugBoard）
 src/layouts/ src/pages/ src/styles/
 public/                静的・public/tilemaps/ は Tiled 出力（生成物）
 assets/tiled/          Tiled ソース（ビルド非対象）
@@ -39,10 +40,13 @@ specs/                 SDD 仕様書
 - フォント: Zen Kaku Gothic New（見出し 900・本文 400/500）/ JetBrains Mono（年・数）。ロゴだけ Outfit 600 のアウトライン（`Logo.astro`）。
 - 文字の大きさ: 本文と操作 16px 以上・注と札 14px 以上。押せる所の枠は `edge`（3:1 以上）、44px 以上の高さ。
 - 角と影（やわらか）: 札 6・ボタン 8・カード 14・面 20・チップ 999。明るい画面は影、暗い画面は 1px の輪。
-- 構図: ページ＝作業台（canvas + 点の方眼）。セクション＝ブロック（`FlowNode.astro`）を左のティールのケーブルでつなぎ、
-  ブロックの左の縁のコンセントにコーラルのプラグが差さる。目次＝「流れ」（`FlowRail.astro`。lg 以上は右に固定、未満はダイアログ）。
+- 構図（`specs/shell-2026.spec.md`。1 画面の作業台）: 左の「流れ」（`StageRail.astro`。7 段のタブ）の段にプラグを差すと、
+  右の出力の面（`StagePane.astro`）にその段だけ出る。PC は面から出たケーブル（ひも）のプラグが段のコンセントに差さり、
+  スマホは下に固定した帯のチップで切り替える。段の切り替えは `#id` を履歴に足す（`scripts/stages.ts`）。
+  縦を縮めるため、スキルは分野、作品は種類をチップで切り替え（`scripts/switcher.ts`）、経歴は仕事の札の中に小さな帯を入れる。
+  JS 無しでは 7 段と切り替えの面がぜんぶ縦に並ぶ。
 - アイコン: Lucide（ISC）を `Icon.astro` に写す。外から読み込まない。
-- 動き: ブロックが画面に入るとプラグが差さる（1 回だけ・`transform`/`opacity` だけ）。`prefers-reduced-motion` と JS 無しは差さった形で静止。
+- 動き: 段を選ぶとプラグが飛んで差さる（`physics/plugBoard.ts`。流れと経歴で同じ部品）。`prefers-reduced-motion` ではすぐ差さり、ひもは垂れた形で静止。
 - 物理の遊び（`specs/physics-2026.spec.md`）: A 砂のロゴ（ヒーロー）・B 砂のメーター（スキル）・C 差すと見えるケーブル（経歴）・D 道具箱（AI）。
   重力 `G` は 1 つ（スマホはジャイロ。iPhone はボタンで許可、Android は自動。PC は「流れ」の下のつまみ）。
   見えている物理だけ動かし、10 秒さわらなければ休む。動きを減らす設定・JS 無しでは止まった形／今までの見た目で全部読める。

@@ -2,8 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import FlowNode from '../components/FlowNode.astro';
-import FlowRail from '../components/FlowRail.astro';
+import StagePane from '../components/StagePane.astro';
+import StageRail from '../components/StageRail.astro';
+import { stages } from '../components/stageList';
 import SandLogo from '../components/SandLogo.astro';
 import SandMeters from '../components/SandMeters.astro';
 import CableBoard from '../components/CableBoard.astro';
@@ -11,8 +12,6 @@ import ToolBox from '../components/ToolBox.astro';
 import type { BoardJob } from '../components/board';
 import Icon from '../components/Icon.astro';
 import type { IconName } from '../components/icons';
-import CareerGantt from '../components/CareerGantt.astro';
-import type { GanttItem } from '../components/gantt';
 
 interface ZennArticle {
   id: number;
@@ -139,13 +138,13 @@ const skills = [
   },
 ];
 
-// 経歴。start / end は帯グラフ用のおおよその年（end: null は進行中）。
+// 経歴。span は仕事の札の中の小さな帯に使う、おおよその年（end: null は進行中）。
 interface CareerItem {
   period: string;
   industry: string;
   phase: string;
   techs: string[];
-  gantt: GanttItem;
+  span: { label: string; start: number; end: number | null };
 }
 
 const career: CareerItem[] = [
@@ -154,72 +153,75 @@ const career: CareerItem[] = [
     industry: '組み込み Android（専用端末向けアプリ）',
     phase: '詳細設計・実装・試験',
     techs: ['Java', 'Android SDK', 'Android Studio', 'Gradle', 'Git'],
-    gantt: { label: '組み込み Android', start: 2026.25, end: null, note: '2026/04〜' },
+    span: { label: '組み込み Android', start: 2026.25, end: null },
   },
   {
     period: '2025（約1年）',
     industry: '組み込み制御（社会インフラ機器・コアシステム）',
     phase: '詳細設計・実装・試験',
     techs: ['C', 'Linux (Yocto)', 'Make'],
-    gantt: { label: '社会インフラ機器・コア', start: 2025, end: 2026, note: '約1年' },
+    span: { label: '社会インフラ機器・コア', start: 2025, end: 2026 },
   },
   {
     period: '2022、2025（約3年）',
     industry: '組み込み制御（社会インフラ機器・制御システム）',
     phase: '要件定義〜マネジメント（サブリーダー）',
     techs: ['C++', 'MFC', 'Git', 'Docker'],
-    gantt: { label: '社会インフラ機器・制御', start: 2022, end: 2025, note: '約3年' },
+    span: { label: '社会インフラ機器・制御', start: 2022, end: 2025 },
   },
   {
     period: '2021～2022（約1年）',
     industry: '車載地図データツール',
     phase: '設計・実装・マネジメント',
     techs: ['C++', 'Oracle', 'VS Code'],
-    gantt: { label: '車載地図データツール', start: 2021, end: 2022, note: '約1年' },
+    span: { label: '車載地図データツール', start: 2021, end: 2022 },
   },
   {
     period: '2020～2021（約1年）',
     industry: '車載地図データ変換ツール',
     phase: '設計〜インフラ構築',
     techs: ['Java', 'C++', 'PostgreSQL', 'AWS'],
-    gantt: { label: '車載地図データ変換', start: 2020, end: 2021, note: '約1年' },
+    span: { label: '車載地図データ変換', start: 2020, end: 2021 },
   },
   {
     period: '2018～2020（約2年）',
     industry: '車載地図データツール（サブリーダー）',
     phase: '設計・実装・マネジメント',
     techs: ['C++', 'Python', 'PostgreSQL'],
-    gantt: { label: '車載地図データツール', start: 2018, end: 2020, note: '約2年' },
+    span: { label: '車載地図データツール', start: 2018, end: 2020 },
   },
   {
     period: '2016～2018（約1年半）',
     industry: '自動運転用3D地図・試作モジュール開発',
     phase: '詳細設計・実装・試験',
     techs: ['C++11', 'Java', 'Python', 'MongoDB'],
-    gantt: { label: '自動運転用 3D 地図・試作', start: 2016.5, end: 2018, note: '約1年半' },
+    span: { label: '自動運転用 3D 地図・試作', start: 2016.5, end: 2018 },
   },
 ];
 
-// 経歴のケーブルボード（C）：プラグを差した仕事をモニターに出す
-const boardJobs: BoardJob[] = career.map((c) => ({
-  period: c.period,
-  short: c.gantt.label,
-  industry: c.industry,
-  phase: c.phase,
-  techs: c.techs,
-  ongoing: c.gantt.end === null,
-}));
-
-// 帯グラフの目盛り（2016〜2027）と、ビルドした日（進行中の帯の終わり）
+// 小さな帯の目盛り（2016〜2028。真ん中がちょうど 2022 になる幅）と、ビルドした日（進行中の帯の終わり）
 const ganttFrom = 2016;
-const ganttTo = 2027;
+const ganttTo = 2028;
 const buildDate = new Date();
 const nowYear = Math.min(ganttTo, buildDate.getFullYear() + buildDate.getMonth() / 12);
-// 帯グラフは古い順に上から
-const ganttItems: GanttItem[] = [...career].reverse().map((c) => c.gantt);
+const pct = (year: number): number => Math.round(((year - ganttFrom) / (ganttTo - ganttFrom)) * 1000) / 10;
+
+// 経歴のケーブルボード（C）：プラグを差した仕事をモニターに出す。札の中の帯で、いつの仕事かを見せる
+const boardJobs: BoardJob[] = career.map((c) => {
+  const end = c.span.end ?? nowYear;
+  return {
+    period: c.period,
+    short: c.span.label,
+    industry: c.industry,
+    phase: c.phase,
+    techs: c.techs,
+    ongoing: c.span.end === null,
+    bar: { left: pct(c.span.start), width: Math.max(2, Math.round((pct(end) - pct(c.span.start)) * 10) / 10) },
+  };
+});
 
 // Portfolio — GitHub の公開リポジトリからビルド時に自動生成（fork・アーカイブ・除外パターンを除く）。
-// 直近 90 日以内に push があるものは「進行中」の列、それより前は「一区切り」の列（案 C の作品ボード）。
+// 直近 90 日以内に push があるものは「進行中」、それより前は「一区切り」（作品の切り替え）。
 interface ProjectCard {
   name: string;
   description: string;
@@ -284,6 +286,8 @@ const boardColumns: { key: string; label: string; icon: IconName; tone: string; 
 // AI 駆動開発のツール・やり方（アイコンは Lucide）
 interface AiTool {
   title: string;
+  /** 札に出す 1 行（開くと body の全文） */
+  summary: string;
   body: string;
   icon: IconName;
 }
@@ -291,31 +295,37 @@ interface AiTool {
 const aiTools: AiTool[] = [
   {
     title: 'Claude Code',
+    summary: 'サブエージェントとフックで、役割分担と安全策を備えた自律開発。',
     body: 'designer / frontend のサブエージェントと PreToolUse フックを組み合わせ、役割分担と安全策を備えた自律開発を実践。このサイト自体も Claude Code で構築・改善。',
     icon: 'terminal',
   },
   {
     title: 'Copilot SWE Agent',
+    summary: 'Issue からの自動実装・PR 作成。',
     body: 'Issue からの自動実装・PR 作成。Focuso や QR Generator Web で SWE Agent をコントリビューターとして活用。',
     icon: 'sparkles',
   },
   {
     title: 'OpenAI Codex',
+    summary: 'AGENTS.md を活用したエージェント駆動開発。',
     body: 'AGENTS.md を活用した AI エージェント駆動開発。stocko プロジェクトで Codex によるコード生成を実践。',
     icon: 'code-xml',
   },
   {
     title: 'MCP',
+    summary: 'MCP サーバーで AI エージェントの能力を拡張。',
     body: 'GitHub, Playwright, Tailwind CSS 等の MCP サーバーを活用し、AI エージェントの能力を拡張。',
     icon: 'plug',
   },
   {
     title: 'エージェントの設定',
+    summary: '設定ファイルで、プロジェクトごとに振る舞いを変える。',
     body: '.instructions.md, AGENTS.md, CLAUDE.md, .kiro 等の設定でプロジェクトごとに AI エージェントの振る舞いをカスタマイズ。',
     icon: 'sliders-horizontal',
   },
   {
     title: '仕様駆動開発',
+    summary: '仕様を AI と更新しながら実装し、受入条件で検証。',
     body: 'specs/** の仕様を AI と更新しながら実装し、受入条件（チェックリスト）で検証する仕様駆動開発（SDD）を実践。',
     icon: 'clipboard-check',
   },
@@ -339,50 +349,64 @@ const heroKeywords = ['C/C++', 'Java', 'TypeScript', 'Python'];
 // GitHub のマーク（塗りの形。Lucide ではない）
 const githubMark =
   'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z';
+
+// 流れの段のひとこと（件数など）
+const stageFacts: Record<string, string> = {
+  hero: 'start',
+  about: '札幌',
+  skills: `${skills.reduce((n, g) => n + g.items.length, 0)} 項目`,
+  ai: `${aiTools.length} つ`,
+  career: `${career.length} 件`,
+  portfolio: `${projects.length} 件`,
+  contact: 'end',
+};
 ---
 
 <BaseLayout title="H.NIGO | Software Engineer">
   <Header />
 
-  <div class="mx-auto max-w-[1200px] px-4 pb-6 pt-[88px] sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-10 lg:px-8">
-    {/* 流れ：セクション＝ブロックを、左のティールのケーブルでつなぐ（plug-2026.spec「構図」） */}
-    <main id="main-content" class="flow">
+  {/* 1 画面の作業台（specs/shell-2026.spec.md）：左の「流れ」の段にプラグを差すと、右にその段だけ出る */}
+  <div class="shell">
+    <StageRail facts={stageFacts} />
 
-      {/* ═══ 01 はじめ（start）═══ */}
-      <FlowNode id="hero" n="01" title="はじめ" en="start" hideTitle>
-        <div class="flex flex-col gap-5">
-          <h1 id="hero-title" class="sr-only">H.Nigo（nigoh）</h1>
+    <main id="main-content" class="pane-card">
+
+      {/* ═══ 01 はじめ ═══ */}
+      <StagePane id="hero" title="はじめ" en="start" hideTitle active>
+        <h1 id="hero-title" tabindex="-1" class="sr-only">H.Nigo（nigoh）</h1>
+        <div class="split">
           {/* A 砂のロゴ（physics-2026.spec）。JS 無しではベクターのロゴ */}
-          <SandLogo />
-          <p class="font-mono text-sm tracking-wider text-ui-muted">H.NIGO · SOFTWARE ENGINEER · SAPPORO</p>
-          <p class="text-[clamp(1.75rem,1.1rem+2.6vw,2.75rem)] font-black leading-[1.25]">
-            <span class="inline-block">低レイヤーから、</span><span class="inline-block">アプリまで<span class="text-ui-coral">.</span></span>
-          </p>
-          <p class="max-w-[60ch]">
-            C/C++, Java, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。
-            2026 年からは組み込み Android（専用端末向けアプリ）の開発に Java で関わっています。
-          </p>
-          <div class="flex flex-wrap gap-3">
-            <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer" class="btn btn-pri">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d={githubMark}></path></svg>
-              GitHub を見る
-            </a>
-            <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="btn btn-sec">
-              Zenn の記事
-              <Icon name="arrow-up-right" size={17} />
-            </a>
+          <div class="split-a"><SandLogo /></div>
+          <div class="split-b flex flex-col gap-4">
+            <p class="font-mono text-sm tracking-wider text-ui-muted">H.NIGO · SOFTWARE ENGINEER · SAPPORO</p>
+            <p class="text-[clamp(1.75rem,1.1rem+2.2vw,2.625rem)] font-black leading-[1.25]">
+              <span class="inline-block">低レイヤーから、</span><span class="inline-block">アプリまで<span class="text-ui-coral">.</span></span>
+            </p>
+            <p class="max-w-[60ch]">
+              C/C++, Java, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。
+              2026 年からは組み込み Android（専用端末向けアプリ）の開発に Java で関わっています。
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer" class="btn btn-pri">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d={githubMark}></path></svg>
+                GitHub を見る
+              </a>
+              <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="btn btn-sec">
+                Zenn の記事
+                <Icon name="arrow-up-right" size={17} />
+              </a>
+            </div>
+            <ul class="flex flex-wrap gap-2" aria-label="主な言語">
+              {heroKeywords.map((k) => <li class="tag">{k}</li>)}
+            </ul>
           </div>
-          <ul class="flex flex-wrap gap-2" aria-label="主な言語">
-            {heroKeywords.map((k) => <li class="tag">{k}</li>)}
-          </ul>
         </div>
-      </FlowNode>
+      </StagePane>
 
       {/* ═══ 02 自己紹介 ═══ */}
-      <FlowNode id="about" n="02" title="自己紹介" en="about" icon="file-text">
-        <p class="mb-6 max-w-[60ch] text-lg font-bold">あるものを大切にしながら、変化にも柔軟に対応できるエンジニアを目指しています。</p>
-        <div class="grid gap-6 md:grid-cols-[minmax(0,240px)_minmax(0,1fr)] md:gap-8">
-          <dl class="well m-0 grid content-start gap-4 p-5">
+      <StagePane id="about" title="自己紹介" en="about" icon="file-text">
+        <div class="split items-start">
+          <dl class="well m-0 grid flex-[1_1_220px] content-start gap-4 p-5">
             {
               profile.map((row) => (
                 <div>
@@ -392,7 +416,8 @@ const githubMark =
               ))
             }
           </dl>
-          <div class="max-w-[68ch] space-y-4">
+          <div class="min-w-0 max-w-[68ch] flex-[3_1_420px] space-y-3.5">
+            <p class="text-lg font-bold">あるものを大切にしながら、変化にも柔軟に対応できるエンジニアを目指しています。</p>
             <p>
               1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
               低レイヤーからアプリケーションまで、幅広い領域でのシステム開発を行っています。
@@ -412,159 +437,150 @@ const githubMark =
             </p>
           </div>
         </div>
-      </FlowNode>
+      </StagePane>
 
-      {/* ═══ 03 スキル ═══ */}
-      <FlowNode id="skills" n="03" title="スキル" en="skills" icon="code">
-        <div class="grid gap-4 md:grid-cols-2">
+      {/* ═══ 03 スキル（分野を切り替える）═══ */}
+      <StagePane id="skills" title="スキル" en="skills" icon="code">
+        <div class="flex flex-col gap-5" data-switch>
+          <div class="switch-list" role="group" aria-label="分野を選ぶ" data-switch-list>
+            {
+              skills.map((group, i) => (
+                <button type="button" class="switch-btn" data-switch-btn aria-pressed={i === 0 ? 'true' : 'false'}>
+                  {group.label}
+                </button>
+              ))
+            }
+          </div>
           {
-            skills.map((group) => (
-              <div class="well p-5">
-                <h3 class="flex items-baseline justify-between gap-3 text-lg font-bold">
+            skills.map((group, i) => (
+              <div class:list={['switch-panel', { 'is-on': i === 0 }]} data-switch-panel>
+                <h3 class="switch-title flex items-baseline gap-3 text-lg font-bold">
                   {group.label}
                   <span class="font-mono text-sm font-normal text-ui-muted">{group.en}</span>
                 </h3>
-                {/* B 砂のメーター（physics-2026.spec）。数は管の下、読み上げは下の一覧 */}
-                <SandMeters items={group.items.map((it) => ({ short: it.short, level: it.level }))} />
-                <ul class="mt-4 space-y-2.5">
-                  {group.items.map((item) => (
-                    <li>
-                      <span class="font-bold">{item.name}</span>
-                      <span class="sr-only">（習熟度 {item.level}）</span>
-                      <p class="text-sm text-ui-muted">{item.description}</p>
-                    </li>
-                  ))}
-                </ul>
+                <div class="split items-start">
+                  {/* B 砂のメーター（physics-2026.spec）。数は管の下、読み上げは右の一覧 */}
+                  <div class="well skill-well">
+                    <SandMeters items={group.items.map((it) => ({ short: it.short, level: it.level }))} />
+                  </div>
+                  <ul class="m-0 min-w-0 flex-[1_1_360px] list-none space-y-3.5 p-0">
+                    {group.items.map((item) => (
+                      <li>
+                        <div class="flex items-baseline justify-between gap-3">
+                          <span class="font-bold">{item.name}</span>
+                          <span class="font-mono text-sm tabular-nums text-ui-muted">
+                            <span class="sr-only">習熟度 </span>
+                            {item.level}
+                          </span>
+                        </div>
+                        <p class="text-sm text-ui-muted">{item.description}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             ))
           }
         </div>
-
-        {/* GitHub の活動 */}
-        <div class="mt-10">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <h3 class="text-lg font-bold">GitHub の活動 <span class="ml-1 font-mono text-sm font-normal text-ui-muted">個人開発</span></h3>
-            <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-[44px] items-center gap-1 font-bold text-ui-teal hover:underline">
-              github.com/nigoh <Icon name="arrow-up-right" size={16} />
-            </a>
-          </div>
-          <div class="well mt-3 p-3 sm:p-4">
-            <img
-              src="https://ghchart.rshah.org/167D6B/nigoh"
-              alt="GitHub のコントリビューションの草（1 年分）"
-              class="contrib-img w-full"
-              loading="lazy"
-            />
-          </div>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <img src="https://img.shields.io/github/stars/nigoh?style=flat-square&logo=github&label=Stars&color=167D6B" alt="GitHub Stars" loading="lazy" class="h-5" />
-            <img src="https://img.shields.io/github/followers/nigoh?style=flat-square&logo=github&label=Followers&color=167D6B" alt="GitHub Followers" loading="lazy" class="h-5" />
-          </div>
-          {
-            topLangs.length > 0 && (
-              <div class="mt-5">
-                <p class="mb-2 text-sm text-ui-muted">言語の割合（個人開発のリポジトリより）</p>
-                <div class="flex h-3 gap-[3px]" aria-hidden="true">
-                  {topLangs.map((lang) => (
-                    <div class="rounded-[3px]" style={`width: ${lang.percent}%; background-color: ${lang.color};`} title={`${lang.name}: ${lang.percent}%`} />
-                  ))}
-                </div>
-                <ul class="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
-                  {topLangs.map((lang) => (
-                    <li class="flex items-center gap-2 text-sm">
-                      <span class="h-3 w-3 shrink-0 rounded-[3px]" style={`background-color: ${lang.color};`} aria-hidden="true" />
-                      <span class="font-bold">{lang.name}</span>
-                      <span class="font-mono text-ui-muted">{lang.percent}%</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )
-          }
-        </div>
-      </FlowNode>
+      </StagePane>
 
       {/* ═══ 04 AI と開発 ═══ */}
-      <FlowNode id="ai" n="04" title="AI と開発" en="ai" icon="users">
+      <StagePane id="ai" title="AI と開発" en="ai" icon="users">
         <p class="max-w-[66ch]">
           Claude Code・GitHub Copilot・OpenAI Codex・MCP を活用し、個人開発のすべての工程を AI と協働しています。
           Issue 起票から実装・PR・レビューまで AI ドリブンで回すワークフローを実践中。
         </p>
-        {/* D 道具箱（physics-2026.spec）。飾り。同じ内容は下のカード */}
-        <ToolBox />
-        <ul class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {
-            aiTools.map((tool) => (
-              <li class="well flex flex-col gap-2 p-5">
-                <div class="flex items-center gap-3">
-                  <span class="grid h-9 w-9 shrink-0 place-items-center rounded-btn bg-ui-teal-tint text-ui-teal-ink" aria-hidden="true">
-                    <Icon name={tool.icon} />
-                  </span>
-                  <h3 class="text-lg font-bold">{tool.title}</h3>
-                </div>
-                <p class="text-ui-muted">{tool.body}</p>
-              </li>
-            ))
-          }
-        </ul>
+        <div class="split items-start">
+          {/* D 道具箱（physics-2026.spec）。飾り。同じ内容は右の札 */}
+          <div class="split-a"><ToolBox /></div>
+          {/* 札は題と 1 行。開くと全文（縦を縮めるため — shell-2026.spec） */}
+          <ul class="m-0 grid min-w-0 flex-[2_1_420px] list-none gap-2.5 p-0 sm:grid-cols-2">
+            {
+              aiTools.map((tool) => (
+                <li>
+                  <details class="tool-card">
+                    <summary>
+                      <span class="grid h-9 w-9 shrink-0 place-items-center rounded-btn bg-ui-teal-tint text-ui-teal-ink" aria-hidden="true">
+                        <Icon name={tool.icon} />
+                      </span>
+                      <span class="min-w-0 flex-1">
+                        <span class="block font-bold">{tool.title}</span>
+                        <span class="block text-sm text-ui-muted">{tool.summary}</span>
+                      </span>
+                      <Icon name="chevron-down" class="tool-chev shrink-0 text-ui-muted" />
+                    </summary>
+                    <p class="mt-2.5 text-ui-muted">{tool.body}</p>
+                  </details>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div>
+          <h3 class="flex items-center gap-2 font-bold">
+            <Icon name="lightbulb" class="text-ui-muted" />
+            関心ごと
+          </h3>
+          <ul class="mt-2 grid list-none gap-2.5 p-0 md:grid-cols-3">
+            {
+              interests.map((it) => (
+                <li class="well px-4 py-3">
+                  <h4 class="font-bold">{it.title}</h4>
+                  <p class="text-sm text-ui-muted">{it.body}</p>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </StagePane>
 
-        <h3 class="mt-10 flex items-center gap-2 text-lg font-bold">
-          <Icon name="lightbulb" class="text-ui-muted" />
-          関心ごと
-        </h3>
-        <ul class="mt-3 grid gap-3 md:grid-cols-3">
-          {
-            interests.map((it) => (
-              <li class="well p-5">
-                <h4 class="font-bold">{it.title}</h4>
-                <p class="mt-1.5 text-ui-muted">{it.body}</p>
-              </li>
-            ))
-          }
-        </ul>
-      </FlowNode>
-
-      {/* ═══ 05 経歴（案 B の帯グラフ ＋ 仕事の一覧）═══ */}
-      <FlowNode id="career" n="05" title="経歴" en="career" icon="git-branch">
-        <p class="mb-5 text-sm text-ui-muted">
-          注: クライアント名・案件番号・具体的な機器名/製品名・詳細な期間は非掲載。業種・技術領域のみ一般化して記載。
+      {/* ═══ 05 経歴（仕事の札の中に帯。差すとモニターに出る）═══ */}
+      <StagePane id="career" title="経歴" en="career" icon="git-branch">
+        <span slot="head" class="font-mono text-sm text-ui-muted">{career.length} 件 · {ganttFrom}–{Math.floor(nowYear)}</span>
+        {/* C 差すと見えるケーブル（physics-2026.spec） */}
+        <CableBoard jobs={boardJobs} axis={[ganttFrom, Math.round((ganttFrom + ganttTo) / 2), ganttTo]} />
+        <p class="text-sm text-ui-muted">
+          注: クライアント名・案件番号・具体的な機器名/製品名・詳細な期間は非掲載。業種・技術領域のみ一般化して記載。期間はおおよそ。
         </p>
-        <CareerGantt items={ganttItems} from={ganttFrom} to={ganttTo} now={nowYear} />
+      </StagePane>
 
-        {/* C 差すと見えるケーブル（physics-2026.spec）。プラグを差した仕事をモニターに出す */}
-        <h3 class="mb-3 mt-10 flex items-center gap-2 text-lg font-bold">
-          <Icon name="plug" class="text-ui-muted" />
-          差して見る
-          <span class="font-mono text-sm font-normal text-ui-muted">プラグをつまんで、仕事のコンセントへ</span>
-        </h3>
-        <CableBoard jobs={boardJobs} />
-      </FlowNode>
+      {/* ═══ 06 作品（切り替え：進行中・一区切り・書いたもの・GitHub の活動）═══ */}
+      <StagePane id="portfolio" title="作品" en="portfolio" icon="globe">
+        <div class="flex flex-col gap-5" data-switch>
+          <div class="switch-list" role="group" aria-label="見るものを選ぶ" data-switch-list>
+            {
+              boardColumns.map((col, i) => (
+                <button type="button" class="switch-btn" data-switch-btn aria-pressed={i === 0 ? 'true' : 'false'}>
+                  {col.label}
+                  <span class="font-mono font-normal">{col.items.length}</span>
+                </button>
+              ))
+            }
+            <button type="button" class="switch-btn" data-switch-btn aria-pressed="false">
+              書いたもの
+              <span class="font-mono font-normal">{zennArticles.length || ''}</span>
+            </button>
+            <button type="button" class="switch-btn" data-switch-btn aria-pressed="false">GitHub の活動</button>
+          </div>
 
-      {/* ═══ 06 作品（案 C の作品ボード ＋ Zenn）═══ */}
-      <FlowNode id="portfolio" n="06" title="作品" en="portfolio" icon="globe">
-        <p class="max-w-[66ch] text-ui-muted">
-          自己開発のプロジェクト。GitHub の公開リポジトリからビルドのたびに作り直します。最終更新が 90 日以内なら「進行中」です。
-        </p>
-        <div class="mt-6 grid gap-4 md:grid-cols-2">
           {
-            boardColumns.map((col) => (
-              <div class="well flex flex-col gap-3 p-3 sm:p-4">
-                <h3 class="flex items-center gap-2 px-1 font-bold text-ui-muted">
+            boardColumns.map((col, i) => (
+              <div class:list={['switch-panel', { 'is-on': i === 0 }]} data-switch-panel>
+                <h3 class="switch-title flex items-center gap-2 text-lg font-bold">
                   <Icon name={col.icon} class={col.tone} />
                   {col.label}
-                  <span class="ml-auto font-mono text-sm font-normal">{col.items.length}</span>
                 </h3>
                 {col.items.length > 0 ? (
-                  <ul class="flex flex-col gap-3">
+                  <ul class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 xl:grid-cols-3">
                     {col.items.map((project) => (
                       <li>
-                        <a href={project.url} target="_blank" rel="noopener noreferrer" class="card-link flex-col gap-2 p-4">
+                        <a href={project.url} target="_blank" rel="noopener noreferrer" class="card-link h-full flex-col gap-2 p-4">
                           <span class="flex items-start justify-between gap-3">
                             <span class="break-words text-lg font-bold leading-snug">{project.name}</span>
                             <Icon name="arrow-up-right" class="mt-1 shrink-0 text-ui-muted" />
                           </span>
                           <span class="text-ui-muted">{project.description}</span>
-                          <span class="flex flex-wrap items-center gap-2">
+                          <span class="mt-auto flex flex-wrap items-center gap-2">
                             {project.wip && (
                               <span class="chip chip-teal">
                                 <Icon name="refresh-cw" size={15} />
@@ -580,66 +596,109 @@ const githubMark =
                     ))}
                   </ul>
                 ) : (
-                  <p class="px-1 pb-1 text-sm text-ui-muted">いまはありません。</p>
+                  <p class="text-ui-muted">いまはありません。</p>
                 )}
+                <p class="text-sm text-ui-muted">GitHub の公開リポジトリからビルドのたびに作り直します。最終更新が 90 日以内なら「進行中」です。</p>
               </div>
             ))
           }
-        </div>
 
-        {/* Zenn の記事 */}
-        <div class="mt-10">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <h3 class="flex items-center gap-2 text-lg font-bold">
-              <Icon name="pen-line" class="text-ui-muted" />
-              書いたもの
-              <span class="font-mono text-sm font-normal text-ui-muted">zenn</span>
-            </h3>
-            <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-[44px] items-center gap-1 font-bold text-ui-teal hover:underline">
-              すべて見る <Icon name="arrow-up-right" size={16} />
-            </a>
-          </div>
-          {
-            zennArticles.length > 0 ? (
-              <ul class="mt-3 grid gap-3 md:grid-cols-2">
-                {zennArticles.map((article) => (
-                  <li>
-                    <a href={`https://zenn.dev/hironobunigo/articles/${article.slug}`} target="_blank" rel="noopener noreferrer" class="card-link h-full items-start gap-4 p-4">
-                      <span class="well grid h-14 w-14 shrink-0 place-items-center text-2xl" aria-hidden="true">{article.emoji}</span>
-                      <span class="flex min-w-0 flex-col gap-1.5">
-                        <span class="flex flex-wrap items-center gap-2 text-sm text-ui-muted">
-                          <span class:list={['chip', article.article_type === 'tech' ? 'chip-teal' : 'chip-mute']}>
-                            {article.article_type === 'tech' ? '技術' : 'アイデア'}
-                          </span>
-                          <span class="font-mono">{new Date(article.published_at).toLocaleDateString('ja-JP')}</span>
-                          {article.liked_count > 0 && (
-                            <span class="inline-flex items-center gap-1 font-mono">
-                              <Icon name="heart" size={14} />
-                              <span class="sr-only">いいね </span>
-                              {article.liked_count}
-                            </span>
-                          )}
-                        </span>
-                        <span class="line-clamp-2 font-bold leading-snug">{article.title}</span>
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="card-link mt-3 items-center gap-4 p-4">
-                <span class="well grid h-14 w-14 shrink-0 place-items-center font-mono text-xl font-bold" aria-hidden="true">Z</span>
-                <span class="font-bold">技術記事を Zenn で発信しています</span>
+          <div class="switch-panel" data-switch-panel>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="switch-title flex items-center gap-2 text-lg font-bold">
+                <Icon name="pen-line" class="text-ui-muted" />
+                書いたもの
+                <span class="font-mono text-sm font-normal text-ui-muted">zenn</span>
+              </h3>
+              <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="ml-auto inline-flex min-h-[44px] items-center gap-1 font-bold text-ui-teal hover:underline">
+                すべて見る <Icon name="arrow-up-right" size={16} />
               </a>
-            )
-          }
-        </div>
-      </FlowNode>
+            </div>
+            {
+              zennArticles.length > 0 ? (
+                <ul class="m-0 grid list-none gap-3 p-0 md:grid-cols-2">
+                  {zennArticles.map((article) => (
+                    <li>
+                      <a href={`https://zenn.dev/hironobunigo/articles/${article.slug}`} target="_blank" rel="noopener noreferrer" class="card-link h-full items-start gap-4 p-4">
+                        <span class="well grid h-14 w-14 shrink-0 place-items-center text-2xl" aria-hidden="true">{article.emoji}</span>
+                        <span class="flex min-w-0 flex-col gap-1.5">
+                          <span class="flex flex-wrap items-center gap-2 text-sm text-ui-muted">
+                            <span class:list={['chip', article.article_type === 'tech' ? 'chip-teal' : 'chip-mute']}>
+                              {article.article_type === 'tech' ? '技術' : 'アイデア'}
+                            </span>
+                            <span class="font-mono">{new Date(article.published_at).toLocaleDateString('ja-JP')}</span>
+                            {article.liked_count > 0 && (
+                              <span class="inline-flex items-center gap-1 font-mono">
+                                <Icon name="heart" size={14} />
+                                <span class="sr-only">いいね </span>
+                                {article.liked_count}
+                              </span>
+                            )}
+                          </span>
+                          <span class="line-clamp-2 font-bold leading-snug">{article.title}</span>
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="card-link items-center gap-4 p-4">
+                  <span class="well grid h-14 w-14 shrink-0 place-items-center font-mono text-xl font-bold" aria-hidden="true">Z</span>
+                  <span class="font-bold">技術記事を Zenn で発信しています</span>
+                </a>
+              )
+            }
+          </div>
 
-      {/* ═══ 07 連絡（end）═══ */}
-      <FlowNode id="contact" n="07" title="連絡" en="end">
+          {/* GitHub の活動（スキルから移した — shell-2026.spec） */}
+          <div class="switch-panel" data-switch-panel>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <h3 class="switch-title text-lg font-bold">GitHub の活動 <span class="ml-1 font-mono text-sm font-normal text-ui-muted">個人開発</span></h3>
+              <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer" class="ml-auto inline-flex min-h-[44px] items-center gap-1 font-bold text-ui-teal hover:underline">
+                github.com/nigoh <Icon name="arrow-up-right" size={16} />
+              </a>
+            </div>
+            <div class="well p-3 sm:p-4">
+              <img
+                src="https://ghchart.rshah.org/167D6B/nigoh"
+                alt="GitHub のコントリビューションの草（1 年分）"
+                class="contrib-img w-full"
+                loading="lazy"
+              />
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <img src="https://img.shields.io/github/stars/nigoh?style=flat-square&logo=github&label=Stars&color=167D6B" alt="GitHub Stars" loading="lazy" class="h-5" />
+              <img src="https://img.shields.io/github/followers/nigoh?style=flat-square&logo=github&label=Followers&color=167D6B" alt="GitHub Followers" loading="lazy" class="h-5" />
+            </div>
+            {
+              topLangs.length > 0 && (
+                <div>
+                  <p class="mb-2 text-sm text-ui-muted">言語の割合（個人開発のリポジトリより）</p>
+                  <div class="flex h-3 gap-[3px]" aria-hidden="true">
+                    {topLangs.map((lang) => (
+                      <div class="rounded-[3px]" style={`width: ${lang.percent}%; background-color: ${lang.color};`} title={`${lang.name}: ${lang.percent}%`} />
+                    ))}
+                  </div>
+                  <ul class="m-0 mt-3 flex list-none flex-wrap gap-x-5 gap-y-1.5 p-0">
+                    {topLangs.map((lang) => (
+                      <li class="flex items-center gap-2 text-sm">
+                        <span class="h-3 w-3 shrink-0 rounded-[3px]" style={`background-color: ${lang.color};`} aria-hidden="true" />
+                        <span class="font-bold">{lang.name}</span>
+                        <span class="font-mono text-ui-muted">{lang.percent}%</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </StagePane>
+
+      {/* ═══ 07 連絡 ═══ */}
+      <StagePane id="contact" title="連絡" en="end">
         <p class="max-w-[60ch] text-lg">お仕事のご依頼やお問い合わせは、GitHub からお気軽にどうぞ。</p>
-        <div class="mt-6 flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-3">
           <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer" class="btn btn-pri min-h-[52px] px-6 text-lg">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d={githubMark}></path></svg>
             github.com/nigoh
@@ -649,13 +708,41 @@ const githubMark =
             <Icon name="arrow-up-right" size={17} />
           </a>
         </div>
-      </FlowNode>
-    </main>
+      </StagePane>
 
-    <aside class="hidden lg:block">
-      <FlowRail />
-    </aside>
+      {/* 前へ / 次へ（行き先は scripts/stages.ts が入れる。JS 無しでは出さない） */}
+      <div class="pane-foot">
+        <a class="btn btn-sec foot-btn" data-stage-prev href="#hero" hidden>
+          <span aria-hidden="true">←</span>
+          <span class="sr-only">前へ：</span>
+          <span data-label></span>
+        </a>
+        <span class="font-mono text-sm text-ui-muted" aria-hidden="true"><span data-stage-count>01</span> / {String(stages.length).padStart(2, '0')}</span>
+        <a class="btn btn-sec foot-btn ml-auto" data-stage-next href="#about">
+          <span data-label>次は 自己紹介</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </main>
   </div>
+
+  {/* 最初に出す段：アドレスに #id があれば、描く前にその段へ（scripts/stages.ts を待たずに切り替える） */}
+  <script is:inline>
+    (function () {
+      var id = location.hash.slice(1);
+      var target = id ? document.getElementById(id) : null;
+      if (!target || !target.hasAttribute('data-pane')) return;
+      document.querySelectorAll('[data-pane].is-active').forEach(function (p) {
+        p.classList.remove('is-active');
+      });
+      target.classList.add('is-active');
+    })();
+  </script>
 
   <Footer />
 </BaseLayout>
+
+<script>
+  import { initSwitchers } from '../scripts/switcher';
+  initSwitchers();
+</script>

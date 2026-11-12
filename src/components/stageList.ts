@@ -1,12 +1,12 @@
-// 流れ（目次）の 7 段。index.astro のセクション id と一致させる（specs/plug-2026.spec.md「構図」）。
-export interface FlowSection {
+// 流れの 7 段（specs/shell-2026.spec.md）。id は出力の面の段（index.astro の StagePane）と、アドレスの #id に使う。
+export interface Stage {
   n: string;
   id: string;
   label: string;
   en: string;
 }
 
-export const flowSections: FlowSection[] = [
+export const stages: Stage[] = [
   { n: '01', id: 'hero', label: 'はじめ', en: 'start' },
   { n: '02', id: 'about', label: '自己紹介', en: 'about' },
   { n: '03', id: 'skills', label: 'スキル', en: 'skills' },

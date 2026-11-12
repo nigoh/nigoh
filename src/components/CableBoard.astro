@@ -1,35 +1,54 @@
 ---
-// C 差すと見えるケーブル（specs/physics-2026.spec.md）。
-// 左の仕事の一覧（右の縁にコンセント）と、右の「出力」のモニター。モニターから出たケーブルの先のプラグを
-// どれかの仕事に差すと、モニターにその仕事が出る。行はボタンでもある（押すとプラグが飛んで差さる）。
-// JS 無しでは一覧のボタンを隠し、全部の仕事を縦に並べる（今までの経歴の一覧）。
+// C 差すと見えるケーブル（specs/physics-2026.spec.md・specs/shell-2026.spec.md 05）。
+// 左の仕事の札（中に小さな帯＝いつの仕事か。右の縁にコンセント）と、右の「出力」のモニター。
+// モニターから出たケーブルの先のプラグをどれかの仕事に差すと、モニターにその仕事が出る。
+// 札はボタンでもある（押すとプラグが飛んで差さる）。
+// JS 無しでは札を隠し、全部の仕事を縦に並べる（経歴の一覧）。
 import Icon from './Icon.astro';
 import type { BoardJob } from './board';
 
 interface Props {
   jobs: BoardJob[];
+  /** 帯の目盛りに出す年（左端・中・右端） */
+  axis: number[];
 }
 
-const { jobs } = Astro.props;
+const { jobs, axis } = Astro.props;
 ---
 
 <div class="board" data-board>
-  <ol class="board-jobs" aria-label="見たい仕事を選ぶ">
-    {
-      jobs.map((job, i) => (
-        <li>
-          <button type="button" class="job-btn" data-job={i} aria-pressed={i === 0 ? 'true' : 'false'} aria-controls="board-monitor">
-            <span class="font-mono text-sm text-ui-muted">{job.period}</span>
-            <span class="font-bold leading-snug">{job.short}</span>
-            <span class="job-sock" aria-hidden="true">
-              <i />
-              <i />
-            </span>
-          </button>
-        </li>
-      ))
-    }
-  </ol>
+  <div class="board-jobs">
+    {/* 帯の目盛り（左端・真ん中・右端の年）。飾り — 期間はモニターに文字で出る */}
+    <p class="job-axis font-mono text-sm text-ui-muted" aria-hidden="true">
+      {axis.map((y) => <span>{y}</span>)}
+    </p>
+    <ol class="m-0 flex list-none flex-col gap-1.5 p-0" aria-label="見たい仕事を選ぶ">
+      {
+        jobs.map((job, i) => (
+          <li>
+            <button
+              type="button"
+              class="job-btn"
+              data-job={i}
+              data-period={job.period}
+              data-label={job.short}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+              aria-controls="board-monitor"
+            >
+              <span class="font-bold leading-snug">{job.short}</span>
+              <span class="job-track" aria-hidden="true">
+                <i class:list={[{ 'is-now': job.ongoing }]} style={`left: ${job.bar.left}%; width: ${job.bar.width}%;`} />
+              </span>
+              <span class="plug-sock" aria-hidden="true">
+                <i />
+                <i />
+              </span>
+            </button>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
 
   <div class="board-monitor" id="board-monitor">
     <span class="board-anchor" aria-hidden="true"></span>

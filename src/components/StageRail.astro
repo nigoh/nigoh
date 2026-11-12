@@ -1,0 +1,48 @@
+---
+// 流れ（段の一覧）— specs/shell-2026.spec.md。
+// PC（lg 以上）：左に固定。各段の右の縁にコンセントがあり、出力の面から出たケーブルの先のプラグが、いまの段に差さる。
+// スマホ：画面の下に固定した帯。段のチップを横に送る（ひもは出さない）。
+// JS 無しではページ内リンクの一覧。タブの役（role）と選んでいる印は scripts/stages.ts が付ける。
+import TiltPad from './TiltPad.astro';
+import { stages } from './stageList';
+
+interface Props {
+  /** 段ごとのひとこと（件数など）。キーは段の id */
+  facts: Record<string, string>;
+}
+
+const { facts } = Astro.props;
+const total = String(stages.length).padStart(2, '0');
+---
+
+<nav class="stage-rail" data-stage-rail aria-label="流れ（段を切り替える）">
+  <p class="stage-rail-head">
+    <span>流れ</span>
+    <span class="font-mono font-normal" aria-hidden="true"><span data-stage-count>01</span> / {total}</span>
+  </p>
+  <div class="stage-list" data-stage-list>
+    {
+      stages.map((s) => (
+        <a href={`#${s.id}`} class="stage-btn" id={`tab-${s.id}`} data-stage={s.id}>
+          <span class="stage-plug" aria-hidden="true" />
+          <span class="stage-n font-mono text-sm">{s.n}</span>
+          <span class="font-bold">{s.label}</span>
+          <span class="stage-fact text-sm">{facts[s.id] ?? ''}</span>
+          <span class="plug-sock" aria-hidden="true">
+            <i />
+            <i />
+          </span>
+        </a>
+      ))
+    }
+  </div>
+  <TiltPad />
+  <span class="stage-anchor" aria-hidden="true"></span>
+  <canvas class="stage-rope" aria-hidden="true"></canvas>
+  <span class="plug-handle" data-plug-handle aria-hidden="true"></span>
+</nav>
+
+<script>
+  import { initStages } from '../scripts/stages';
+  initStages();
+</script>
