@@ -1,5 +1,7 @@
 # 2026 トレンド取り込みリフレッシュ（構成主義言語内での変奏）
 
+> **2026-11 置き換え**: 見た目（色・文字・構図・装飾・動き）は [`plug-2026.spec.md`](../plug-2026.spec.md)（pipe-in のプラグ）に置き換えた。ここに書いた見た目の決まりは履歴として残す（掲載内容・セクション構成・a11y の考え方は引き続き有効）。
+
 > ステータス: **設計確定（デザイナー）。実装は frontend**。
 > 対象: `src/styles/global.css` / `tailwind.config.mjs`（トークン追加のみ）/ `src/pages/index.astro` /
 > `src/components/AnimatedHero.tsx` / `src/components/Header.astro` / `src/layouts/BaseLayout.astro` /

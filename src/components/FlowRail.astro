@@ -1,0 +1,15 @@
+---
+// 流れ（目次）— lg 以上でページの右に固定する（案 A 作業台の右の「流れ」）。
+import FlowList from './FlowList.astro';
+import TiltPad from './TiltPad.astro';
+import { flowSections } from './flowSections';
+---
+
+<nav class="sticky top-[80px] rounded-card bg-ui-panel p-4 shadow-soft" aria-label="目次（流れ）">
+  <p class="mb-2 flex items-baseline justify-between px-2.5 text-sm font-bold text-ui-muted">
+    <span>流れ</span>
+    <span class="font-mono font-normal" aria-hidden="true"><span data-flow-count>01</span> / {String(flowSections.length).padStart(2, '0')}</span>
+  </p>
+  <FlowList />
+  <TiltPad />
+</nav>

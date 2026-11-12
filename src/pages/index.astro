@@ -2,10 +2,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import AnimatedHero from '../components/AnimatedHero';
-import AnimatedSkillBar from '../components/AnimatedSkillBar';
-import FadeIn from '../components/FadeIn';
-import SectionAccent from '../components/SectionAccent';
+import FlowNode from '../components/FlowNode.astro';
+import FlowRail from '../components/FlowRail.astro';
+import SandLogo from '../components/SandLogo.astro';
+import SandMeters from '../components/SandMeters.astro';
+import CableBoard from '../components/CableBoard.astro';
+import ToolBox from '../components/ToolBox.astro';
+import type { BoardJob } from '../components/board';
+import Icon from '../components/Icon.astro';
+import type { IconName } from '../components/icons';
+import CareerGantt from '../components/CareerGantt.astro';
+import type { GanttItem } from '../components/gantt';
 
 interface ZennArticle {
   id: number;
@@ -91,108 +98,128 @@ const topLangs: GitHubLang[] = Object.entries(langCounts)
     color: langColors[name] ?? '#64748b',
   }));
 
-// T7 マーキーの語 — 既存キーワードの反復のみ（新情報を載せない — trends-2026-refresh.spec §8）
-const marqueeWords = [
-  'C/C++',
-  'JAVA',
-  'TYPESCRIPT',
-  'PYTHON',
-  'AI-DRIVEN DEV',
-  'SPEC-DRIVEN DEV',
-  'SAPPORO, JAPAN',
-];
-
-// 4 カテゴリ・各 2〜4 項目に集約（index.spec.md §3）
+// 4 分野・各 2〜4 項目（index.spec.md §3）。見出しは日本語、英語は小さな札（plug-2026.spec「文字」）
 const skills = [
   {
-    category: 'LANGUAGES',
+    label: '言語',
+    en: 'languages',
     items: [
-      { name: 'C / C++', level: 90, description: 'システムプログラミング・組み込み開発（8年以上）' },
-      { name: 'Java', level: 70, description: '組み込み Android アプリ（実務・2026〜）／オブジェクト指向設計' },
-      { name: 'TypeScript / JavaScript', level: 70, description: '個人開発中心 — Web アプリ・型安全な実装' },
-      { name: 'Python', level: 65, description: 'スクリプティング・データ処理・自動化（約2年）' },
+      { name: 'C / C++', short: 'C/C++', level: 90, description: 'システムプログラミング・組み込み開発（8年以上）' },
+      { name: 'Java', short: 'Java', level: 70, description: '組み込み Android アプリ（実務・2026〜）／オブジェクト指向設計' },
+      { name: 'TypeScript / JavaScript', short: 'TS/JS', level: 70, description: '個人開発中心 — Web アプリ・型安全な実装' },
+      { name: 'Python', short: 'Python', level: 65, description: 'スクリプティング・データ処理・自動化（約2年）' },
     ],
   },
   {
-    category: 'PLATFORMS',
+    label: 'プラットフォーム',
+    en: 'platforms',
     items: [
-      { name: 'Windows / MFC', level: 80, description: 'デスクトップアプリ・組み込みシステム開発（8年以上）' },
-      { name: 'Linux (Ubuntu / Yocto)', level: 65, description: 'サーバー・組み込み Linux（約2年）' },
-      { name: 'Android SDK', level: 55, description: '専用端末向けネイティブアプリの Java 開発（実務・2026〜）' },
-      { name: 'React / Astro', level: 65, description: '個人開発中心 — UI 構築・静的サイト' },
+      { name: 'Windows / MFC', short: 'MFC', level: 80, description: 'デスクトップアプリ・組み込みシステム開発（8年以上）' },
+      { name: 'Linux (Ubuntu / Yocto)', short: 'Linux', level: 65, description: 'サーバー・組み込み Linux（約2年）' },
+      { name: 'Android SDK', short: 'Android', level: 55, description: '専用端末向けネイティブアプリの Java 開発（実務・2026〜）' },
+      { name: 'React / Astro', short: 'React', level: 65, description: '個人開発中心 — UI 構築・静的サイト' },
     ],
   },
   {
-    category: 'DEV & INFRA',
+    label: '開発と基盤',
+    en: 'dev & infra',
     items: [
-      { name: 'Git / GitLab', level: 85, description: 'バージョン管理・CI/CD・チーム開発フロー整備（約6年）' },
-      { name: 'Docker', level: 75, description: 'コンテナ化・開発環境標準化（約4年）' },
-      { name: 'RDB (PostgreSQL / Oracle)', level: 70, description: 'DB 設計・クエリ最適化（約3年）' },
+      { name: 'Git / GitLab', short: 'Git', level: 85, description: 'バージョン管理・CI/CD・チーム開発フロー整備（約6年）' },
+      { name: 'Docker', short: 'Docker', level: 75, description: 'コンテナ化・開発環境標準化（約4年）' },
+      { name: 'RDB (PostgreSQL / Oracle)', short: 'RDB', level: 70, description: 'DB 設計・クエリ最適化（約3年）' },
     ],
   },
   {
-    category: 'AI-DRIVEN DEV',
+    label: 'AI 駆動開発',
+    en: 'ai-driven dev',
     items: [
-      { name: 'AI コーディングエージェント', level: 85, description: 'Claude Code / GitHub Copilot / Codex — サブエージェント・フック・SWE Agent による自律開発' },
-      { name: 'MCP / エージェント設計', level: 80, description: 'MCP サーバーと AGENTS.md / CLAUDE.md / .kiro でエージェントの能力・挙動を拡張' },
+      { name: 'AI コーディングエージェント', short: 'AI エージェント', level: 85, description: 'Claude Code / GitHub Copilot / Codex — サブエージェント・フック・SWE Agent による自律開発' },
+      { name: 'MCP / エージェント設計', short: 'MCP', level: 80, description: 'MCP サーバーと AGENTS.md / CLAUDE.md / .kiro でエージェントの能力・挙動を拡張' },
     ],
   },
 ];
 
-const career = [
+// 経歴。start / end は帯グラフ用のおおよその年（end: null は進行中）。
+interface CareerItem {
+  period: string;
+  industry: string;
+  phase: string;
+  techs: string[];
+  gantt: GanttItem;
+}
+
+const career: CareerItem[] = [
   {
-    year: '2026',
     period: '2026/04〜現在',
     industry: '組み込み Android（専用端末向けアプリ）',
     phase: '詳細設計・実装・試験',
     techs: ['Java', 'Android SDK', 'Android Studio', 'Gradle', 'Git'],
+    gantt: { label: '組み込み Android', start: 2026.25, end: null, note: '2026/04〜' },
   },
   {
-    year: '2025',
     period: '2025（約1年）',
     industry: '組み込み制御（社会インフラ機器・コアシステム）',
     phase: '詳細設計・実装・試験',
     techs: ['C', 'Linux (Yocto)', 'Make'],
+    gantt: { label: '社会インフラ機器・コア', start: 2025, end: 2026, note: '約1年' },
   },
   {
-    year: '2022',
     period: '2022、2025（約3年）',
     industry: '組み込み制御（社会インフラ機器・制御システム）',
     phase: '要件定義〜マネジメント（サブリーダー）',
     techs: ['C++', 'MFC', 'Git', 'Docker'],
+    gantt: { label: '社会インフラ機器・制御', start: 2022, end: 2025, note: '約3年' },
   },
   {
-    year: '2021',
     period: '2021～2022（約1年）',
     industry: '車載地図データツール',
     phase: '設計・実装・マネジメント',
     techs: ['C++', 'Oracle', 'VS Code'],
+    gantt: { label: '車載地図データツール', start: 2021, end: 2022, note: '約1年' },
   },
   {
-    year: '2020',
     period: '2020～2021（約1年）',
     industry: '車載地図データ変換ツール',
     phase: '設計〜インフラ構築',
     techs: ['Java', 'C++', 'PostgreSQL', 'AWS'],
+    gantt: { label: '車載地図データ変換', start: 2020, end: 2021, note: '約1年' },
   },
   {
-    year: '2018',
     period: '2018～2020（約2年）',
     industry: '車載地図データツール（サブリーダー）',
     phase: '設計・実装・マネジメント',
     techs: ['C++', 'Python', 'PostgreSQL'],
+    gantt: { label: '車載地図データツール', start: 2018, end: 2020, note: '約2年' },
   },
   {
-    year: '2016',
     period: '2016～2018（約1年半）',
     industry: '自動運転用3D地図・試作モジュール開発',
     phase: '詳細設計・実装・試験',
     techs: ['C++11', 'Java', 'Python', 'MongoDB'],
+    gantt: { label: '自動運転用 3D 地図・試作', start: 2016.5, end: 2018, note: '約1年半' },
   },
 ];
 
+// 経歴のケーブルボード（C）：プラグを差した仕事をモニターに出す
+const boardJobs: BoardJob[] = career.map((c) => ({
+  period: c.period,
+  short: c.gantt.label,
+  industry: c.industry,
+  phase: c.phase,
+  techs: c.techs,
+  ongoing: c.gantt.end === null,
+}));
+
+// 帯グラフの目盛り（2016〜2027）と、ビルドした日（進行中の帯の終わり）
+const ganttFrom = 2016;
+const ganttTo = 2027;
+const buildDate = new Date();
+const nowYear = Math.min(ganttTo, buildDate.getFullYear() + buildDate.getMonth() / 12);
+// 帯グラフは古い順に上から
+const ganttItems: GanttItem[] = [...career].reverse().map((c) => c.gantt);
+
 // Portfolio — GitHub の公開リポジトリからビルド時に自動生成（fork・アーカイブ・除外パターンを除く）。
-// 直近 90 日以内に push があるものは「製作中」バッジを表示する。
+// 直近 90 日以内に push があるものは「進行中」の列、それより前は「一区切り」の列（案 C の作品ボード）。
 interface ProjectCard {
   name: string;
   description: string;
@@ -202,14 +229,14 @@ interface ProjectCard {
 }
 
 const WIP_WINDOW_MS = 90 * 24 * 60 * 60 * 1000;
-const buildTime = Date.now();
+const buildTime = buildDate.getTime();
 
 const githubProjects: ProjectCard[] = githubRepos
   .filter((r) => !r.fork && !r.archived && !excludedRepos.test(r.name))
   .sort((a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime())
   .slice(0, 8)
   .map((r) => ({
-    name: r.name.replace(/[-_]+/g, ' ').trim().toUpperCase(),
+    name: r.name,
     description: r.description ?? '自己開発プロジェクト。詳細は GitHub リポジトリを参照。',
     url: r.html_url,
     tags: r.language ? [r.language] : [],
@@ -219,28 +246,28 @@ const githubProjects: ProjectCard[] = githubRepos
 // API 取得失敗時のフォールバック（代表的な公開リポジトリのみ）
 const fallbackProjects: ProjectCard[] = [
   {
-    name: 'NIGOH',
+    name: 'nigoh',
     description: 'このサイトのソースコード。Astro + Tailwind CSS で構築した個人紹介サイト。',
     url: 'https://github.com/nigoh/nigoh',
     tags: ['Astro', 'TypeScript'],
     wip: true,
   },
   {
-    name: 'JUML',
+    name: 'Juml',
     description: '開発中の自己開発プロジェクト。詳細は GitHub リポジトリを参照。',
     url: 'https://github.com/nigoh/Juml',
     tags: [],
     wip: true,
   },
   {
-    name: 'QR GENERATOR WEB',
+    name: 'qr-generator-web',
     description: 'QRコード生成Webアプリ。Copilot + Serena による AI ペアプログラミングで開発。',
     url: 'https://github.com/nigoh/qr-generator-web',
     tags: ['TypeScript', 'React'],
     wip: false,
   },
   {
-    name: 'STOCKO',
+    name: 'stocko',
     description: '株価情報取得ツール。OpenAI Codex & AGENTS.md を活用した AI エージェント開発。',
     url: 'https://github.com/nigoh/stocko',
     tags: ['JavaScript', 'AI: Codex + AGENTS.md'],
@@ -249,624 +276,386 @@ const fallbackProjects: ProjectCard[] = [
 ];
 
 const projects = githubProjects.length > 0 ? githubProjects : fallbackProjects;
+const boardColumns: { key: string; label: string; icon: IconName; tone: string; items: ProjectCard[] }[] = [
+  { key: 'wip', label: '進行中', icon: 'circle-play', tone: 'text-ui-teal', items: projects.filter((p) => p.wip) },
+  { key: 'done', label: '一区切り', icon: 'circle-check', tone: 'text-ui-ok', items: projects.filter((p) => !p.wip) },
+];
 
-// AI 駆動開発のツール・実践（各 icon は Heroicons outline の path）
+// AI 駆動開発のツール・やり方（アイコンは Lucide）
 interface AiTool {
   title: string;
   body: string;
-  icon: string[];
+  icon: IconName;
 }
 
 const aiTools: AiTool[] = [
   {
-    title: 'CLAUDE CODE',
+    title: 'Claude Code',
     body: 'designer / frontend のサブエージェントと PreToolUse フックを組み合わせ、役割分担と安全策を備えた自律開発を実践。このサイト自体も Claude Code で構築・改善。',
-    icon: ['M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z'],
+    icon: 'terminal',
   },
   {
-    title: 'COPILOT SWE AGENT',
+    title: 'Copilot SWE Agent',
     body: 'Issue からの自動実装・PR 作成。Focuso や QR Generator Web で SWE Agent をコントリビューターとして活用。',
-    icon: ['M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z'],
+    icon: 'sparkles',
   },
   {
-    title: 'OPENAI CODEX',
+    title: 'OpenAI Codex',
     body: 'AGENTS.md を活用した AI エージェント駆動開発。stocko プロジェクトで Codex によるコード生成を実践。',
-    icon: ['M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5'],
+    icon: 'code-xml',
   },
   {
     title: 'MCP',
     body: 'GitHub, Playwright, Tailwind CSS 等の MCP サーバーを活用し、AI エージェントの能力を拡張。',
-    icon: ['M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244'],
+    icon: 'plug',
   },
   {
-    title: 'AGENT CONFIG',
+    title: 'エージェントの設定',
     body: '.instructions.md, AGENTS.md, CLAUDE.md, .kiro 等の設定でプロジェクトごとに AI エージェントの振る舞いをカスタマイズ。',
-    icon: [
-      'M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z',
-      'M15 12a3 3 0 11-6 0 3 3 0 016 0z',
-    ],
+    icon: 'sliders-horizontal',
   },
   {
-    title: 'SPEC-DRIVEN DEV',
+    title: '仕様駆動開発',
     body: 'specs/** の仕様を AI と更新しながら実装し、受入条件（チェックリスト）で検証する仕様駆動開発（SDD）を実践。',
-    icon: ['M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z'],
+    icon: 'clipboard-check',
   },
 ];
+
+const interests = [
+  { title: 'RAG / AI 意思決定支援', body: '生成 AI を用いた RAG（検索拡張生成）による意思決定支援アプリの開発に強い関心を持ち、個人開発で実践中。' },
+  { title: '開発フロー整備', body: 'Docker による環境標準化・Git/GitLab を活用したチーム開発フロー設計・CI/CD パイプライン構築。' },
+  { title: '技術普及・後進育成', body: 'チームへの技術指導・コードレビュー文化の醸成。AI ツールを活用した生産性向上の横展開。' },
+];
+
+const profile = [
+  { k: '名前', v: 'Hironobu Nigo' },
+  { k: '生まれ', v: '1984', mono: true },
+  { k: '拠点', v: '札幌市, 北海道, Japan' },
+  { k: '役割', v: 'Software Engineer' },
+];
+
+const heroKeywords = ['C/C++', 'Java', 'TypeScript', 'Python'];
+
+// GitHub のマーク（塗りの形。Lucide ではない）
+const githubMark =
+  'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z';
 ---
 
 <BaseLayout title="H.NIGO | Software Engineer">
   <Header />
 
-  {/* 各セクションの id アンカーは固定バー（56px）の下に着地させる（scroll-mt-14） */}
-  <main id="main-content" class="pt-14 [&_section]:scroll-mt-14">
+  <div class="mx-auto max-w-[1200px] px-4 pb-6 pt-[88px] sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-10 lg:px-8">
+    {/* 流れ：セクション＝ブロックを、左のティールのケーブルでつなぐ（plug-2026.spec「構図」） */}
+    <main id="main-content" class="flow">
 
-    {/* ═══════════════════ Hero — Bauhaus フラットポスター（索引 01・250vh sticky・bauhaus-2026.spec） ═══════════════════
-        cream 地（トークン連動でダークは反転ポスター）に三原色の平面図形（円=黄／三角=青／帯=赤）を組む。
-        250vh を通過する進捗 p=0→1（--hero-p）で図形が緩慢にドリフト/回転（kinetic）。H1 は letter-spacing 伸縮。
-        PRM/JS 無効は p=0＝完成ポスターの静止表示にフォールバックし、CSS が尺を 100vh に畳む。 */}
-    <section id="hero" class="hero-wrap relative bg-[var(--c-page)]">
-      <div class="hero-stick sticky top-0 h-screen overflow-hidden flex items-center bg-[var(--c-page)]">
-        {/* 背景層（最も遅い・§17.2）— 薄い巨大 01 とインクの斜め力線。--hero-p に対し +64px ドリフト */}
-        <div class="hero-parallax-bg" aria-hidden="true">
-          <span class="hero-bg-01">01</span>
-          <span class="hero-bg-line"></span>
-        </div>
-
-        {/* 中間層 — Bauhaus 平面ポスター図形（純装飾）。--hero-p で緩慢に回転/ドリフト */}
-        <div class="hero-poster" aria-hidden="true">
-          <div class="hp-square"></div>
-          <div class="hp-circle"></div>
-          <div class="hp-triangle"></div>
-          <div class="hp-ring"></div>
-          <div class="hp-bar"></div>
-          <div class="hp-line"></div>
-        </div>
-
-        {/* 前景層（content 速度・§17.2）— 実テキスト。可読性最優先で -14px の微小ドリフトのみ */}
-        <div class="hero-parallax-fg w-full">
-          <AnimatedHero
-            client:load
-            name="H.NIGO"
-            role="SOFTWARE ENGINEER · SAPPORO"
-            description="低レイヤーからアプリケーションまで。C/C++, Java, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。"
-            keywords={['C/C++', 'JAVA', 'TYPESCRIPT', 'PYTHON']}
-            githubUrl="https://github.com/nigoh"
-          />
-        </div>
-
-        <p class="scroll-hint" aria-hidden="true">SCROLL ▾</p>
-      </div>
-    </section>
-
-    {/* ═══════════════════ About（索引 02・明側 = --c-page） ═══════════════════ */}
-    <section id="about" class="relative py-20 overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役）— スクロール視差（§17.4・p-subtle） */}
-      <div class="parallax-layer p-subtle" aria-hidden="true">
-        <SectionAccent client:visible section="about" />
-      </div>
-      {/* 青い縦バー（ABOUT の原色）— 本文と異なる速度でドリフト（§17.4） */}
-      <div class="parallax-layer" aria-hidden="true">
-        <div class="absolute top-0 left-0 w-2 h-full bg-bauhaus-blue pointer-events-none"></div>
-      </div>
-      {/* 紙の grain（リトグラフの紙肌・静止画。ライトの明側のみ。装飾より上・本文 z-10 より下） */}
-      <div class="grain-overlay" aria-hidden="true"></div>
-
-      <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* T1/T6b 見出しグループ — mono 頁番号＋h2＋引かれる赤罫線（scroll-driven リビール） */}
-        <div class="reveal-heading">
-          <p class="font-mono text-xs tracking-widest text-[var(--c-ink-muted)] mb-2" aria-hidden="true">02 / 07</p>
-          {/* calm: 見出しのみ左へ bleed。本文・dl は 12 列内で整列（§4.1） */}
-          <h2 class="bleed-heading font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">ABOUT</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-bauhaus-blue mb-6" aria-hidden="true"></div>
-          <p class="text-[var(--c-ink-muted)] mb-12 font-body max-w-[68ch]">あるものを大切にしながら、変化にも柔軟に対応できるエンジニアを目指しています。</p>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-12">
-          {/* 基本情報 */}
-          <FadeIn client:visible direction="up" delay={200}>
-            <div class="border-l-4 border-[var(--c-line)] pl-6">
-              <dl class="space-y-6">
-                <div>
-                  <dt class="text-xs font-bold text-[var(--c-ink-muted)] uppercase tracking-widest font-body">NAME</dt>
-                  <dd class="mt-1 text-lg text-[var(--c-ink)] font-body">Hironobu Nigo</dd>
-                </div>
-                <div>
-                  <dt class="text-xs font-bold text-[var(--c-ink-muted)] uppercase tracking-widest font-body">BORN</dt>
-                  <dd class="mt-1 text-lg text-[var(--c-ink)] font-body">1984</dd>
-                </div>
-                <div>
-                  <dt class="text-xs font-bold text-[var(--c-ink-muted)] uppercase tracking-widest font-body">LOCATION</dt>
-                  <dd class="mt-1 text-lg text-[var(--c-ink)] font-body">札幌市, 北海道, Japan</dd>
-                </div>
-                <div>
-                  <dt class="text-xs font-bold text-[var(--c-ink-muted)] uppercase tracking-widest font-body">ROLE</dt>
-                  <dd class="mt-1 text-lg text-[var(--c-ink)] font-body">Software Engineer</dd>
-                </div>
-              </dl>
-            </div>
-          </FadeIn>
-
-          {/* 自己紹介文 */}
-          <FadeIn client:visible direction="up" delay={400}>
-            <div class="text-[var(--c-ink-muted)] leading-relaxed space-y-4 font-body max-w-[68ch]">
-              <p>
-                1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
-                低レイヤーからアプリケーションまで、幅広い領域でのシステム開発を行っています。
-                主に C/C++, Java, TypeScript, Python を使用し、AI ツールを活用し個人開発も行っています。
-              </p>
-              <p>
-                2026 年からは組み込み Android（専用端末向けアプリ）の開発に Java で従事し、
-                詳細設計・実装・試験を担当しています。
-                これまで C++ / C / Java を中心にオブジェクト指向設計を実践してきました。
-                変更容易性と関心の分離を意識した設計・実装を重視し、後進への技術指導も対応可能です。
-                Git / GitLab を活用したチーム開発フロー整備の経験もあります。
-              </p>
-              <p>
-                趣味は音楽鑑賞、映画鑑賞、サイクリング。
-                好きなアーティストは、チャーリーパーカー
-                休日は自転車で札幌近郊を走ったり、読書をしたりしています。
-              </p>
-            </div>
-          </FadeIn>
-        </div>
-      </div>
-    </section>
-
-    {/* ═══════════════════ Skills（索引 03・暗側 = --c-field・両モード不変） ═══════════════════ */}
-    <section id="skills" class="relative py-20 bg-constructivist-black overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役）— スクロール視差（§17.4・p-subtle） */}
-      <div class="parallax-layer p-subtle" aria-hidden="true">
-        <SectionAccent client:visible section="skills" />
-      </div>
-
-      <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* T1/T6b 見出しグループ */}
-        <div class="reveal-heading">
-          {/* calm: 見出しのみ bleed・番号だけ回転（§4.1）。スキルバー等のデータは厳密整列 */}
-          <p class="font-mono text-xs tracking-widest text-constructivist-gray mb-2 inline-block origin-left" style="transform: rotate(-6deg);" aria-hidden="true">03 / 07</p>
-          <h2 class="bleed-heading font-sans text-heading-fluid text-constructivist-cream tracking-tight mb-3">SKILLS</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-bauhaus-yellow mb-12" aria-hidden="true"></div>
-        </div>
-
-        <AnimatedSkillBar client:visible groups={skills} />
-
-        {/* GitHub Activity */}
-        <div class="mt-16 border-l-4 border-bauhaus-yellow pl-6">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xs font-bold text-constructivist-cream uppercase tracking-widest font-body">GITHUB ACTIVITY — 個人開発</h3>
-            <a
-              href="https://github.com/nigoh"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-xs text-constructivist-gray hover:text-constructivist-red transition-colors font-body tracking-wider"
-            >
-              GITHUB.COM/NIGOH →
+      {/* ═══ 01 はじめ（start）═══ */}
+      <FlowNode id="hero" n="01" title="はじめ" en="start" hideTitle>
+        <div class="flex flex-col gap-5">
+          <h1 id="hero-title" class="sr-only">H.Nigo（nigoh）</h1>
+          {/* A 砂のロゴ（physics-2026.spec）。JS 無しではベクターのロゴ */}
+          <SandLogo />
+          <p class="font-mono text-sm tracking-wider text-ui-muted">H.NIGO · SOFTWARE ENGINEER · SAPPORO</p>
+          <p class="text-[clamp(1.75rem,1.1rem+2.6vw,2.75rem)] font-black leading-[1.25]">
+            <span class="inline-block">低レイヤーから、</span><span class="inline-block">アプリまで<span class="text-ui-coral">.</span></span>
+          </p>
+          <p class="max-w-[60ch]">
+            C/C++, Java, TypeScript, Python を使い、AI ツールを活用してものづくりをしています。
+            2026 年からは組み込み Android（専用端末向けアプリ）の開発に Java で関わっています。
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer" class="btn btn-pri">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d={githubMark}></path></svg>
+              GitHub を見る
+            </a>
+            <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="btn btn-sec">
+              Zenn の記事
+              <Icon name="arrow-up-right" size={17} />
             </a>
           </div>
-
-          {/* コントリビューション カレンダー */}
-          <div class="mb-6">
-            <p class="text-xs text-constructivist-gray mb-2 font-body">CONTRIBUTION CALENDAR</p>
-            <div class="bg-constructivist-cream p-3">
-              <img
-                src="https://ghchart.rshah.org/D62828/nigoh"
-                alt="GitHub Contribution Calendar"
-                class="w-full"
-                loading="lazy"
-              />
-            </div>
-          </div>
-
-          {/* Stats バッジ */}
-          <div class="flex flex-wrap gap-2 mb-6">
-            <img src="https://img.shields.io/github/stars/nigoh?style=for-the-badge&logo=github&label=Stars&color=D62828" alt="GitHub Stars" loading="lazy" class="h-7" />
-            <img src="https://img.shields.io/github/followers/nigoh?style=for-the-badge&logo=github&label=Followers&color=D62828" alt="GitHub Followers" loading="lazy" class="h-7" />
-          </div>
-
-          {/* 言語分布グラフ */}
-          {topLangs.length > 0 ? (
-            <div>
-              <p class="text-xs text-constructivist-gray mb-2 font-body">LANGUAGE DISTRIBUTION (個人開発リポジトリより)</p>
-              <div class="flex h-3 overflow-hidden mb-3" aria-hidden="true">
-                {topLangs.map((lang) => (
-                  <div
-                    style={`width: ${lang.percent}%; background-color: ${lang.color};`}
-                    title={`${lang.name}: ${lang.percent}%`}
-                  />
-                ))}
-              </div>
-              <div class="flex flex-wrap gap-x-4 gap-y-1.5">
-                {topLangs.map((lang) => (
-                  <div class="flex items-center gap-1.5">
-                    <div class="w-3 h-3 shrink-0" style={`background-color: ${lang.color};`} />
-                    <span class="text-xs text-constructivist-cream font-body font-medium">{lang.name}</span>
-                    <span class="text-xs text-constructivist-gray font-body">{lang.percent}%</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div class="flex flex-wrap gap-2">
-              <img src="https://img.shields.io/badge/C%2FC++-00599C?style=flat-square&logo=c%2B%2B&logoColor=white" alt="C/C++" loading="lazy" />
-              <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" loading="lazy" />
-              <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" loading="lazy" />
-              <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript" loading="lazy" />
-              <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker" loading="lazy" />
-              <img src="https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux" loading="lazy" />
-            </div>
-          )}
+          <ul class="flex flex-wrap gap-2" aria-label="主な言語">
+            {heroKeywords.map((k) => <li class="tag">{k}</li>)}
+          </ul>
         </div>
-      </div>
-    </section>
+      </FlowNode>
 
-    {/* ═══════════════════ T7 アジプロ・マーキー（Skills/AI 境界・サイトで 1 本限定） ═══════════════════
-        既存キーワードの反復のみの純装飾（aria-hidden）。トラックを 2 連複製し -50% で無限ループ。 */}
-    <div class="bg-bauhaus-blue py-3 overflow-hidden" aria-hidden="true">
-      <div class="marquee-track flex w-max">
-        {[0, 1].map(() => (
-          <div class="flex items-center gap-6 pr-6 shrink-0">
-            {marqueeWords.map((word) => (
-              <>
-                <span class="font-sans text-3xl tracking-wider text-constructivist-cream uppercase whitespace-nowrap">{word}</span>
-                <span class="w-2 h-2 bg-constructivist-cream rotate-45 shrink-0"></span>
-              </>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-
-    {/* ═══════════════════ AI-Powered Development（索引 04・明側 = --c-page） ═══════════════════ */}
-    <section id="ai" class="relative py-20 overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役・向き合う 2 楔）— スクロール視差（§17.4・p-subtle） */}
-      <div class="parallax-layer p-subtle" aria-hidden="true">
-        <SectionAccent client:visible section="ai" />
-      </div>
-      {/* 紙の grain（ライトの明側のみ・静止＝視差なし） */}
-      <div class="grain-overlay" aria-hidden="true"></div>
-      {/* mid→loud: 見出し背後に回転した赤块（本文 z-10 より下・テキストに被せない・§4.2）。大装飾块は p-slow でドリフト */}
-      <div class="parallax-layer p-slow" aria-hidden="true">
-        <div class="destructive-block" style="left: 2%; top: 64px;">
-          <div class="w-20 h-20 sm:w-28 sm:h-28 bg-constructivist-red" style="transform: rotate(10deg);"></div>
-        </div>
-      </div>
-
-      <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* T1/T6b 見出しグループ */}
-        <div class="reveal-heading">
-          <p class="font-mono text-xs tracking-widest text-[var(--c-ink-muted)] mb-2" aria-hidden="true">04 / 07</p>
-          {/* loud 見出し: bleed + キネティック（letter-spacing 伸縮・§5.2） */}
-          <h2 class="bleed-heading kinetic-heading font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">AI-POWERED DEV</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mb-6" aria-hidden="true"></div>
-          <p class="text-[var(--c-ink-muted)] mb-2 font-body">
-            Claude Code・GitHub Copilot・OpenAI Codex・MCP を活用し、個人開発のすべての工程を AI と協働しています。
-          </p>
-          <p class="text-[var(--c-ink-muted)] mb-12 font-body text-sm">
-            Issue 起票から実装・PR・レビューまで AI ドリブンで回すワークフローを実践中。
-          </p>
-        </div>
-
-        <FadeIn client:visible direction="up" delay={200}>
-        <div class="grid gap-0 sm:grid-cols-2">
-          {aiTools.map((tool, i) => {
-            // アイコンチップは三原色を巡回。黄は暗字・赤/青は cream 字でコントラスト確保
-            const chip = [
-              { bg: 'bg-bauhaus-red', ink: 'text-constructivist-cream' },
-              { bg: 'bg-bauhaus-blue', ink: 'text-constructivist-cream' },
-              { bg: 'bg-bauhaus-yellow', ink: 'text-constructivist-black' },
-            ][i % 3];
-            return (
-            <div
-              class:list={[
-                "border-2 border-[var(--c-line)] p-6 hover:bg-[var(--c-block)] hover:text-[var(--c-block-ink)] transition-colors group",
-                { "border-t-0": i > 0 },
-                { "sm:border-t-2": i === 1 },
-                { "sm:border-l-0": i % 2 === 1 },
-              ]}
-            >
-              <div class="flex items-center gap-3 mb-3">
-                <div class:list={["w-10 h-10 flex items-center justify-center shrink-0", chip.bg]}>
-                  <svg class:list={["w-5 h-5", chip.ink]} fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                    {tool.icon.map((d) => (
-                      <path stroke-linecap="round" stroke-linejoin="round" d={d} />
-                    ))}
-                  </svg>
+      {/* ═══ 02 自己紹介 ═══ */}
+      <FlowNode id="about" n="02" title="自己紹介" en="about" icon="file-text">
+        <p class="mb-6 max-w-[60ch] text-lg font-bold">あるものを大切にしながら、変化にも柔軟に対応できるエンジニアを目指しています。</p>
+        <div class="grid gap-6 md:grid-cols-[minmax(0,240px)_minmax(0,1fr)] md:gap-8">
+          <dl class="well m-0 grid content-start gap-4 p-5">
+            {
+              profile.map((row) => (
+                <div>
+                  <dt class="text-sm text-ui-muted">{row.k}</dt>
+                  <dd class:list={['m-0 font-bold', { 'font-mono': row.mono }]}>{row.v}</dd>
                 </div>
-                <h3 class="font-sans text-2xl tracking-wide text-[var(--c-ink)] group-hover:text-[var(--c-block-ink)]">{tool.title}</h3>
-              </div>
-              <p class="text-[var(--c-ink-muted)] group-hover:text-[var(--c-block-muted)] text-sm font-body">
-                {tool.body}
-              </p>
-            </div>
-            );
-          })}
-        </div>
-        </FadeIn>
-
-        {/* INTEREST & FOCUS — 反転ブロック（--c-block）: ライト=黒パネル / ダーク=クリーム块 */}
-        <FadeIn client:visible direction="up" delay={300}>
-          <div class="mt-16 border-l-4 border-constructivist-red pl-6">
-            <h3 class="text-xs font-bold text-[var(--c-ink-muted)] uppercase tracking-widest mb-6 font-body">INTEREST & FOCUS</h3>
-            <div class="grid sm:grid-cols-3 gap-0">
-              <div class="bg-[var(--c-block)] border-2 border-[var(--c-block-ink)] p-5">
-                <h4 class="font-sans text-base tracking-wide text-[var(--c-block-ink)] mb-2">RAG / AI 意思決定支援</h4>
-                <p class="text-[var(--c-block-muted)] text-sm font-body">生成 AI を用いた RAG（検索拡張生成）による意思決定支援アプリの開発に強い関心を持ち、個人開発で実践中。</p>
-              </div>
-              <div class="bg-[var(--c-block)] border-2 border-[var(--c-block-ink)] border-t-0 sm:border-t-2 sm:border-l-0 p-5">
-                <h4 class="font-sans text-base tracking-wide text-[var(--c-block-ink)] mb-2">開発フロー整備</h4>
-                <p class="text-[var(--c-block-muted)] text-sm font-body">Docker による環境標準化・Git/GitLab を活用したチーム開発フロー設計・CI/CD パイプライン構築。</p>
-              </div>
-              <div class="bg-[var(--c-block)] border-2 border-[var(--c-block-ink)] border-t-0 sm:border-l-0 p-5">
-                <h4 class="font-sans text-base tracking-wide text-[var(--c-block-ink)] mb-2">技術普及・後進育成</h4>
-                <p class="text-[var(--c-block-muted)] text-sm font-body">チームへの技術指導・コードレビュー文化の醸成。AI ツールを活用した生産性向上の横展開。</p>
-              </div>
-            </div>
+              ))
+            }
+          </dl>
+          <div class="max-w-[68ch] space-y-4">
+            <p>
+              1984 年生まれ、北海道札幌市在住のソフトウェアエンジニアです。
+              低レイヤーからアプリケーションまで、幅広い領域でのシステム開発を行っています。
+              主に C/C++, Java, TypeScript, Python を使用し、AI ツールを活用し個人開発も行っています。
+            </p>
+            <p>
+              2026 年からは組み込み Android（専用端末向けアプリ）の開発に Java で従事し、
+              詳細設計・実装・試験を担当しています。
+              これまで C++ / C / Java を中心にオブジェクト指向設計を実践してきました。
+              変更容易性と関心の分離を意識した設計・実装を重視し、後進への技術指導も対応可能です。
+              Git / GitLab を活用したチーム開発フロー整備の経験もあります。
+            </p>
+            <p>
+              趣味は音楽鑑賞、映画鑑賞、サイクリング。
+              好きなアーティストは、チャーリーパーカー。
+              休日は自転車で札幌近郊を走ったり、読書をしたりしています。
+            </p>
           </div>
-        </FadeIn>
-      </div>
-    </section>
+        </div>
+      </FlowNode>
 
-    {/* ═══════════════════ Career（索引 05・暗側 = --c-field・両モード不変） ═══════════════════ */}
-    <section id="career" class="relative py-20 bg-constructivist-black overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役・縦の力線）— スクロール視差（§17.4・p-subtle） */}
-      <div class="parallax-layer p-subtle" aria-hidden="true">
-        <SectionAccent client:visible section="career" />
-      </div>
-
-      <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* T1/T6b 見出しグループ */}
-        <div class="reveal-heading">
-          <p class="font-mono text-xs tracking-widest text-constructivist-gray mb-2" aria-hidden="true">05 / 07</p>
-          {/* calm: 見出しのみ bleed。年表データ（縦ライン・マーカー・技術タグ）は厳密整列（§4.1） */}
-          <h2 class="bleed-heading font-sans text-heading-fluid text-constructivist-cream tracking-tight mb-3">CAREER</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-bauhaus-yellow mb-6" aria-hidden="true"></div>
-          <p class="text-constructivist-gray mb-12 font-body text-sm">
-            <span class="inline-block w-2 h-2 bg-bauhaus-yellow rotate-45 mr-1.5" aria-hidden="true"></span>
-            注: クライアント名・案件番号・具体的な機器名/製品名・詳細な期間は非掲載。業種・技術領域のみ一般化して記載。
-          </p>
+      {/* ═══ 03 スキル ═══ */}
+      <FlowNode id="skills" n="03" title="スキル" en="skills" icon="code">
+        <div class="grid gap-4 md:grid-cols-2">
+          {
+            skills.map((group) => (
+              <div class="well p-5">
+                <h3 class="flex items-baseline justify-between gap-3 text-lg font-bold">
+                  {group.label}
+                  <span class="font-mono text-sm font-normal text-ui-muted">{group.en}</span>
+                </h3>
+                {/* B 砂のメーター（physics-2026.spec）。数は管の下、読み上げは下の一覧 */}
+                <SandMeters items={group.items.map((it) => ({ short: it.short, level: it.level }))} />
+                <ul class="mt-4 space-y-2.5">
+                  {group.items.map((item) => (
+                    <li>
+                      <span class="font-bold">{item.name}</span>
+                      <span class="sr-only">（習熟度 {item.level}）</span>
+                      <p class="text-sm text-ui-muted">{item.description}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
         </div>
 
-        <FadeIn client:visible direction="up" delay={200}>
-          <div class="relative">
-            {/* 縦ライン */}
-            <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-constructivist-red" aria-hidden="true" />
-            <div class="space-y-10">
-              {career.map((item, i) => (
-                <div class="relative pl-14">
-                  {/* ダイヤモンドマーカー — 暗地で映える赤/黄を交互に（Bauhaus のリズム） */}
-                  <div
-                    class:list={[
-                      "absolute left-[15px] top-[10px] w-3 h-3 rotate-45",
-                      i % 2 === 0 ? "bg-bauhaus-red" : "bg-bauhaus-yellow",
-                    ]}
-                    aria-hidden="true"
-                  />
-                  <span class="font-sans text-2xl text-constructivist-red leading-none block mb-1">{item.year}</span>
-                  <p class="text-xs text-constructivist-gray font-mono mb-1">{item.period}</p>
-                  <h3 class="font-sans text-lg text-constructivist-cream tracking-wide mb-1">{item.industry}</h3>
-                  <p class="text-sm text-constructivist-gray font-body mb-2">{item.phase}</p>
-                  <div class="flex flex-wrap gap-2">
-                    {item.techs.map((tech) => (
-                      <span class="text-xs font-bold text-constructivist-black bg-constructivist-cream px-2 py-0.5 font-body tracking-wide">{tech}</span>
-                    ))}
-                  </div>
+        {/* GitHub の活動 */}
+        <div class="mt-10">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-lg font-bold">GitHub の活動 <span class="ml-1 font-mono text-sm font-normal text-ui-muted">個人開発</span></h3>
+            <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-[44px] items-center gap-1 font-bold text-ui-teal hover:underline">
+              github.com/nigoh <Icon name="arrow-up-right" size={16} />
+            </a>
+          </div>
+          <div class="well mt-3 p-3 sm:p-4">
+            <img
+              src="https://ghchart.rshah.org/167D6B/nigoh"
+              alt="GitHub のコントリビューションの草（1 年分）"
+              class="contrib-img w-full"
+              loading="lazy"
+            />
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <img src="https://img.shields.io/github/stars/nigoh?style=flat-square&logo=github&label=Stars&color=167D6B" alt="GitHub Stars" loading="lazy" class="h-5" />
+            <img src="https://img.shields.io/github/followers/nigoh?style=flat-square&logo=github&label=Followers&color=167D6B" alt="GitHub Followers" loading="lazy" class="h-5" />
+          </div>
+          {
+            topLangs.length > 0 && (
+              <div class="mt-5">
+                <p class="mb-2 text-sm text-ui-muted">言語の割合（個人開発のリポジトリより）</p>
+                <div class="flex h-3 gap-[3px]" aria-hidden="true">
+                  {topLangs.map((lang) => (
+                    <div class="rounded-[3px]" style={`width: ${lang.percent}%; background-color: ${lang.color};`} title={`${lang.name}: ${lang.percent}%`} />
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-
-    {/* ═══════════════════ Portfolio（索引 06・明側 = --c-page） ═══════════════════ */}
-    <section id="portfolio" class="relative py-20 overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役・中空枠のリズム）— スクロール視差（§17.4・p-subtle） */}
-      <div class="parallax-layer p-subtle" aria-hidden="true">
-        <SectionAccent client:visible section="portfolio" />
-      </div>
-      {/* 青い縦バー（PORTFOLIO の原色）— 本文と異なる速度でドリフト（§17.4） */}
-      <div class="parallax-layer" aria-hidden="true">
-        <div class="absolute top-0 right-0 w-2 h-full bg-bauhaus-blue pointer-events-none"></div>
-      </div>
-      {/* 紙の grain（ライトの明側のみ・静止＝視差なし） */}
-      <div class="grain-overlay" aria-hidden="true"></div>
-      {/* mid: 見出し右の空きに回転した赤块（テキストに被せない・z-10 より下・§4.1/§4.2）。大装飾块は p-slow */}
-      <div class="parallax-layer p-slow" aria-hidden="true">
-        <div class="destructive-block" style="right: 11%; top: 92px;">
-          <div class="w-16 h-16 sm:w-24 sm:h-24 bg-bauhaus-blue" style="transform: rotate(-12deg);"></div>
+                <ul class="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
+                  {topLangs.map((lang) => (
+                    <li class="flex items-center gap-2 text-sm">
+                      <span class="h-3 w-3 shrink-0 rounded-[3px]" style={`background-color: ${lang.color};`} aria-hidden="true" />
+                      <span class="font-bold">{lang.name}</span>
+                      <span class="font-mono text-ui-muted">{lang.percent}%</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
         </div>
-      </div>
+      </FlowNode>
 
-      <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* T1/T6b 見出しグループ */}
-        <div class="reveal-heading">
-          <p class="font-mono text-xs tracking-widest text-[var(--c-ink-muted)] mb-2" aria-hidden="true">06 / 07</p>
-          {/* mid: 見出し bleed。カード本文・タグは各カード内で整列（§4.1） */}
-          <h2 class="bleed-heading font-sans text-heading-fluid text-[var(--c-ink)] tracking-tight mb-3">PORTFOLIO</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-bauhaus-blue mb-6" aria-hidden="true"></div>
-          <p class="text-[var(--c-ink-muted)] mb-12 font-body text-sm">
-            <span class="inline-block w-2 h-2 bg-bauhaus-blue rotate-45 mr-1.5" aria-hidden="true"></span>
-            自己開発プロジェクト — GitHub の公開リポジトリからビルド時に自動生成。IN PROGRESS は現在製作中。
-          </p>
-        </div>
-
-        <FadeIn client:visible direction="up" delay={200}>
-          <div class="grid gap-0 sm:grid-cols-2">
-          {projects.map((project, i) => (
-            <a
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class:list={[
-                "misprint-box-red block border-2 border-[var(--c-line)] p-6 hover:bg-[var(--c-accent)] hover:border-[var(--c-accent)] group",
-                { "border-t-0": i > 0 },
-                { "sm:border-t-2": i === 1 },
-                { "sm:border-l-0": i % 2 === 1 },
-              ]}
-            >
-              <h3 class="font-sans text-2xl text-[var(--c-ink)] group-hover:text-constructivist-cream mb-3 tracking-wide">
-                {project.name}
-              </h3>
-              <p class="text-[var(--c-ink-muted)] group-hover:text-constructivist-cream text-sm mb-4 font-body">{project.description}</p>
-              <div class="flex flex-wrap gap-2">
-                {project.wip && (
-                  <span class="text-xs font-bold text-constructivist-cream bg-constructivist-red group-hover:bg-constructivist-cream group-hover:text-constructivist-red px-2 py-0.5 font-body tracking-wide">
-                    IN PROGRESS
+      {/* ═══ 04 AI と開発 ═══ */}
+      <FlowNode id="ai" n="04" title="AI と開発" en="ai" icon="users">
+        <p class="max-w-[66ch]">
+          Claude Code・GitHub Copilot・OpenAI Codex・MCP を活用し、個人開発のすべての工程を AI と協働しています。
+          Issue 起票から実装・PR・レビューまで AI ドリブンで回すワークフローを実践中。
+        </p>
+        {/* D 道具箱（physics-2026.spec）。飾り。同じ内容は下のカード */}
+        <ToolBox />
+        <ul class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {
+            aiTools.map((tool) => (
+              <li class="well flex flex-col gap-2 p-5">
+                <div class="flex items-center gap-3">
+                  <span class="grid h-9 w-9 shrink-0 place-items-center rounded-btn bg-ui-teal-tint text-ui-teal-ink" aria-hidden="true">
+                    <Icon name={tool.icon} />
                   </span>
+                  <h3 class="text-lg font-bold">{tool.title}</h3>
+                </div>
+                <p class="text-ui-muted">{tool.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+
+        <h3 class="mt-10 flex items-center gap-2 text-lg font-bold">
+          <Icon name="lightbulb" class="text-ui-muted" />
+          関心ごと
+        </h3>
+        <ul class="mt-3 grid gap-3 md:grid-cols-3">
+          {
+            interests.map((it) => (
+              <li class="well p-5">
+                <h4 class="font-bold">{it.title}</h4>
+                <p class="mt-1.5 text-ui-muted">{it.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </FlowNode>
+
+      {/* ═══ 05 経歴（案 B の帯グラフ ＋ 仕事の一覧）═══ */}
+      <FlowNode id="career" n="05" title="経歴" en="career" icon="git-branch">
+        <p class="mb-5 text-sm text-ui-muted">
+          注: クライアント名・案件番号・具体的な機器名/製品名・詳細な期間は非掲載。業種・技術領域のみ一般化して記載。
+        </p>
+        <CareerGantt items={ganttItems} from={ganttFrom} to={ganttTo} now={nowYear} />
+
+        {/* C 差すと見えるケーブル（physics-2026.spec）。プラグを差した仕事をモニターに出す */}
+        <h3 class="mb-3 mt-10 flex items-center gap-2 text-lg font-bold">
+          <Icon name="plug" class="text-ui-muted" />
+          差して見る
+          <span class="font-mono text-sm font-normal text-ui-muted">プラグをつまんで、仕事のコンセントへ</span>
+        </h3>
+        <CableBoard jobs={boardJobs} />
+      </FlowNode>
+
+      {/* ═══ 06 作品（案 C の作品ボード ＋ Zenn）═══ */}
+      <FlowNode id="portfolio" n="06" title="作品" en="portfolio" icon="globe">
+        <p class="max-w-[66ch] text-ui-muted">
+          自己開発のプロジェクト。GitHub の公開リポジトリからビルドのたびに作り直します。最終更新が 90 日以内なら「進行中」です。
+        </p>
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          {
+            boardColumns.map((col) => (
+              <div class="well flex flex-col gap-3 p-3 sm:p-4">
+                <h3 class="flex items-center gap-2 px-1 font-bold text-ui-muted">
+                  <Icon name={col.icon} class={col.tone} />
+                  {col.label}
+                  <span class="ml-auto font-mono text-sm font-normal">{col.items.length}</span>
+                </h3>
+                {col.items.length > 0 ? (
+                  <ul class="flex flex-col gap-3">
+                    {col.items.map((project) => (
+                      <li>
+                        <a href={project.url} target="_blank" rel="noopener noreferrer" class="card-link flex-col gap-2 p-4">
+                          <span class="flex items-start justify-between gap-3">
+                            <span class="break-words text-lg font-bold leading-snug">{project.name}</span>
+                            <Icon name="arrow-up-right" class="mt-1 shrink-0 text-ui-muted" />
+                          </span>
+                          <span class="text-ui-muted">{project.description}</span>
+                          <span class="flex flex-wrap items-center gap-2">
+                            {project.wip && (
+                              <span class="chip chip-teal">
+                                <Icon name="refresh-cw" size={15} />
+                                製作中
+                              </span>
+                            )}
+                            {project.tags.map((tag) => (
+                              <span class="tag">{tag}</span>
+                            ))}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="px-1 pb-1 text-sm text-ui-muted">いまはありません。</p>
                 )}
-                {project.tags.map((tag) => (
-                  <span class="text-xs font-bold text-[var(--c-ink)] group-hover:text-constructivist-cream border border-[var(--c-line)] group-hover:border-constructivist-cream px-2 py-0.5 font-body tracking-wide">
-                    {tag}
-                  </span>
-                ))}
               </div>
-            </a>
-          ))}
+            ))
+          }
         </div>
-        </FadeIn>
 
-        {/* Zenn 記事一覧 */}
-        <FadeIn client:visible direction="up" delay={300}>
-        <div class="mt-16">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xs font-bold text-[var(--c-ink-muted)] uppercase tracking-widest font-body">BLOG (ZENN)</h3>
-            <a
-              href="https://zenn.dev/hironobunigo"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-xs text-[var(--c-ink-muted)] hover:text-[var(--c-accent)] transition-colors font-body tracking-wider"
-            >
-              すべて見る →
+        {/* Zenn の記事 */}
+        <div class="mt-10">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="flex items-center gap-2 text-lg font-bold">
+              <Icon name="pen-line" class="text-ui-muted" />
+              書いたもの
+              <span class="font-mono text-sm font-normal text-ui-muted">zenn</span>
+            </h3>
+            <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-[44px] items-center gap-1 font-bold text-ui-teal hover:underline">
+              すべて見る <Icon name="arrow-up-right" size={16} />
             </a>
           </div>
-
-          {zennArticles.length > 0 ? (
-            <div class="space-y-0">
-              {zennArticles.map((article) => (
-                <a
-                  href={`https://zenn.dev/hironobunigo/articles/${article.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="misprint-box-red flex border-2 border-[var(--c-line)] border-b-0 last:border-b-2 overflow-hidden hover:bg-constructivist-black group"
-                >
-                  <div class="flex-1 p-5 min-w-0">
-                    <div class="flex items-center gap-2 mb-1.5">
-                      <span class={`text-xs font-bold px-2 py-0.5 font-body tracking-wide ${article.article_type === 'tech' ? 'text-constructivist-cream bg-constructivist-red' : 'text-constructivist-black bg-constructivist-cream border border-constructivist-black'}`}>
-                        {article.article_type === 'tech' ? 'TECH' : 'IDEA'}
+          {
+            zennArticles.length > 0 ? (
+              <ul class="mt-3 grid gap-3 md:grid-cols-2">
+                {zennArticles.map((article) => (
+                  <li>
+                    <a href={`https://zenn.dev/hironobunigo/articles/${article.slug}`} target="_blank" rel="noopener noreferrer" class="card-link h-full items-start gap-4 p-4">
+                      <span class="well grid h-14 w-14 shrink-0 place-items-center text-2xl" aria-hidden="true">{article.emoji}</span>
+                      <span class="flex min-w-0 flex-col gap-1.5">
+                        <span class="flex flex-wrap items-center gap-2 text-sm text-ui-muted">
+                          <span class:list={['chip', article.article_type === 'tech' ? 'chip-teal' : 'chip-mute']}>
+                            {article.article_type === 'tech' ? '技術' : 'アイデア'}
+                          </span>
+                          <span class="font-mono">{new Date(article.published_at).toLocaleDateString('ja-JP')}</span>
+                          {article.liked_count > 0 && (
+                            <span class="inline-flex items-center gap-1 font-mono">
+                              <Icon name="heart" size={14} />
+                              <span class="sr-only">いいね </span>
+                              {article.liked_count}
+                            </span>
+                          )}
+                        </span>
+                        <span class="line-clamp-2 font-bold leading-snug">{article.title}</span>
                       </span>
-                      <span class="text-xs text-[var(--c-ink-muted)] group-hover:text-constructivist-gray font-body">
-                        {new Date(article.published_at).toLocaleDateString('ja-JP')}
-                      </span>
-                      {article.liked_count > 0 && (
-                        <span class="text-xs text-[var(--c-ink-muted)] group-hover:text-constructivist-gray font-body">♥ {article.liked_count}</span>
-                      )}
-                    </div>
-                    <p class="font-body font-semibold text-[var(--c-ink)] group-hover:text-constructivist-cream leading-snug line-clamp-2">
-                      {article.title}
-                    </p>
-                    <p class="text-xs text-[var(--c-ink-muted)] group-hover:text-constructivist-gray mt-1.5 font-body">zenn.dev</p>
-                  </div>
-                  <div class="w-20 shrink-0 bg-constructivist-red flex items-center justify-center">
-                    <span class="text-3xl" aria-hidden="true">{article.emoji}</span>
-                  </div>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <a
-              href="https://zenn.dev/hironobunigo"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="misprint-box-red flex border-2 border-[var(--c-line)] overflow-hidden hover:bg-constructivist-black group"
-            >
-              <div class="flex-1 p-5">
-                <p class="font-body font-semibold text-[var(--c-ink)] group-hover:text-constructivist-cream">
-                  技術記事を Zenn で発信しています
-                </p>
-                <p class="text-xs text-[var(--c-ink-muted)] group-hover:text-constructivist-gray mt-1.5 font-body">zenn.dev</p>
-              </div>
-              <div class="w-20 shrink-0 bg-constructivist-red flex items-center justify-center">
-                <span class="text-2xl font-bold text-constructivist-cream font-sans">Z</span>
-              </div>
-            </a>
-          )}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="card-link mt-3 items-center gap-4 p-4">
+                <span class="well grid h-14 w-14 shrink-0 place-items-center font-mono text-xl font-bold" aria-hidden="true">Z</span>
+                <span class="font-bold">技術記事を Zenn で発信しています</span>
+              </a>
+            )
+          }
         </div>
-        </FadeIn>
-      </div>
-    </section>
+      </FlowNode>
 
-    {/* ═══════════════════ Contact（索引 07・暗側 = --c-field・両モード不変） ═══════════════════ */}
-    <section id="contact" class="relative py-20 bg-constructivist-black overflow-hidden">
-      {/* 3D アクセント装飾（軸測・脇役・円環 1 個）— スクロール視差（§17.4・p-subtle） */}
-      <div class="parallax-layer p-subtle" aria-hidden="true">
-        <SectionAccent client:visible section="contact" />
-      </div>
-      {/* 装飾的幾何学（大円・回転赤块）— 大装飾块は p-slow でドリフト（内側の中央寄せ/回転 transform は保持） */}
-      {/* 装飾的幾何学（三原色の締め）— 黄の大円環＋青の回転块＋赤の CTA で締める */}
-      <div class="parallax-layer p-slow" aria-hidden="true">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border-4 border-bauhaus-yellow opacity-20 pointer-events-none"></div>
-        <div class="absolute top-10 left-10 w-20 h-20 bg-bauhaus-blue transform rotate-12 opacity-30"></div>
-      </div>
-
-      <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* T1/T6b 見出しグループ（中央揃えセクションのため罫線は mx-auto） */}
-        <div class="reveal-heading">
-          <p class="font-mono text-xs tracking-widest text-constructivist-gray mb-2" aria-hidden="true">07 / 07</p>
-          {/* loud: 極大 CONTACT が中央から破断。赤块シャッターで刷り出す（clip-path steps・§5.2）。
-              大円・赤块の重なりは下部の装飾块が担う。CTA は中央整列で単独明快。 */}
-          <h2 class="contact-heading shutter-heading font-sans text-constructivist-cream tracking-tight mb-3">CONTACT</h2>
-          <div class="reveal-rule h-1 w-24 sm:w-32 bg-constructivist-red mx-auto mb-6" aria-hidden="true"></div>
-        </div>
-        <FadeIn client:visible direction="none">
-          <p class="text-constructivist-gray mb-10 font-body">
-            お仕事のご依頼やお問い合わせは、GitHub からお気軽にどうぞ。
-          </p>
-          <a
-            href="https://github.com/nigoh"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cursor-big
-            class="misprint-box-black inline-flex items-center gap-3 px-8 py-4 bg-constructivist-red hover:bg-constructivist-cream text-constructivist-cream hover:text-constructivist-black font-sans text-xl tracking-wider"
-          >
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-            </svg>
-            GITHUB.COM/NIGOH
+      {/* ═══ 07 連絡（end）═══ */}
+      <FlowNode id="contact" n="07" title="連絡" en="end">
+        <p class="max-w-[60ch] text-lg">お仕事のご依頼やお問い合わせは、GitHub からお気軽にどうぞ。</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="https://github.com/nigoh" target="_blank" rel="noopener noreferrer" class="btn btn-pri min-h-[52px] px-6 text-lg">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d={githubMark}></path></svg>
+            github.com/nigoh
           </a>
-        </FadeIn>
-      </div>
-    </section>
+          <a href="https://zenn.dev/hironobunigo" target="_blank" rel="noopener noreferrer" class="btn btn-sec min-h-[52px] px-6">
+            Zenn
+            <Icon name="arrow-up-right" size={17} />
+          </a>
+        </div>
+      </FlowNode>
+    </main>
 
-  </main>
+    <aside class="hidden lg:block">
+      <FlowRail />
+    </aside>
+  </div>
 
   <Footer />
 </BaseLayout>
-
-{/* 没入 3D ヒーローのスクロール進捗（§6.2）— #hero を通過する p=0→1 を --hero-p として設定する。
-    ScrollTimeline 非対応環境でも動く rAF 実装（メインスレッド節約のため rAF で throttle）。
-    ProunCanvas（3D）と .hero-h1-kinetic（H1）の両方がこの custom property を購読する。
-    PRM 時は駆動しない（CSS が尺を 100vh に畳み、Proun は完成姿勢の静的 SVG にフォールバック）。 */}
-<script>
-  (() => {
-    const hero = document.getElementById('hero');
-    if (!hero) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    let ticking = false;
-    const update = () => {
-      ticking = false;
-      const total = hero.offsetHeight - window.innerHeight;
-      const p = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / (total || 1)));
-      hero.style.setProperty('--hero-p', p.toFixed(4));
-    };
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
-      }
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    update();
-  })();
-</script>

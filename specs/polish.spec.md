@@ -1,5 +1,7 @@
 # Polish / 全体一貫性 仕様（Round 5）
 
+> **2026-11 置き換え**: 見た目（色・文字・構図・装飾・動き）は [`plug-2026.spec.md`](plug-2026.spec.md)（pipe-in のプラグ）に置き換えた。ここに書いた見た目の決まりは履歴として残す（掲載内容・セクション構成・a11y の考え方は引き続き有効）。
+
 > ステータス: **是正方針確定**。実装は frontend が `src/**` で行う。
 > 対象: `src/pages/index.astro`・`src/components/AnimatedHero.tsx`・`src/components/phaser/sections.ts`。
 > 前提: R1 Career / R2 Hero / R3 a11y / R4 モバイル&可視性 は完了済み。本書は **最小差分で全体の締まりを上げる** ことだけを扱う。コントラスト・レスポンシブ・reduced-motion は既存 spec（a11y / responsive / decoration）が基準で、ここでは再検証しない。

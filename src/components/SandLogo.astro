@@ -1,0 +1,23 @@
+---
+// A 砂のロゴ（specs/physics-2026.spec.md）。JS 無しではベクターのロゴをそのまま出す。
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+---
+
+<div class="sand-tray well" data-sand-logo>
+  <Logo id="hero" class="sand-fallback" />
+  <canvas class="sand-canvas" aria-hidden="true"></canvas>
+  <div class="tray-tools">
+    <button type="button" class="btn btn-sec tray-btn" data-gyro hidden>
+      <Icon name="smartphone" size={16} />
+      傾きで動かす
+    </button>
+    <button type="button" class="btn btn-sec tray-btn" data-reform hidden>もとに戻す</button>
+  </div>
+  <p class="tray-hint" data-hint hidden>なぞると崩れる・押すと砂が出る</p>
+</div>
+
+<script>
+  import { initSandLogo } from '../scripts/sandLogo';
+  initSandLogo();
+</script>

@@ -1,5 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
-  <rect width="100" height="100" rx="16" fill="#1a1a2e"/>
-  <rect x="2" y="2" width="96" height="96" rx="14" stroke="#3b82f6" stroke-width="2" fill="none"/>
-  <text x="50" y="65" text-anchor="middle" font-family="monospace" font-size="42" font-weight="bold" fill="#3b82f6">HN</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="560 -960 480 480">
+  <!-- nigoh のロゴの i（コンセント）とプラグ。specs/plug-2026.spec.md -->
+  <style>
+    .t{fill:#167d6b} .c{fill:#f2724b} .k{fill:none;stroke:#f2724b}
+    @media (prefers-color-scheme: dark){ .t{fill:#5fc4ab} .c{fill:#ff8a65} .k{stroke:#ff8a65} }
+  </style>
+  <defs><mask id="m" maskUnits="userSpaceOnUse" x="560" y="-960" width="480" height="480"><rect x="560" y="-960" width="480" height="480" fill="#fff"/><g transform="translate(685.5 -635.5) rotate(148.3)"><rect x="-26.5" y="26.15" width="53" height="29" rx="6"/><rect x="-26.5" y="-55.15" width="53" height="29" rx="6"/></g></mask></defs>
+  <circle class="t" cx="685.5" cy="-635.5" r="100" mask="url(#m)"/>
+  <path class="k" d="M952.7 -800.6L1054.8 -863.6" stroke-width="50" stroke-linecap="round"/>
+  <g class="c" transform="translate(791.1 -700.7) rotate(148.3)"><rect x="-87" y="25.15" width="87" height="31" rx="6"/><rect x="-87" y="-56.15" width="87" height="31" rx="6"/><rect x="-190" y="-83.6" width="103.4" height="167.2" rx="22"/></g>
 </svg>

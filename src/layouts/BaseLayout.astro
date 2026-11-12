@@ -5,8 +5,6 @@ interface Props {
 }
 
 import '../styles/global.css';
-import PosterIntro from '../components/PosterIntro.astro';
-import CustomCursor from '../components/CustomCursor.astro';
 
 const { title, description = 'H.Nigo - 札幌在住ソフトウェアエンジニアの自己紹介サイト' } = Astro.props;
 const base = import.meta.env.BASE_URL;
@@ -15,23 +13,27 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
 <!doctype html>
-<html lang="ja" data-theme="light">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {/* 配色モード初期化 — FOUC 防止のため描画前に <head> インラインで data-theme を確定
-        （localStorage.theme を優先し、無ければ prefers-color-scheme に追従） — redesign-2026-bold.spec §2.5 */}
+    {/* 配色の初期化 — 描画前に <head> で決める（FOUC 防止）。
+        手動の選択（localStorage.theme）があればそれを data-theme に入れる。無ければ何も入れず、
+        CSS の prefers-color-scheme に任せる（JS 無しでも OS の設定どおりに出る）。
+        動きを減らす設定でなければ js-anim を付け、プラグが差さる前の形から始める（specs/plug-2026.spec.md「動き」）。 */}
     <script is:inline>
       (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
         try {
           var stored = localStorage.getItem('theme');
-          var osDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          document.documentElement.setAttribute('data-theme', stored || (osDark ? 'dark' : 'light'));
-        } catch (e) {
-          document.documentElement.setAttribute('data-theme', 'light');
-        }
+          if (stored === 'dark' || stored === 'light') root.setAttribute('data-theme', stored);
+        } catch (e) {}
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('js-anim');
       })();
     </script>
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#211f1d" />
     <meta name="description" content={description} />
     <meta name="author" content="Hironobu Nigo" />
     <meta name="robots" content="index, follow" />
@@ -51,15 +53,15 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
     <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
-    {/* フォント読み込み — render-blocking @import を廃し preconnect + link に移設（trends-2026-refresh.spec F-5） */}
+    {/* フォント — pipe-in と同じ 2 書体（見出し・本文 Zen Kaku Gothic New / 数 JetBrains Mono） */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
     />
     <title>{title}</title>
-    <script type="application/ld+json" set:html={JSON.stringify({
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Hironobu Nigo",
@@ -81,12 +83,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
       ]
     })} />
   </head>
-  <body class="min-h-screen bg-[var(--c-page)] text-[var(--c-ink)] font-body antialiased">
-    {/* T6a 進捗バーは redesign-2026-bold.spec §3.1 の決定により廃止（進捗は番号列に集約） */}
-    {/* ポスター組み上げイントロ（§7・初回のみ）— body 先頭に置き、素の Hero を覆う */}
-    <PosterIntro />
-    {/* 幾何カスタムカーソル（§10.1・pointer:fine のみ・JS 成功後に有効化） */}
-    <CustomCursor />
+  <body class="min-h-screen font-sans text-base antialiased">
     <slot />
   </body>
 </html>

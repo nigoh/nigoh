@@ -1,0 +1,20 @@
+---
+// 傾きのつまみ（PC。specs/physics-2026.spec.md「傾きのつまみ」）。右の「流れ」の下に置く。
+// 点を引く・矢印キー・ダブルクリック（下向きに戻す）で、全部の物理の重力の向きを変える。JS 無しでは出さない。
+---
+
+<div class="tilt" data-tilt hidden>
+  <div class="mb-2 flex items-baseline justify-between px-2.5 text-sm">
+    <span class="font-bold text-ui-muted">傾き</span>
+    <span class="text-ui-muted" id="tilt-dir" data-tilt-dir>下向き</span>
+  </div>
+  <div class="tilt-pad" data-tilt-pad>
+    <button type="button" class="tilt-knob" data-tilt-knob aria-label="砂とケーブルを傾ける（矢印キーで向きを変える）" aria-describedby="tilt-dir"></button>
+  </div>
+  <p class="mt-2 px-2.5 text-sm text-ui-muted">引くと、砂とケーブルと札が傾く</p>
+</div>
+
+<script>
+  import { initTiltPad } from '../scripts/tiltPad';
+  initTiltPad();
+</script>

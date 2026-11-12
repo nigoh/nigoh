@@ -1,0 +1,17 @@
+---
+// D 道具箱（specs/physics-2026.spec.md）。AI と開発の道具の札を、剛体（matter.js）として箱に注ぐ。
+// 箱は飾り（canvas は aria-hidden）。同じ内容は下のカードの文にある。JS 無しでは出さない。
+---
+
+<div class="toolbox well" data-toolbox>
+  <canvas aria-hidden="true"></canvas>
+  <div class="tray-tools">
+    <button type="button" class="btn btn-sec tray-btn" data-shake>揺らす</button>
+  </div>
+  <p class="tray-hint is-top" aria-hidden="true">つまんで投げる・傾けると滑る</p>
+</div>
+
+<script>
+  import { initToolBox } from '../scripts/toolBox';
+  initToolBox();
+</script>

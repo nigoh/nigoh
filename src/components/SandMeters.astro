@@ -1,0 +1,28 @@
+---
+// B 砂のメーター（specs/physics-2026.spec.md）。項目ごとの管に、レベルの数だけ砂がたまる。
+// 絵は飾り（aria-hidden）。数と名前は下の一覧が読み上げ用に持つ。JS 無しでは CSS の塗りで高さを出す。
+interface Props {
+  items: { short: string; level: number }[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="tubes" data-sand-meters aria-hidden="true" style={`--n: ${items.length};`}>
+  {
+    items.map((it) => (
+      <div class="tube">
+        <div class="glass" data-level={it.level} style={`--lv: ${it.level}%;`}>
+          <canvas />
+        </div>
+        <span class="tube-name">{it.short}</span>
+        <span class="tube-lv font-mono">{it.level}</span>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  import { initSandMeters } from '../scripts/sandMeters';
+  initSandMeters();
+</script>

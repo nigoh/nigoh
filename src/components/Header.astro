@@ -1,243 +1,166 @@
 ---
-// 地図/索引ナビ（redesign-2026-bold.spec §3）
-// 現行の水平リンク列を廃し、常設番号列 01–07 ＋ フル画面地図（dialog）＋ 配色トグルへ再構築。
-const base = import.meta.env.BASE_URL;
+// 上の帯（specs/plug-2026.spec.md「構図」）
+// [ロゴ nigoh] ……… [いまの段（lg 未満）] [明るい/暗い]
+// lg 未満は「いまの段」のボタンから、流れ（目次）を下から出るシート（<dialog>）で開く。
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import FlowList from './FlowList.astro';
+import { flowSections } from './flowSections';
 
-interface Section {
-  n: string;
-  id: string;
-  label: string;
-}
-
-// Hero を 01 に昇格し 01–07 に統一（index.astro のセクション id と一致させる）
-const sections: Section[] = [
-  { n: '01', id: 'hero', label: 'HERO' },
-  { n: '02', id: 'about', label: 'ABOUT' },
-  { n: '03', id: 'skills', label: 'SKILLS' },
-  { n: '04', id: 'ai', label: 'AI DEV' },
-  { n: '05', id: 'career', label: 'CAREER' },
-  { n: '06', id: 'portfolio', label: 'PORTFOLIO' },
-  { n: '07', id: 'contact', label: 'CONTACT' },
-];
+const first = flowSections[0];
 ---
 
-{/* スキップリンク — main へ（キーボード動線短縮・§11） */}
 <a href="#main-content" class="skip-link">本文へスキップ</a>
 
-{/* ═══ 上部バー（§3.3・縮約） ═══ */}
 <header class="topbar" id="topbar">
-  <a href={base} class="misprint-text font-sans text-2xl tracking-widest leading-none">H.NIGO</a>
+  <div class="mx-auto flex h-full max-w-[1200px] items-center gap-3 px-4 sm:px-6 lg:px-8">
+    <a href="#hero" class="flex h-11 items-center rounded-btn" aria-label="nigoh（ページの先頭へ）">
+      <Logo id="top" class="h-[30px] w-auto" />
+    </a>
 
-  {/* 中央: 現在地ラベル（情報は番号列が担うため aria-hidden） */}
-  <p class="cur-label font-sans text-xl tracking-wider hidden sm:block" aria-hidden="true">
-    <span class="font-mono text-sm" id="cur-num">01</span> — <b id="cur-name">HERO</b>
-  </p>
+    <div class="ml-auto flex items-center gap-2">
+      <button
+        id="flow-open"
+        type="button"
+        class="flex min-h-[44px] items-center gap-2 rounded-btn border border-ui-edge bg-ui-panel px-3 text-base font-bold hover:border-ui-teal lg:hidden"
+        aria-haspopup="dialog"
+        aria-controls="flow-sheet"
+      >
+        <Icon name="refresh-cw" size={16} class="text-ui-teal" />
+        <span class="font-mono text-sm font-normal text-ui-muted" id="flow-cur-n">{first.n}</span>
+        <span id="flow-cur-label">{first.label}</span>
+        <Icon name="chevron-down" size={16} />
+        <span class="sr-only">— 目次を開く</span>
+      </button>
 
-  <div class="flex items-center gap-3">
-    <button
-      id="theme-switch"
-      type="button"
-      class="theme-switch"
-      aria-pressed="false"
-      aria-label="配色モード切替（ライト / ダーク）"
-    ></button>
-    <button
-      id="index-btn"
-      type="button"
-      class="idx-btn"
-      aria-haspopup="dialog"
-      aria-expanded="false"
-      aria-controls="map-overlay"
-    >
-      INDEX ▨
-    </button>
+      <button
+        id="theme-switch"
+        type="button"
+        class="icon-btn"
+        aria-pressed="false"
+        aria-label="暗い画面にする"
+      >
+        <Icon name="moon" class="theme-moon" />
+        <Icon name="sun" class="theme-sun" />
+      </button>
+    </div>
   </div>
 </header>
 
-{/* ═══ 常設 番号列（§3.1・右端固定） ═══ */}
-<nav class="railnav" aria-label="セクション索引">
-  {
-    sections.map((s) => (
-      <a href={`#${s.id}`} data-name={s.label} aria-current={s.id === 'hero' ? 'page' : undefined}>
-        {s.n}
-      </a>
-    ))
-  }
-</nav>
-
-{/* ═══ フル画面 地図インデックス（§3.2・dialog） ═══ */}
-<div
-  class="map-overlay"
-  id="map-overlay"
-  role="dialog"
-  aria-modal="true"
-  aria-label="セクション索引"
-  data-open="false"
->
-  <p class="map-title">SITE INDEX — 07 SECTIONS</p>
-  <button id="map-close" type="button" class="idx-btn map-close">CLOSE ✕</button>
-  <div class="map-grid">
-    {
-      sections.map((s, i) => (
-        <a
-          href={`#${s.id}`}
-          class:list={['plate', `p${i + 1}`, { 'is-current': s.id === 'hero' }]}
-        >
-          <span class="p-num">{s.n}</span>
-          <span class="p-name">{s.label}</span>
-          <i class="glyph" aria-hidden="true" />
-        </a>
-      ))
-    }
+<dialog id="flow-sheet" class="flow-sheet" aria-labelledby="flow-sheet-title">
+  <div class="flex items-center justify-between gap-3 border-b border-ui-line px-5 py-3">
+    <p id="flow-sheet-title" class="font-bold">流れ（目次）</p>
+    <button id="flow-close" type="button" class="icon-btn" aria-label="閉じる">
+      <Icon name="x" />
+    </button>
   </div>
-</div>
+  <div class="px-3 pb-[max(16px,env(safe-area-inset-bottom))] pt-2">
+    <FlowList />
+  </div>
+</dialog>
 
-<script is:inline>
-  (function () {
-    'use strict';
+<script>
+  // ── 明るい/暗いの切り替え（手動の選択は localStorage.theme に残す。無ければ OS に従う）──
+  const root = document.documentElement;
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const themeBtn = document.getElementById('theme-switch');
 
-    // このスクリプトは Header（main より前）でインライン実行されるため、
-    // main 内のセクション参照は DOM 構築後に初期化する。
-    function init() {
-    var root = document.documentElement;
-
-    /* ── 配色トグル（手動上書き・localStorage 永続）＋ OS 追従 ── */
-    var sw = document.getElementById('theme-switch');
-    function syncSwitch() {
-      if (sw) sw.setAttribute('aria-pressed', String(root.getAttribute('data-theme') === 'dark'));
+  const isDark = (): boolean => {
+    const t = root.getAttribute('data-theme');
+    return t ? t === 'dark' : media.matches;
+  };
+  const syncTheme = (): void => {
+    if (!themeBtn) return;
+    const dark = isDark();
+    themeBtn.setAttribute('aria-pressed', String(dark));
+    themeBtn.setAttribute('aria-label', dark ? '明るい画面にする' : '暗い画面にする');
+  };
+  themeBtn?.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      // 保存できない環境（プライベートウィンドウ等）では、このページの間だけ切り替える
     }
-    syncSwitch();
-    if (sw) {
-      sw.addEventListener('click', function () {
-        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        root.setAttribute('data-theme', next);
-        try {
-          localStorage.setItem('theme', next);
-        } catch (e) {}
-        syncSwitch();
-      });
-    }
-    // 手動上書きが無いときだけ OS に追従
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-      var stored = null;
-      try {
-        stored = localStorage.getItem('theme');
-      } catch (err) {}
-      if (!stored) {
-        root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-        syncSwitch();
+    syncTheme();
+  });
+  media.addEventListener('change', syncTheme);
+  syncTheme();
+
+  // ── スマホの流れ（<dialog> のシート）──
+  const sheet = document.getElementById('flow-sheet');
+  const openBtn = document.getElementById('flow-open');
+  const closeBtn = document.getElementById('flow-close');
+  if (sheet instanceof HTMLDialogElement && openBtn && closeBtn) {
+    openBtn.addEventListener('click', () => sheet.showModal());
+    closeBtn.addEventListener('click', () => sheet.close());
+    // 外側（::backdrop）を押したら閉じる
+    sheet.addEventListener('click', (e) => {
+      if (e.target === sheet) sheet.close();
+    });
+    sheet.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => sheet.close()));
+  }
+
+  // ── いまの段（完了・いまここ・まだ）と、ブロックが入ったらプラグが差さる ──
+  const rows = Array.from(document.querySelectorAll<HTMLElement>('.flow-row'));
+  const ids = rows.map((r) => r.id);
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-flow-link]'));
+  const curN = document.getElementById('flow-cur-n');
+  const curLabel = document.getElementById('flow-cur-label');
+  const counts = Array.from(document.querySelectorAll<HTMLElement>('[data-flow-count]'));
+
+  const setCurrent = (id: string): void => {
+    const idx = ids.indexOf(id);
+    if (idx < 0) return;
+    const stateOf = (i: number): string => (i < idx ? 'done' : i === idx ? 'current' : 'todo');
+    rows.forEach((r, i) => {
+      r.dataset.state = stateOf(i);
+      r.classList.toggle('is-current', i === idx);
+    });
+    links.forEach((a) => {
+      const i = ids.indexOf(a.dataset.flowLink ?? '');
+      a.dataset.state = stateOf(i);
+      if (i === idx) a.setAttribute('aria-current', 'step');
+      else a.removeAttribute('aria-current');
+      if (i === idx) {
+        const n = a.querySelector('.font-mono')?.textContent ?? '';
+        const label = a.lastElementChild?.textContent ?? '';
+        if (curN) curN.textContent = n;
+        if (curLabel) curLabel.textContent = label;
+        counts.forEach((c) => (c.textContent = n));
       }
     });
+  };
 
-    /* ── 番号列 現在地（IntersectionObserver）＋ 上部バー現在ラベル＋地図プレート ── */
-    var railLinks = Array.prototype.slice.call(document.querySelectorAll('.railnav a'));
-    var plates = Array.prototype.slice.call(document.querySelectorAll('.plate'));
-    var curNum = document.getElementById('cur-num');
-    var curName = document.getElementById('cur-name');
-    function setCurrent(id) {
-      railLinks.forEach(function (a) {
-        var on = a.getAttribute('href') === '#' + id;
-        if (on) {
-          a.setAttribute('aria-current', 'page');
-          if (curNum) curNum.textContent = a.textContent.trim();
-          if (curName) curName.textContent = a.getAttribute('data-name') || '';
-        } else {
-          a.removeAttribute('aria-current');
-        }
-      });
-      plates.forEach(function (p) {
-        p.classList.toggle('is-current', p.getAttribute('href') === '#' + id);
-      });
-    }
-    var ids = ['hero', 'about', 'skills', 'ai', 'career', 'portfolio', 'contact'];
-    var targets = ids
-      .map(function (id) {
-        return document.getElementById(id);
-      })
-      .filter(Boolean);
-    if ('IntersectionObserver' in window && targets.length) {
-      var io = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (e) {
-            if (e.isIntersecting) setCurrent(e.target.id);
-          });
-        },
-        // 現在地判定の帯（redesign-2026-bold.spec §6.2 の落とし穴対応）。
-        // Hero は 250vh sticky で尺が伸びる。観測対象はその 250vh ラッパー（#hero）自体なので、
-        // 上寄り（35%）に判定線を置くと Hero 通過中は Hero が現在地に留まり、
-        // 直後に About が判定線を越えて手前で切り替わる（帯が薄すぎて谷が出るのを防ぐ）。
-        { rootMargin: '-35% 0px -55% 0px' }
-      );
-      targets.forEach(function (t) {
-        io.observe(t);
-      });
-    }
-
-    /* ── フル地図 dialog（開閉・フォーカストラップ・Esc・inert・フォーカス復帰） ── */
-    var overlay = document.getElementById('map-overlay');
-    var idxBtn = document.getElementById('index-btn');
-    var closeBtn = document.getElementById('map-close');
-    var lastFocus = null;
-    var bgEls = [
-      document.getElementById('topbar'),
-      document.querySelector('.railnav'),
-      document.getElementById('main-content'),
-      document.querySelector('footer'),
-    ].filter(Boolean);
-    function focusables() {
-      return [closeBtn].concat(Array.prototype.slice.call(overlay.querySelectorAll('.plate')));
-    }
-    function onKey(e) {
-      if (e.key === 'Escape') {
-        closeMap();
-        return;
-      }
-      if (e.key === 'Tab') {
-        var f = focusables();
-        var i = f.indexOf(document.activeElement);
-        if (e.shiftKey && i <= 0) {
-          e.preventDefault();
-          f[f.length - 1].focus();
-        } else if (!e.shiftKey && i === f.length - 1) {
-          e.preventDefault();
-          f[0].focus();
-        }
-      }
-    }
-    function openMap() {
-      lastFocus = document.activeElement;
-      overlay.setAttribute('data-open', 'true');
-      idxBtn.setAttribute('aria-expanded', 'true');
-      bgEls.forEach(function (el) {
-        el.setAttribute('inert', '');
-      });
-      document.body.style.overflow = 'hidden';
-      document.addEventListener('keydown', onKey);
-      closeBtn.focus();
-    }
-    function closeMap() {
-      overlay.setAttribute('data-open', 'false');
-      idxBtn.setAttribute('aria-expanded', 'false');
-      bgEls.forEach(function (el) {
-        el.removeAttribute('inert');
-      });
-      document.body.style.overflow = '';
-      document.removeEventListener('keydown', onKey);
-      if (lastFocus && lastFocus.focus) lastFocus.focus();
-    }
-    if (overlay && idxBtn && closeBtn) {
-      idxBtn.addEventListener('click', openMap);
-      closeBtn.addEventListener('click', closeMap);
-      plates.forEach(function (p) {
-        p.addEventListener('click', closeMap);
-      });
-    }
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
-  })();
+  if ('IntersectionObserver' in window && rows.length) {
+    // 画面の上から 35〜45% の帯にかかった段を「いまここ」にする
+    const current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setCurrent((e.target as HTMLElement).id);
+        });
+      },
+      { rootMargin: '-35% 0px -55% 0px' }
+    );
+    // ブロックが少しでも見えたらプラグを差す（1 回だけ）
+    const plug = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            plug.unobserve(e.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -10% 0px' }
+    );
+    rows.forEach((r) => {
+      current.observe(r);
+      plug.observe(r);
+    });
+    setCurrent(ids[0]);
+  } else {
+    rows.forEach((r) => r.classList.add('is-in'));
+  }
 </script>

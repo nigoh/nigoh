@@ -1,0 +1,56 @@
+---
+// nigoh のロゴ（specs/plug-2026.spec.md「ロゴ（案 D）」）。形は logoShape.ts。
+// 色は --c-logo-teal / --c-logo-coral（明るい/暗いで値が替わる）。穴は mask で抜く（地が透ける）。
+import {
+  LOGO_VIEWBOX,
+  GLYPHS_D,
+  OUTLET,
+  OUTLET_TRANSFORM,
+  SLOTS,
+  CABLE_D,
+  ORIGIN,
+  PLUG_TRANSFORM,
+  PLUG_PARTS,
+} from './logoShape';
+
+interface Props {
+  /** mask の id を呼び出しごとに分けるための名前（同じページで 2 回使う） */
+  id: string;
+  class?: string;
+  /** 読み上げる名前。省略すると飾り（aria-hidden） */
+  label?: string;
+}
+
+const { id, class: className, label } = Astro.props;
+const maskId = `logo-outlet-${id}`;
+---
+
+<svg
+  class={className}
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox={LOGO_VIEWBOX}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <defs>
+    <mask id={maskId} maskUnits="userSpaceOnUse" x="20" y="-990" width="2650" height="1220">
+      <rect x="20" y="-990" width="2650" height="1220" fill="#fff"></rect>
+      <g transform={OUTLET_TRANSFORM} fill="#000">
+        {SLOTS.map((r) => <rect x={r.x} y={r.y} width={r.width} height={r.height} rx={r.rx}></rect>)}
+      </g>
+    </mask>
+  </defs>
+  <g style="fill: var(--c-logo-teal)">
+    <path d={GLYPHS_D}></path>
+    <circle cx={OUTLET.cx} cy={OUTLET.cy} r={OUTLET.r} mask={`url(#${maskId})`}></circle>
+  </g>
+  <g style="fill: var(--c-logo-coral)">
+    <path d={CABLE_D} style="fill: none; stroke: var(--c-logo-coral)" stroke-width="50" stroke-linecap="round"></path>
+    <circle cx={ORIGIN.cx} cy={ORIGIN.cy} r={ORIGIN.r}></circle>
+    <g transform={PLUG_TRANSFORM}>
+      {PLUG_PARTS.map((r) => <rect x={r.x} y={r.y} width={r.width} height={r.height} rx={r.rx}></rect>)}
+    </g>
+  </g>
+</svg>
