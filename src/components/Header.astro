@@ -1,66 +1,26 @@
 ---
-// 上の帯（specs/plug-2026.spec.md「構図」）
-// [ロゴ nigoh] ……… [いまの段（lg 未満）] [明るい/暗い]
-// lg 未満は「いまの段」のボタンから、流れ（目次）を下から出るシート（<dialog>）で開く。
+// 上の帯（specs/shell-2026.spec.md「構図」）：[ロゴ nigoh] ……… [明るい/暗い]
+// 段の切り替えは「流れ」（StageRail.astro）が受け持つ。
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import FlowList from './FlowList.astro';
-import { flowSections } from './flowSections';
-
-const first = flowSections[0];
 ---
 
 <a href="#main-content" class="skip-link">本文へスキップ</a>
 
 <header class="topbar" id="topbar">
-  <div class="mx-auto flex h-full max-w-[1200px] items-center gap-3 px-4 sm:px-6 lg:px-8">
-    <a href="#hero" class="flex h-11 items-center rounded-btn" aria-label="nigoh（ページの先頭へ）">
+  <div class="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+    <a href="#hero" class="flex h-11 items-center rounded-btn" aria-label="nigoh（はじめへ）">
       <Logo id="top" class="h-[30px] w-auto" />
     </a>
-
-    <div class="ml-auto flex items-center gap-2">
-      <button
-        id="flow-open"
-        type="button"
-        class="flex min-h-[44px] items-center gap-2 rounded-btn border border-ui-edge bg-ui-panel px-3 text-base font-bold hover:border-ui-teal lg:hidden"
-        aria-haspopup="dialog"
-        aria-controls="flow-sheet"
-      >
-        <Icon name="refresh-cw" size={16} class="text-ui-teal" />
-        <span class="font-mono text-sm font-normal text-ui-muted" id="flow-cur-n">{first.n}</span>
-        <span id="flow-cur-label">{first.label}</span>
-        <Icon name="chevron-down" size={16} />
-        <span class="sr-only">— 目次を開く</span>
-      </button>
-
-      <button
-        id="theme-switch"
-        type="button"
-        class="icon-btn"
-        aria-pressed="false"
-        aria-label="暗い画面にする"
-      >
-        <Icon name="moon" class="theme-moon" />
-        <Icon name="sun" class="theme-sun" />
-      </button>
-    </div>
+    <button id="theme-switch" type="button" class="icon-btn" aria-pressed="false" aria-label="暗い画面にする">
+      <Icon name="moon" class="theme-moon" />
+      <Icon name="sun" class="theme-sun" />
+    </button>
   </div>
 </header>
 
-<dialog id="flow-sheet" class="flow-sheet" aria-labelledby="flow-sheet-title">
-  <div class="flex items-center justify-between gap-3 border-b border-ui-line px-5 py-3">
-    <p id="flow-sheet-title" class="font-bold">流れ（目次）</p>
-    <button id="flow-close" type="button" class="icon-btn" aria-label="閉じる">
-      <Icon name="x" />
-    </button>
-  </div>
-  <div class="px-3 pb-[max(16px,env(safe-area-inset-bottom))] pt-2">
-    <FlowList />
-  </div>
-</dialog>
-
 <script>
-  // ── 明るい/暗いの切り替え（手動の選択は localStorage.theme に残す。無ければ OS に従う）──
+  // 明るい/暗いの切り替え（手動の選択は localStorage.theme に残す。無ければ OS に従う）
   const root = document.documentElement;
   const media = window.matchMedia('(prefers-color-scheme: dark)');
   const themeBtn = document.getElementById('theme-switch');
@@ -87,80 +47,4 @@ const first = flowSections[0];
   });
   media.addEventListener('change', syncTheme);
   syncTheme();
-
-  // ── スマホの流れ（<dialog> のシート）──
-  const sheet = document.getElementById('flow-sheet');
-  const openBtn = document.getElementById('flow-open');
-  const closeBtn = document.getElementById('flow-close');
-  if (sheet instanceof HTMLDialogElement && openBtn && closeBtn) {
-    openBtn.addEventListener('click', () => sheet.showModal());
-    closeBtn.addEventListener('click', () => sheet.close());
-    // 外側（::backdrop）を押したら閉じる
-    sheet.addEventListener('click', (e) => {
-      if (e.target === sheet) sheet.close();
-    });
-    sheet.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => sheet.close()));
-  }
-
-  // ── いまの段（完了・いまここ・まだ）と、ブロックが入ったらプラグが差さる ──
-  const rows = Array.from(document.querySelectorAll<HTMLElement>('.flow-row'));
-  const ids = rows.map((r) => r.id);
-  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-flow-link]'));
-  const curN = document.getElementById('flow-cur-n');
-  const curLabel = document.getElementById('flow-cur-label');
-  const counts = Array.from(document.querySelectorAll<HTMLElement>('[data-flow-count]'));
-
-  const setCurrent = (id: string): void => {
-    const idx = ids.indexOf(id);
-    if (idx < 0) return;
-    const stateOf = (i: number): string => (i < idx ? 'done' : i === idx ? 'current' : 'todo');
-    rows.forEach((r, i) => {
-      r.dataset.state = stateOf(i);
-      r.classList.toggle('is-current', i === idx);
-    });
-    links.forEach((a) => {
-      const i = ids.indexOf(a.dataset.flowLink ?? '');
-      a.dataset.state = stateOf(i);
-      if (i === idx) a.setAttribute('aria-current', 'step');
-      else a.removeAttribute('aria-current');
-      if (i === idx) {
-        const n = a.querySelector('.font-mono')?.textContent ?? '';
-        const label = a.lastElementChild?.textContent ?? '';
-        if (curN) curN.textContent = n;
-        if (curLabel) curLabel.textContent = label;
-        counts.forEach((c) => (c.textContent = n));
-      }
-    });
-  };
-
-  if ('IntersectionObserver' in window && rows.length) {
-    // 画面の上から 35〜45% の帯にかかった段を「いまここ」にする
-    const current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setCurrent((e.target as HTMLElement).id);
-        });
-      },
-      { rootMargin: '-35% 0px -55% 0px' }
-    );
-    // ブロックが少しでも見えたらプラグを差す（1 回だけ）
-    const plug = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('is-in');
-            plug.unobserve(e.target);
-          }
-        });
-      },
-      { rootMargin: '0px 0px -10% 0px' }
-    );
-    rows.forEach((r) => {
-      current.observe(r);
-      plug.observe(r);
-    });
-    setCurrent(ids[0]);
-  } else {
-    rows.forEach((r) => r.classList.add('is-in'));
-  }
 </script>

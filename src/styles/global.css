@@ -308,154 +308,72 @@ p {
     }
   }
 
-  /* ═══ 流れ（セクション＝ブロックをケーブルでつなぐ）═══
-     --bus-x   : ケーブル（縦）の中心の x（行の左から）
-     --node-pad: 行の左の余白＝ブロックの左の縁の x
-     --node-pt : ブロックの上の余白。--stub-y はブロックの頭の 1 行目の中心 */
-  .flow {
-    --bus-x: 12px;
-    --node-pad: 46px;
-    --node-pt: 20px;
-    --stub-y: calc(var(--node-pt) + 20px);
+  /* ═══ 1 画面の作業台（specs/shell-2026.spec.md）═══
+     左の「流れ」の段にプラグを差すと、右の出力の面にその段だけ出る。 */
+  .shell {
+    flex: 1 0 auto;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 76px 16px 12px;
+  }
+  @media (min-width: 640px) {
+    .shell {
+      padding-inline: 24px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .shell {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      align-items: start;
+      padding: 80px 32px 12px;
+    }
+  }
+
+  /* 出力の面 */
+  .pane-card {
     display: flex;
     flex-direction: column;
     min-width: 0;
-  }
-  @media (min-width: 640px) {
-    .flow {
-      --bus-x: 16px;
-      --node-pad: 58px;
-      --node-pt: 26px;
-    }
-  }
-
-  .flow-row {
-    position: relative;
-    padding-left: var(--node-pad);
-    padding-bottom: 28px;
-  }
-  .flow-row:last-child {
-    padding-bottom: 0;
-  }
-  /* 縦のケーブル */
-  .flow-row::before {
-    content: '';
-    position: absolute;
-    left: calc(var(--bus-x) - 1.5px);
-    top: 0;
-    bottom: 0;
-    border-left: 3px solid var(--c-teal);
-  }
-  /* 最初の段：枝から下へ曲がる角を丸める */
-  .flow-row:first-child::before {
-    top: calc(var(--stub-y) - 1.5px);
-    width: 16px;
-    border-top: 3px solid var(--c-teal);
-    border-top-left-radius: 12px;
-  }
-  /* 最後の段：下りてきたケーブルが曲がって枝になる角を丸める（半径 12px） */
-  .flow-row:last-child::before {
-    bottom: auto;
-    height: calc(var(--stub-y) + 1.5px);
-    width: 16px;
-    border-bottom: 3px solid var(--c-teal);
-    border-bottom-left-radius: 12px;
-  }
-  /* 枝（ケーブルからプラグの背まで） */
-  .flow-row::after {
-    content: '';
-    position: absolute;
-    left: var(--bus-x);
-    top: calc(var(--stub-y) - 1.5px);
-    width: calc(var(--node-pad) - var(--bus-x) - 20px);
-    border-top: 3px solid var(--c-teal);
-  }
-  /* 最初と最後の段は、丸めた角のあとから枝を引く（角を直線で潰さない） */
-  .flow-row:first-child::after,
-  .flow-row:last-child::after {
-    left: calc(var(--bus-x) + 12px);
-    width: calc(var(--node-pad) - var(--bus-x) - 32px);
-  }
-  /* 分かれる所にだけ点（pipe-in のケーブルの決まり） */
-  .flow-jn {
-    position: absolute;
-    left: calc(var(--bus-x) - 5px);
-    top: calc(var(--stub-y) - 5px);
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--c-teal);
-  }
-  .flow-row:first-child .flow-jn,
-  .flow-row:last-child .flow-jn {
-    display: none;
-  }
-
-  /* プラグとコンセント（ブロックの左の縁） */
-  .flow-plug {
-    position: absolute;
-    z-index: 2;
-    left: calc(var(--node-pad) - 26px);
-    top: calc(var(--stub-y) - 14px);
-    width: 44px;
-    height: 28px;
-    overflow: visible;
-  }
-  .fp-move {
-    fill: var(--c-coral);
-  }
-  .fp-socket {
-    fill: var(--c-teal);
-  }
-  .fp-holes {
-    fill: var(--c-canvas);
-    opacity: 0;
-  }
-  .fp-ring {
-    fill: none;
-    stroke: var(--c-teal);
-    stroke-width: 2;
-    opacity: 0;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-
-  /* 動き：JS が動き、動きを減らす設定でないときだけ、差さる前の形から始める */
-  .js-anim .flow-row .fp-move {
-    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .js-anim .flow-row .fp-holes {
-    transition: opacity 0.25s ease 0.25s;
-  }
-  .js-anim .flow-row:not(.is-in) .fp-move {
-    transform: translateX(-12px);
-  }
-  .js-anim .flow-row:not(.is-in) .fp-holes {
-    opacity: 1;
-  }
-  .js-anim .flow-row.is-in .fp-ring {
-    animation: fp-ring 0.6s ease-out 0.4s 1 both;
-  }
-
-  /* ブロック */
-  .flow-node {
-    position: relative;
+    padding: 22px 18px 18px;
     background: var(--c-panel);
     border-radius: 20px;
     box-shadow: var(--c-shadow);
-    padding: var(--node-pt) 18px 24px 26px;
-    min-width: 0;
   }
   @media (min-width: 640px) {
-    .flow-node {
-      padding: var(--node-pt) 32px 32px 36px;
+    .pane-card {
+      padding: 28px 32px 22px;
     }
   }
-  .flow-row.is-current .flow-node {
-    outline: 2px solid var(--c-teal);
-    outline-offset: 0;
+  @media (min-width: 1024px) {
+    /* body は縦の flex で、.shell が残りの高さを取る。面をその高さまで伸ばして、フッターまで 1 画面に収める */
+    .pane-card {
+      align-self: stretch;
+    }
+    /* はじめの段は、面の中で上下の真ん中に置く */
+    .js #hero.pane {
+      flex: 1 0 auto;
+      justify-content: center;
+    }
   }
-  .node-head {
+  .pane {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 22px;
+    scroll-margin-top: 72px;
+  }
+  /* JS があるときは、差した段だけ出す。JS 無しでは 7 段をぜんぶ縦に並べる */
+  .js .pane:not(.is-active) {
+    display: none;
+  }
+  html:not(.js) .pane + .pane {
+    padding-top: 28px;
+    border-top: 1px solid var(--c-line);
+  }
+  .pane-head {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -472,111 +390,314 @@ p {
     color: var(--c-fg);
     flex: none;
   }
-
-  /* 状態の札（完了・いまここ・まだ）— data-state で 1 つだけ出す */
-  .state > * {
-    display: none;
-  }
-  [data-state='done'] .state > .is-done,
-  [data-state='current'] .state > .is-current,
-  [data-state='todo'] .state > .is-todo {
-    display: inline-flex;
-  }
-
-  /* ═══ 流れ（目次）═══ */
-  .flow-list {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .flow-list::before {
-    content: '';
-    position: absolute;
-    left: 21px;
-    top: 20px;
-    bottom: 20px;
-    border-left: 2px solid var(--c-line);
-  }
-  .flow-list a {
-    position: relative;
+  .pane-foot {
     display: flex;
     align-items: center;
-    gap: 10px;
-    min-height: 44px;
-    padding: 4px 10px;
-    border-radius: 8px;
-    color: var(--c-fg);
-    text-decoration: none;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--c-line);
   }
-  .flow-list a:hover {
-    background: var(--c-col);
-  }
-  .flow-list a[data-state='current'] {
-    background: var(--c-teal-tint);
-    color: var(--c-teal-ink);
-    font-weight: 700;
-  }
-  .flow-st {
-    display: grid;
-    place-items: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--c-panel);
-    flex: none;
-  }
-  .flow-list a[data-state='current'] .flow-st {
-    background: var(--c-teal-tint);
-  }
-  .flow-st > * {
+  html:not(.js) .pane-foot {
     display: none;
   }
-  [data-state='done'] .flow-st > .is-done {
-    display: block;
-    color: var(--c-ok);
-  }
-  [data-state='current'] .flow-st > .is-current {
-    display: block;
-    color: var(--c-teal);
-  }
-  [data-state='todo'] .flow-st > .is-todo {
-    display: block;
-    color: var(--c-muted);
+  .foot-btn {
+    padding: 6px 16px;
   }
 
-  /* スマホの流れ（下から出るシート） */
-  .flow-sheet {
-    width: 100%;
-    max-width: 520px;
-    max-height: 85dvh;
-    margin: auto auto 0;
-    padding: 0;
-    border: 0;
-    border-radius: 20px 20px 0 0;
+  /* 段の中の 2 列（狭い画面では縦に積む） */
+  .split {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px 28px;
+  }
+  .split-a {
+    flex: 1 1 320px;
+    min-width: 0;
+  }
+  .split-b {
+    flex: 1 1 360px;
+    min-width: 0;
+  }
+
+  /* 流れ（段の一覧）— スマホ：下に固定した帯 */
+  .stage-rail {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    padding: 10px 0 calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--c-panel);
+    border-top: 1px solid var(--c-line);
+  }
+  .stage-rail-head,
+  .stage-anchor,
+  .stage-rope,
+  .plug-handle,
+  .stage-rail .tilt {
+    display: none;
+  }
+  .stage-list {
+    display: flex;
+    gap: 8px;
+    padding: 0 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .stage-list::-webkit-scrollbar {
+    display: none;
+  }
+  .stage-btn {
+    position: relative;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 48px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--c-edge);
     background: var(--c-panel);
     color: var(--c-fg);
-    box-shadow: var(--c-lift);
+    text-decoration: none;
+    white-space: nowrap;
   }
-  .flow-sheet::backdrop {
-    background: rgb(16 15 14 / 0.45);
+  .stage-btn:hover {
+    border-color: var(--c-teal);
+  }
+  .stage-n {
+    color: var(--c-muted);
+  }
+  .stage-fact,
+  .stage-btn .plug-sock,
+  .stage-plug {
+    display: none;
+  }
+  /* いまの段：ティールで塗り、プラグの印を付ける */
+  .stage-btn[aria-selected='true'] {
+    background: var(--c-teal);
+    border-color: var(--c-teal);
+    color: var(--c-bg);
+  }
+  .stage-btn[aria-selected='true'] .stage-n {
+    color: inherit;
+  }
+  .stage-btn[aria-selected='true'] .stage-plug {
+    display: block;
+    width: 14px;
+    height: 16px;
+    border-radius: 4px;
+    background: var(--c-coral);
+    box-shadow: 0 0 0 2px var(--c-bg);
+  }
+  /* 下の帯が本文とフッターを隠さないように */
+  @media (max-width: 1023px) {
+    body {
+      padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    }
   }
 
-  /* ═══ スキルの帯 ═══ */
-  .meter {
-    height: 8px;
-    border-radius: 999px;
-    background: var(--c-track);
-    overflow: hidden;
+  /* 流れ — PC：左に固定。右の 80px はケーブルが垂れる所で、16px だけ出力の面に重ねる（面の縁にコンセントを置く） */
+  @media (min-width: 1024px) {
+    .stage-rail {
+      position: sticky;
+      inset: auto;
+      top: 80px;
+      z-index: 5;
+      margin-right: -16px;
+      padding: 0 80px 0 0;
+      background: none;
+      border: 0;
+    }
+    .stage-rail-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      white-space: nowrap;
+      margin: 0 0 10px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--c-muted);
+    }
+    .stage-list {
+      flex-direction: column;
+      padding: 0;
+      overflow: visible;
+    }
+    .stage-btn {
+      display: flex;
+      gap: 10px;
+      min-height: 52px;
+      padding: 8px 22px 8px 14px;
+      border-radius: 14px;
+      white-space: normal;
+    }
+    .stage-fact {
+      display: inline;
+      margin-left: auto;
+      color: var(--c-muted);
+      white-space: nowrap;
+    }
+    .stage-btn .plug-sock {
+      display: block;
+    }
+    .stage-btn[aria-selected='true'] {
+      background: var(--c-teal-tint);
+      color: var(--c-teal-ink);
+    }
+    .stage-btn[aria-selected='true'] .stage-fact {
+      color: inherit;
+    }
+    .stage-btn[aria-selected='true'] .stage-plug {
+      display: none;
+    }
+    .stage-rail .tilt {
+      display: block;
+    }
+    .js .stage-anchor {
+      display: block;
+      position: absolute;
+      right: 4px;
+      top: 40px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--c-teal);
+    }
+    .js .stage-rope {
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .js .stage-rail .plug-handle {
+      display: block;
+    }
   }
-  .meter > i {
-    display: block;
-    height: 100%;
-    border-radius: 999px;
+
+  /* コンセント（段と仕事の札の右の縁）。空いているときだけ穴が見える */
+  .plug-sock {
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    width: 24px;
+    height: 24px;
+    margin-top: -12px;
+    border-radius: 50%;
     background: var(--c-teal);
+  }
+  .plug-sock i {
+    position: absolute;
+    left: 7px;
+    width: 10px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--c-canvas);
+  }
+  .plug-sock i:first-child {
+    top: 7px;
+  }
+  .plug-sock i:last-child {
+    top: 14px;
+  }
+  .job-btn[aria-pressed='true'] .plug-sock i,
+  .stage-btn[aria-selected='true'] .plug-sock i {
+    display: none;
+  }
+  /* プラグをつまむ所（ひもの先に重ねる・44px） */
+  .plug-handle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    border-radius: 50%;
+    cursor: grab;
+    touch-action: none;
+  }
+  .plug-handle.is-grabbing {
+    cursor: grabbing;
+  }
+
+  /* 段の中の切り替え（スキルの分野・作品の種類）。JS 無しではチップを出さず、ぜんぶ並べる */
+  .switch-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  html:not(.js) .switch-list {
+    display: none;
+  }
+  .switch-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--c-edge);
+    background: var(--c-panel);
+    color: var(--c-fg);
+    font-weight: 700;
+  }
+  .switch-btn:hover {
+    border-color: var(--c-teal);
+  }
+  .switch-btn[aria-pressed='true'] {
+    background: var(--c-teal);
+    border-color: var(--c-teal);
+    color: var(--c-bg);
+  }
+  .switch-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .js .switch-panel:not(.is-on) {
+    display: none;
+  }
+  /* チップが名前を出しているので、面の見出しは読み上げだけにする（JS 無しでは見せる） */
+  .js .switch-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  /* スキル：砂の管の入れ物 */
+  .skill-well {
+    flex: 0 1 auto;
+    max-width: 100%;
+    padding: 18px 20px 14px;
+  }
+
+  /* AI の道具の札（題と 1 行。開くと全文） */
+  .tool-card {
+    padding: 10px 12px;
+    background: var(--c-col);
+    border-radius: 14px;
+  }
+  .tool-card > summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .tool-card > summary::-webkit-details-marker {
+    display: none;
+  }
+  .tool-card[open] .tool-chev {
+    transform: rotate(180deg);
   }
 
   /* GitHub の草：暗い画面では明暗を返して色相を戻す */
@@ -587,60 +708,6 @@ p {
     html:not([data-theme='light']) .contrib-img {
       filter: invert(1) hue-rotate(180deg);
     }
-  }
-
-  /* ═══ 経歴の帯グラフ（実行パネルの「時系列」）═══ */
-  /* 狭い画面：名前を帯の上に置き、帯を幅いっぱいにする（横に動かさなくても全部見える） */
-  .gantt-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    padding-block: 4px 0;
-  }
-  .gantt-row > .gantt-label:empty {
-    display: none;
-  }
-  @media (min-width: 640px) {
-    .gantt {
-      min-width: 560px;
-    }
-    .gantt-row {
-      grid-template-columns: 196px minmax(0, 1fr);
-      gap: 12px;
-      align-items: center;
-      padding-block: 0;
-    }
-    .gantt-row > .gantt-label:empty {
-      display: block;
-    }
-  }
-  .gantt-track {
-    position: relative;
-    height: 36px;
-    /* 1 年ごとの縦の目盛り */
-    background-image: linear-gradient(to right, var(--c-line) 1px, transparent 1px);
-    background-size: calc(100% / var(--years)) 100%;
-  }
-  .gantt-bar {
-    position: absolute;
-    top: 9px;
-    height: 18px;
-    border-radius: 5px;
-    background: var(--c-teal);
-  }
-  /* 進行中＝点の模様（色だけに頼らない） */
-  .gantt-bar.is-now,
-  .gantt-key.is-now {
-    background-color: var(--c-teal-tint);
-    background-image: radial-gradient(var(--c-teal) 1.4px, transparent 1.6px);
-    background-size: 7px 7px;
-    box-shadow: inset 0 0 0 2px var(--c-teal);
-  }
-  .gantt-key {
-    display: inline-block;
-    width: 20px;
-    height: 12px;
-    border-radius: 3px;
-    background: var(--c-teal);
   }
 
   /* ═══ 物理の遊び（specs/physics-2026.spec.md）═══ */
@@ -708,9 +775,9 @@ p {
   /* B 砂のメーター（JS 無しでは CSS の塗りで高さを出す） */
   .tubes {
     display: grid;
-    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    grid-template-columns: repeat(var(--n), minmax(0, 64px));
+    justify-content: center;
     gap: 10px;
-    margin-top: 16px;
   }
   .tube {
     display: flex;
@@ -770,11 +837,10 @@ p {
     font-weight: 600;
   }
 
-  /* C 差すと見えるケーブル（JS 無しでは一覧のボタンを隠し、全部の仕事を縦に並べる） */
+  /* C 差すと見えるケーブル（JS 無しでは仕事の札を隠し、全部の仕事を縦に並べる） */
   .board-jobs,
   .board-anchor,
   .board-rope,
-  .plug-handle,
   .monitor-head {
     display: none;
   }
@@ -787,17 +853,12 @@ p {
   .board.is-live {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
     column-gap: 76px;
     align-items: start;
   }
   .board.is-live .board-jobs {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    display: block;
   }
   .board.is-live .monitor-head {
     display: block;
@@ -827,19 +888,12 @@ p {
   }
   .board.is-live .plug-handle {
     display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 4;
-    width: 44px;
-    height: 44px;
-    margin: -22px 0 0 -22px;
-    border-radius: 50%;
-    cursor: grab;
-    touch-action: none;
   }
-  .plug-handle.is-grabbing {
-    cursor: grabbing;
+  @media (min-width: 640px) {
+    /* モニターは、帯の目盛りの行のぶん下げて、仕事の札の 1 枚目と頭をそろえる */
+    .board.is-live .board-monitor {
+      margin-top: 28px;
+    }
   }
   @media (max-width: 639px) {
     .board.is-live {
@@ -853,14 +907,22 @@ p {
       top: -12px;
     }
   }
+  /* 帯の目盛り（左端・中・右端の年） */
+  .job-axis {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 4px;
+    padding: 0 24px 0 14px;
+  }
   .job-btn {
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 3px;
     width: 100%;
-    min-height: 44px;
-    padding: 8px 24px 8px 14px;
+    min-height: 48px;
+    padding: 6px 24px 8px 14px;
     border-radius: 14px;
     border: 1px solid var(--c-edge);
     background: var(--c-panel);
@@ -876,43 +938,33 @@ p {
     background: var(--c-teal-tint);
     color: var(--c-teal-ink);
   }
-  .job-btn[aria-pressed='true'] .text-ui-muted {
-    color: var(--c-teal-ink);
+  /* 札の中の小さな帯（いつの仕事か）。進行中は枠だけ（色だけに頼らない） */
+  .job-track {
+    position: relative;
+    display: block;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--c-col);
   }
-  .job-sock {
+  .job-btn[aria-pressed='true'] .job-track {
+    background: var(--c-panel);
+  }
+  .job-track i {
     position: absolute;
-    right: -12px;
-    top: 50%;
-    width: 24px;
-    height: 24px;
-    margin-top: -12px;
-    border-radius: 50%;
+    top: 0;
+    bottom: 0;
+    border-radius: 4px;
     background: var(--c-teal);
   }
-  .job-sock i {
-    position: absolute;
-    left: 7px;
-    width: 10px;
-    height: 3px;
-    border-radius: 2px;
-    background: var(--c-canvas);
-  }
-  .job-sock i:first-child {
-    top: 7px;
-  }
-  .job-sock i:last-child {
-    top: 14px;
-  }
-  /* 差さっているコンセントは穴が隠れる */
-  .job-btn[aria-pressed='true'] .job-sock i {
-    display: none;
+  .job-track i.is-now {
+    background: var(--c-teal-tint);
+    box-shadow: inset 0 0 0 2px var(--c-teal);
   }
 
   /* D 道具箱 */
   .toolbox {
     position: relative;
     height: 300px;
-    margin-top: 24px;
     overflow: hidden;
   }
   .toolbox:not(.is-live) {
@@ -931,7 +983,7 @@ p {
     }
   }
 
-  /* 傾きのつまみ（PC・右の流れの下） */
+  /* 傾きのつまみ（PC・左の流れの下） */
   .tilt {
     margin-top: 12px;
     padding-top: 12px;
@@ -986,16 +1038,5 @@ p {
     border-radius: 50%;
     background: var(--c-teal);
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--c-teal) 25%, transparent);
-  }
-}
-
-@keyframes fp-ring {
-  from {
-    opacity: 0.7;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(2.1);
   }
 }

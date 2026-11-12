@@ -1,0 +1,43 @@
+---
+// 出力の面の中の 1 段（specs/shell-2026.spec.md）。JS があるときは、差した段（.is-active）だけが見える。
+// JS 無しでは 7 段がぜんぶ縦に並ぶ。
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+interface Props {
+  id: string;
+  title: string;
+  en: string;
+  /** 見出しのアイコン（無いときは en の札を出す） */
+  icon?: IconName;
+  /** 見出しを出さない段（はじめ）。中で自分の h1（id は `${id}-title`）を持つ */
+  hideTitle?: boolean;
+  /** 最初に見せる段 */
+  active?: boolean;
+}
+
+const { id, title, en, icon, hideTitle = false, active = false } = Astro.props;
+const headingId = `${id}-title`;
+---
+
+<section id={id} class:list={['pane', { 'is-active': active }]} data-pane aria-labelledby={headingId}>
+  {
+    !hideTitle && (
+      <div class="pane-head">
+        {icon ? (
+          <span class="node-ic" aria-hidden="true">
+            <Icon name={icon} />
+          </span>
+        ) : (
+          <span class="tag">{en}</span>
+        )}
+        <h2 id={headingId} tabindex="-1" class="text-[1.625rem] font-black leading-[1.25] sm:text-[1.875rem]">
+          {title}
+        </h2>
+        {icon && <span class="font-mono text-sm text-ui-muted">{en}</span>}
+        <slot name="head" />
+      </div>
+    )
+  }
+  <slot />
+</section>
