@@ -7,19 +7,22 @@ import { useColors, grain, SAND } from './physics/colors';
 import { logoSvg, LOGO_ASPECT } from '../components/logoShape';
 
 export function initSandLogo(): void {
-  const tray = document.querySelector<HTMLElement>('[data-sand-logo]');
+  const root = document.querySelector<HTMLElement>('[data-sand-logo]');
+  const tray = root?.querySelector<HTMLElement>('.sand-tray');
   const cv = tray?.querySelector('canvas');
   const ctx = cv?.getContext('2d', { willReadFrequently: false });
-  if (!tray || !cv || !ctx) return;
+  if (!root || !tray || !cv || !ctx) return;
 
-  const reformBtn = tray.querySelector<HTMLButtonElement>('[data-reform]');
-  const gyroBtn = tray.querySelector<HTMLButtonElement>('[data-gyro]');
-  const hint = tray.querySelector<HTMLElement>('[data-hint]');
+  const reformBtn = root.querySelector<HTMLButtonElement>('[data-reform]');
+  const gyroBtn = root.querySelector<HTMLButtonElement>('[data-gyro]');
+  const hint = root.querySelector<HTMLElement>('[data-hint]');
 
   let sand: Sand | null = null;
   let img: ImageData | null = null;
   let cols = 0;
   let rows = 0;
+  /** 砂 1 粒の大きさ（CSS px）。スマホ 2・PC 3 */
+  let cell = 3;
   let glued = true;
   let pressing: [number, number] | null = null;
   let quiet = 0;
@@ -57,7 +60,7 @@ export function initSandLogo(): void {
   }
 
   function floor(s: Sand): void {
-    for (let y = rows - 6; y < rows; y++) {
+    for (let y = rows - Math.round(12 / cell); y < rows; y++) {
       for (let x = 0; x < cols; x++) if (Math.random() < 0.55) s.add(x, y, grain(SAND.sand));
     }
     for (let k = 0; k < 24; k++) s.step(0, 1);
@@ -67,7 +70,7 @@ export function initSandLogo(): void {
     if (!cv || !tray) return;
     const W = tray.clientWidth;
     const H = tray.clientHeight;
-    const cell = W >= 640 ? 4 : 3;
+    cell = window.matchMedia('(min-width: 640px)').matches ? 3 : 2;
     cols = Math.max(40, Math.floor(W / cell));
     rows = Math.max(30, Math.floor(H / cell));
     cv.width = cols;
@@ -88,14 +91,14 @@ export function initSandLogo(): void {
   cv.addEventListener('pointermove', (e) => {
     if (!sand) return;
     const p = local(e);
-    sand.loosen(p[0], p[1], cols > 200 ? 4 : 3);
+    sand.loosen(p[0], p[1], Math.round(10 / cell));
     if (pressing) pressing = p;
     poke();
   });
   cv.addEventListener('pointerdown', (e) => {
     if (!sand) return;
     pressing = local(e);
-    sand.loosen(pressing[0], pressing[1], 4);
+    sand.loosen(pressing[0], pressing[1], Math.round(12 / cell));
     poke();
   });
   (['pointerup', 'pointerleave', 'pointercancel'] as const).forEach((t) =>
@@ -148,9 +151,11 @@ export function initSandLogo(): void {
         glued = false;
       }
       if (pressing) {
-        for (let k = 0; k < 5; k++) {
+        for (let k = 0; k < Math.round(45 / (cell * cell)); k++) {
           const base = Math.random() < 0.5 ? SAND.teal : Math.random() < 0.5 ? SAND.coral : SAND.sand;
-          sand.add(pressing[0] + ((Math.random() * 5) | 0) - 2, pressing[1] + ((Math.random() * 5) | 0) - 2, grain(base));
+          const spread = Math.round(7 / cell);
+          const off = (): number => ((Math.random() * (spread * 2 + 1)) | 0) - spread;
+          sand.add(pressing[0] + off(), pressing[1] + off(), grain(base));
         }
       }
       const m = sand.step(G.x, G.y) + sand.step(G.x, G.y);

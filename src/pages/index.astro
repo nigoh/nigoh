@@ -8,6 +8,7 @@ import { stages } from '../components/stageList';
 import SandLogo from '../components/SandLogo.astro';
 import SandMeters from '../components/SandMeters.astro';
 import CableBoard from '../components/CableBoard.astro';
+import CareerTimeline from '../components/CareerTimeline.astro';
 import ToolBox from '../components/ToolBox.astro';
 import type { BoardJob } from '../components/board';
 import Icon from '../components/Icon.astro';
@@ -144,7 +145,7 @@ interface CareerItem {
   industry: string;
   phase: string;
   techs: string[];
-  span: { label: string; start: number; end: number | null };
+  span: { label: string; when: string; start: number; end: number | null };
 }
 
 const career: CareerItem[] = [
@@ -153,49 +154,49 @@ const career: CareerItem[] = [
     industry: '組み込み Android（専用端末向けアプリ）',
     phase: '詳細設計・実装・試験',
     techs: ['Java', 'Android SDK', 'Android Studio', 'Gradle', 'Git'],
-    span: { label: '組み込み Android', start: 2026.25, end: null },
+    span: { label: '組み込み Android', when: '2026–', start: 2026.25, end: null },
   },
   {
     period: '2025（約1年）',
     industry: '組み込み制御（社会インフラ機器・コアシステム）',
     phase: '詳細設計・実装・試験',
     techs: ['C', 'Linux (Yocto)', 'Make'],
-    span: { label: '社会インフラ機器・コア', start: 2025, end: 2026 },
+    span: { label: '社会インフラ機器・コア', when: '2025', start: 2025, end: 2026 },
   },
   {
     period: '2022、2025（約3年）',
     industry: '組み込み制御（社会インフラ機器・制御システム）',
     phase: '要件定義〜マネジメント（サブリーダー）',
     techs: ['C++', 'MFC', 'Git', 'Docker'],
-    span: { label: '社会インフラ機器・制御', start: 2022, end: 2025 },
+    span: { label: '社会インフラ機器・制御', when: '2022–25', start: 2022, end: 2025 },
   },
   {
     period: '2021～2022（約1年）',
     industry: '車載地図データツール',
     phase: '設計・実装・マネジメント',
     techs: ['C++', 'Oracle', 'VS Code'],
-    span: { label: '車載地図データツール', start: 2021, end: 2022 },
+    span: { label: '車載地図データツール', when: '2021–22', start: 2021, end: 2022 },
   },
   {
     period: '2020～2021（約1年）',
     industry: '車載地図データ変換ツール',
     phase: '設計〜インフラ構築',
     techs: ['Java', 'C++', 'PostgreSQL', 'AWS'],
-    span: { label: '車載地図データ変換', start: 2020, end: 2021 },
+    span: { label: '車載地図データ変換', when: '2020–21', start: 2020, end: 2021 },
   },
   {
     period: '2018～2020（約2年）',
     industry: '車載地図データツール（サブリーダー）',
     phase: '設計・実装・マネジメント',
     techs: ['C++', 'Python', 'PostgreSQL'],
-    span: { label: '車載地図データツール', start: 2018, end: 2020 },
+    span: { label: '車載地図データツール', when: '2018–20', start: 2018, end: 2020 },
   },
   {
     period: '2016～2018（約1年半）',
     industry: '自動運転用3D地図・試作モジュール開発',
     phase: '詳細設計・実装・試験',
     techs: ['C++11', 'Java', 'Python', 'MongoDB'],
-    span: { label: '自動運転用 3D 地図・試作', start: 2016.5, end: 2018 },
+    span: { label: '自動運転用 3D 地図・試作', when: '2016–18', start: 2016.5, end: 2018 },
   },
 ];
 
@@ -216,6 +217,7 @@ const boardJobs: BoardJob[] = career.map((c) => {
     phase: c.phase,
     techs: c.techs,
     ongoing: c.span.end === null,
+    when: c.span.when,
     bar: { left: pct(c.span.start), width: Math.max(2, Math.round((pct(end) - pct(c.span.start)) * 10) / 10) },
   };
 });
@@ -378,7 +380,7 @@ const stageFacts: Record<string, string> = {
           {/* A 砂のロゴ（physics-2026.spec）。JS 無しではベクターのロゴ */}
           <div class="split-a"><SandLogo /></div>
           <div class="split-b flex flex-col gap-4">
-            <p class="font-mono text-sm tracking-wider text-ui-muted">H.NIGO · SOFTWARE ENGINEER · SAPPORO</p>
+            <p class="hero-eyebrow font-mono text-sm tracking-wider text-ui-muted">H.NIGO · SOFTWARE ENGINEER · SAPPORO</p>
             <p class="text-[clamp(1.75rem,1.1rem+2.2vw,2.625rem)] font-black leading-[1.25]">
               <span class="inline-block">低レイヤーから、</span><span class="inline-block">アプリまで<span class="text-ui-coral">.</span></span>
             </p>
@@ -539,6 +541,8 @@ const stageFacts: Record<string, string> = {
         <span slot="head" class="font-mono text-sm text-ui-muted">{career.length} 件 · {ganttFrom}–{Math.floor(nowYear)}</span>
         {/* C 差すと見えるケーブル（physics-2026.spec） */}
         <CableBoard jobs={boardJobs} axis={[ganttFrom, Math.round((ganttFrom + ganttTo) / 2), ganttTo]} />
+        {/* スマホ（640px 未満）は年表。押した仕事がその場で開く */}
+        <CareerTimeline jobs={boardJobs} />
         <p class="text-sm text-ui-muted">
           注: クライアント名・案件番号・具体的な機器名/製品名・詳細な期間は非掲載。業種・技術領域のみ一般化して記載。期間はおおよそ。
         </p>
@@ -719,7 +723,8 @@ const stageFacts: Record<string, string> = {
         </a>
         <span class="font-mono text-sm text-ui-muted" aria-hidden="true"><span data-stage-count>01</span> / {String(stages.length).padStart(2, '0')}</span>
         <a class="btn btn-sec foot-btn ml-auto" data-stage-next href="#about">
-          <span data-label>次は 自己紹介</span>
+          <span class="sr-only">次へ：</span>
+          <span data-label>自己紹介</span>
           <span aria-hidden="true">→</span>
         </a>
       </div>

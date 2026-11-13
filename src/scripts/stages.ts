@@ -78,7 +78,7 @@ export function initStages(): void {
     });
     counts.forEach((c) => (c.textContent = numOf(i)));
     setLink(prev, i - 1, (name) => name);
-    setLink(next, i + 1, (name) => `次は ${name}`);
+    setLink(next, i + 1, (name) => name);
     plug?.select(i);
     if (!wide.matches) {
       // 下の帯：いまの段のチップを真ん中へ

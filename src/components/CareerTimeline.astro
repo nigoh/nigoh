@@ -1,0 +1,59 @@
+---
+// 経歴の年表（スマホ・640px 未満）— specs/shell-2026.spec.md「スマホの見直し」。
+// 左に年、真ん中に縦のケーブルとコンセント、右に仕事の名前。仕事を押すとプラグの印がそこへ移り、
+// その場で状態・期間・工程・技術が開く（開くのは 1 つ）。640px 以上は CableBoard（札とモニターとひも）。
+// JS 無しでは全部の仕事を開いたまま並べる。
+import Icon from './Icon.astro';
+import type { BoardJob } from './board';
+
+interface Props {
+  jobs: BoardJob[];
+}
+
+const { jobs } = Astro.props;
+---
+
+<ol class="timeline" data-timeline aria-label="経歴（新しい順）">
+  {
+    jobs.map((job, i) => (
+      <li class:list={['tl-row', { 'is-on': i === 0 }]} data-tl-row>
+        <button type="button" class="tl-btn" aria-expanded="true" aria-controls={`tl-detail-${i}`}>
+          <span class="tl-when font-mono">{job.when}</span>
+          <span class="tl-sock" aria-hidden="true">
+            <i />
+            <i />
+            <b />
+          </span>
+          <span class="tl-name">{job.industry}</span>
+        </button>
+        <div class="tl-detail" id={`tl-detail-${i}`}>
+          <p class="flex flex-wrap items-center gap-1.5">
+            {job.ongoing ? (
+              <span class="chip chip-plain">
+                <Icon name="refresh-cw" size={13} />
+                進行中
+              </span>
+            ) : (
+              <span class="chip chip-ok">
+                <Icon name="circle-check" size={13} />
+                一区切り
+              </span>
+            )}
+            <span class="font-mono text-xs">{job.period}</span>
+          </p>
+          <p>{job.phase}</p>
+          <ul class="m-0 flex list-none flex-wrap gap-1.5 p-0" aria-label="使った技術">
+            {job.techs.map((t) => (
+              <li class="tag tag-on-tint">{t}</li>
+            ))}
+          </ul>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<script>
+  import { initCareerTimeline } from '../scripts/careerTimeline';
+  initCareerTimeline();
+</script>

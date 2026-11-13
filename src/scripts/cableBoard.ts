@@ -27,6 +27,8 @@ export function initCableBoard(): void {
     if (status) status.textContent = text;
   };
 
+  // 640px 未満は年表（CareerTimeline）を出すので、ひもは動かさない
+  const wide = window.matchMedia('(min-width: 640px)');
   show(0);
   const plug = createPlugBoard({
     root: board,
@@ -35,6 +37,7 @@ export function initCableBoard(): void {
     anchor,
     targets: buttons,
     initial: 0,
+    enabled: () => wide.matches,
     drop: 'dangle',
     onSeat(i) {
       show(i);
@@ -50,4 +53,5 @@ export function initCableBoard(): void {
   });
   if (!plug) return;
   buttons.forEach((b, i) => b.addEventListener('click', () => plug.select(i)));
+  wide.addEventListener('change', () => plug.refresh());
 }
