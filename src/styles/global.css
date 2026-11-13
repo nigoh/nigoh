@@ -102,6 +102,14 @@ html {
   scroll-padding-top: 72px;
 }
 
+/* スマホ（640px 未満）は全体を少し小さく：文字の基準を 16px → 15px にして、rem の大きさと余白をまとめて縮める
+   （本文 15px・注 13px。specs/shell-2026.spec.md「スマホの見直し」） */
+@media (max-width: 639px) {
+  html {
+    font-size: 93.75%;
+  }
+}
+
 body {
   background-color: var(--c-canvas);
   /* 作業台の地：薄い点の方眼（pipe-in のパイプ作業台） */
@@ -393,8 +401,7 @@ p {
   .pane-foot {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 10px 14px;
+    gap: 10px;
     margin-top: auto;
     padding-top: 16px;
     border-top: 1px solid var(--c-line);
@@ -404,6 +411,7 @@ p {
   }
   .foot-btn {
     padding: 6px 16px;
+    white-space: nowrap;
   }
 
   /* 段の中の 2 列（狭い画面では縦に積む） */
@@ -490,12 +498,6 @@ p {
     border-radius: 4px;
     background: var(--c-coral);
     box-shadow: 0 0 0 2px var(--c-bg);
-  }
-  /* 下の帯が本文とフッターを隠さないように */
-  @media (max-width: 1023px) {
-    body {
-      padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
-    }
   }
 
   /* 流れ — PC：左に固定。右の 80px はケーブルが垂れる所で、16px だけ出力の面に重ねる（面の縁にコンセントを置く） */
@@ -628,31 +630,35 @@ p {
   /* 段の中の切り替え（スキルの分野・作品の種類）。JS 無しではチップを出さず、ぜんぶ並べる */
   .switch-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    gap: 20px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--c-line);
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .switch-list::-webkit-scrollbar {
+    display: none;
   }
   html:not(.js) .switch-list {
     display: none;
   }
   .switch-btn {
+    flex: none;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     min-height: 44px;
-    padding: 6px 18px;
-    border-radius: 999px;
-    border: 1px solid var(--c-edge);
-    background: var(--c-panel);
-    color: var(--c-fg);
+    padding: 0;
+    border-bottom: 3px solid transparent;
+    color: var(--c-muted);
     font-weight: 700;
   }
   .switch-btn:hover {
-    border-color: var(--c-teal);
+    color: var(--c-fg);
   }
   .switch-btn[aria-pressed='true'] {
-    background: var(--c-teal);
-    border-color: var(--c-teal);
-    color: var(--c-bg);
+    border-bottom-color: var(--c-teal);
+    color: var(--c-fg);
   }
   .switch-panel {
     display: flex;
@@ -741,7 +747,27 @@ p {
     pointer-events: none;
   }
 
-  /* A 砂のロゴ */
+  /* A 砂のロゴ。ボタンと案内は受け皿の下の 1 行（ロゴに重ねない） */
+  .sand-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  /* 案内もボタンも出ていないとき（JS 無し）は行ごと消す */
+  .sand-bar:not(:has(.sand-hint:not([hidden]), .sand-tools > :not([hidden]))) {
+    display: none;
+  }
+  .sand-hint {
+    color: var(--c-muted);
+    font-size: 0.875rem;
+  }
+  .sand-tools {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
   .sand-tray {
     position: relative;
     height: clamp(220px, 38vw, 340px);
@@ -961,6 +987,135 @@ p {
     box-shadow: inset 0 0 0 2px var(--c-teal);
   }
 
+  /* 経歴の年表（640px 未満）。640px 以上は札とモニター（.board） */
+  .timeline {
+    position: relative;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (max-width: 639px) {
+    .timeline {
+      display: flex;
+    }
+    .board,
+    .board.is-live {
+      display: none;
+    }
+  }
+  /* 縦のケーブル（コンセントの列の真ん中） */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    left: 76.5px;
+    top: 22px;
+    bottom: 22px;
+    width: 3px;
+    background: var(--c-teal);
+    pointer-events: none;
+  }
+  .tl-row {
+    border-radius: 12px;
+  }
+  .tl-row.is-on {
+    background: var(--c-teal-tint);
+    color: var(--c-teal-ink);
+  }
+  .tl-btn {
+    display: grid;
+    grid-template-columns: 56px 40px minmax(0, 1fr);
+    column-gap: 6px;
+    align-items: start;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 10px 10px 6px;
+    border-radius: 12px;
+    text-align: left;
+  }
+  .tl-when {
+    padding-top: 2px;
+    color: var(--c-muted);
+    font-size: 13px;
+  }
+  .tl-row.is-on .tl-when {
+    color: inherit;
+  }
+  .tl-name {
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  /* コンセント（空いているときだけ穴が見える）と、差さっているプラグ */
+  .tl-sock {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 40px;
+    height: 24px;
+  }
+  .tl-sock::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--c-teal);
+  }
+  .tl-sock i {
+    position: absolute;
+    left: 6px;
+    width: 8px;
+    height: 2.5px;
+    border-radius: 2px;
+    background: var(--c-panel);
+  }
+  .tl-sock i:first-child {
+    top: 8px;
+  }
+  .tl-sock i:nth-child(2) {
+    top: 13.5px;
+  }
+  .tl-sock b {
+    position: absolute;
+    left: 14px;
+    top: 4px;
+    display: none;
+    width: 15px;
+    height: 16px;
+    border-radius: 4px;
+    background: var(--c-coral);
+  }
+  .tl-row.is-on .tl-sock i {
+    display: none;
+  }
+  .tl-row.is-on .tl-sock b {
+    display: block;
+  }
+  .tl-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 10px 12px 114px;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+  .js .tl-row:not(.is-on) .tl-detail {
+    display: none;
+  }
+  /* ティールの下地の上に置く札（面の色） */
+  .chip-plain {
+    background: var(--c-panel);
+    color: var(--c-teal-ink);
+  }
+  .tag-on-tint {
+    background: var(--c-panel);
+  }
+
   /* D 道具箱 */
   .toolbox {
     position: relative;
@@ -1038,5 +1193,120 @@ p {
     border-radius: 50%;
     background: var(--c-teal);
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--c-teal) 25%, transparent);
+  }
+
+  /* ═══ スマホの大きさ（640px 未満。specs/shell-2026.spec.md「スマホの見直し」）═══
+     押せる所は 40px。上の帯 48px。面の余白と段の間を詰める。 */
+  @media (max-width: 639px) {
+    .topbar {
+      height: 48px;
+    }
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+    }
+    .btn {
+      min-height: 40px;
+      padding: 6px 16px;
+    }
+    .tray-btn {
+      min-height: 40px;
+      padding: 6px 11px;
+    }
+    /* 砂のロゴのボタンはアイコンだけ（名前は aria-label と title） */
+    .tray-label {
+      display: none;
+    }
+    .shell {
+      padding: 58px 12px 10px;
+    }
+    .pane-card {
+      padding: 14px 16px 12px;
+      border-radius: 18px;
+    }
+    .pane {
+      gap: 12px;
+      padding-bottom: 12px;
+    }
+    .pane-head {
+      gap: 6px 10px;
+      min-height: 32px;
+    }
+    .pane-head h2 {
+      font-size: 22px;
+    }
+    .pane-en {
+      display: none;
+    }
+    .node-ic {
+      width: 30px;
+      height: 30px;
+    }
+    .pane-foot {
+      padding-top: 10px;
+    }
+    .foot-btn {
+      padding: 6px 14px;
+      font-size: 14px;
+    }
+    .split {
+      gap: 12px;
+    }
+    .hero-eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .sand-tray {
+      height: 196px;
+    }
+    .sand-hint {
+      font-size: 13px;
+    }
+    .switch-list {
+      margin-inline: -16px;
+      padding-inline: 16px;
+      gap: 18px;
+    }
+    .switch-btn {
+      min-height: 40px;
+      font-size: 14px;
+    }
+    .skill-well {
+      flex: 1 1 100%;
+      padding: 14px 8px 10px;
+    }
+    .skill-well .tubes {
+      justify-content: space-around;
+    }
+    .glass {
+      max-width: 40px;
+    }
+    .tool-card > summary {
+      min-height: 40px;
+    }
+  }
+
+  /* 下の帯（1024px 未満）のチップは 40px */
+  @media (max-width: 1023px) {
+    .stage-rail {
+      padding: 9px 0 calc(9px + env(safe-area-inset-bottom, 0px));
+    }
+    .stage-list {
+      gap: 6px;
+      padding: 0 10px;
+    }
+    .stage-btn {
+      gap: 5px;
+      min-height: 40px;
+      padding: 0 12px;
+      font-size: 14px;
+    }
+    .stage-n {
+      font-size: 12px;
+    }
+    body {
+      padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+    }
   }
 }

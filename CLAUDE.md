@@ -20,7 +20,7 @@ npx astro check   # 型・診断チェック（CI ゲート相当）
 ## ディレクトリ
 
 ```
-src/components/        Astro コンポーネント（Logo・Icon・Header・StageRail・StagePane・Footer・SandLogo・SandMeters・CableBoard・ToolBox・TiltPad）
+src/components/        Astro コンポーネント（Logo・Icon・Header・StageRail・StagePane・Footer・SandLogo・SandMeters・CableBoard・CareerTimeline・ToolBox・TiltPad）
 src/scripts/           段の切り替え（stages・switcher）と、各部品のスクリプト
 src/scripts/physics/   物理の共通（gravity・loop・colors・sand・plugBoard）
 src/layouts/ src/pages/ src/styles/
@@ -38,12 +38,15 @@ specs/                 SDD 仕様書
   - **コーラル＝人が押す所**（GitHub・Zenn・連絡・プラグ）。**ティール＝流れ・いま**（読んでいる所・製作中・ケーブル）。
   - 状態は色だけで伝えない（✓ の丸・回る矢印・点線の丸のアイコンと言葉を添える）。teal は canvas の上の小さな文字に使わない（teal-ink）。
 - フォント: Zen Kaku Gothic New（見出し 900・本文 400/500）/ JetBrains Mono（年・数）。ロゴだけ Outfit 600 のアウトライン（`Logo.astro`）。
-- 文字の大きさ: 本文と操作 16px 以上・注と札 14px 以上。押せる所の枠は `edge`（3:1 以上）、44px 以上の高さ。
+- 文字の大きさ: PC（640px 以上）は本文と操作 16px 以上・注と札 14px 以上・押せる所 44px 以上。
+  スマホ（640px 未満）は少し小さく、本文 15px・注 13px・小さな mono 12px・押せる所 40px 以上（`specs/shell-2026.spec.md`「スマホの見直し」）。
+  押せる所の枠は `edge`（3:1 以上）。
 - 角と影（やわらか）: 札 6・ボタン 8・カード 14・面 20・チップ 999。明るい画面は影、暗い画面は 1px の輪。
 - 構図（`specs/shell-2026.spec.md`。1 画面の作業台）: 左の「流れ」（`StageRail.astro`。7 段のタブ）の段にプラグを差すと、
   右の出力の面（`StagePane.astro`）にその段だけ出る。PC は面から出たケーブル（ひも）のプラグが段のコンセントに差さり、
   スマホは下に固定した帯のチップで切り替える。段の切り替えは `#id` を履歴に足す（`scripts/stages.ts`）。
-  縦を縮めるため、スキルは分野、作品は種類をチップで切り替え（`scripts/switcher.ts`）、経歴は仕事の札の中に小さな帯を入れる。
+  縦を縮めるため、スキルは分野、作品は種類を下線つきのタブで切り替え（`scripts/switcher.ts`）、経歴は PC が仕事の札（中に小さな帯）とモニター、
+  スマホが年表（`CareerTimeline.astro`。押した仕事がその場で開く）。
   JS 無しでは 7 段と切り替えの面がぜんぶ縦に並ぶ。
 - アイコン: Lucide（ISC）を `Icon.astro` に写す。外から読み込まない。
 - 動き: 段を選ぶとプラグが飛んで差さる（`physics/plugBoard.ts`。流れと経歴で同じ部品）。`prefers-reduced-motion` ではすぐ差さり、ひもは垂れた形で静止。
