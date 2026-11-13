@@ -660,6 +660,10 @@ p {
     border-bottom-color: var(--c-teal);
     color: var(--c-fg);
   }
+  /* 横に送る入れ物（overflow）の中なので、フォーカスの輪は内側に出す（外側だと切れる） */
+  .switch-btn:focus-visible {
+    outline-offset: -3px;
+  }
   .switch-panel {
     display: flex;
     flex-direction: column;

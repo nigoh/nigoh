@@ -153,7 +153,9 @@ export function initSandLogo(): void {
       if (pressing) {
         for (let k = 0; k < Math.round(45 / (cell * cell)); k++) {
           const base = Math.random() < 0.5 ? SAND.teal : Math.random() < 0.5 ? SAND.coral : SAND.sand;
-          sand.add(pressing[0] + ((Math.random() * 5) | 0) - 2, pressing[1] + ((Math.random() * 5) | 0) - 2, grain(base));
+          const spread = Math.round(7 / cell);
+          const off = (): number => ((Math.random() * (spread * 2 + 1)) | 0) - spread;
+          sand.add(pressing[0] + off(), pressing[1] + off(), grain(base));
         }
       }
       const m = sand.step(G.x, G.y) + sand.step(G.x, G.y);

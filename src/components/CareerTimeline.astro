@@ -17,7 +17,7 @@ const { jobs } = Astro.props;
   {
     jobs.map((job, i) => (
       <li class:list={['tl-row', { 'is-on': i === 0 }]} data-tl-row>
-        <button type="button" class="tl-btn" aria-expanded={i === 0 ? 'true' : 'false'} aria-controls={`tl-detail-${i}`}>
+        <button type="button" class="tl-btn" aria-expanded="true" aria-controls={`tl-detail-${i}`}>
           <span class="tl-when font-mono">{job.when}</span>
           <span class="tl-sock" aria-hidden="true">
             <i />
